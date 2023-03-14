@@ -9,6 +9,7 @@ export default defineConfig({
   format: ["cjs", "esm"],
   splitting: true,
   sourcemap: false,
+  minify: true,
   dts: process.env.DEV
     ? false
     : {

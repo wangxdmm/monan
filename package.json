@@ -36,6 +36,9 @@
       "import": "./dist/http.mjs",
       "require": "./dist/http.js"
     },
+    "./ts": {
+      "types": "./dist/index.d.ts"
+    },
     "./*": "./*"
   },
   "scripts": {

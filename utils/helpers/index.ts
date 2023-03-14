@@ -6,4 +6,3 @@ export * from './getParam';
 export * from './object';
 export * from './uid';
 export * from './map';
-export * from './useNamespace';
