@@ -4,7 +4,7 @@ export default defineConfig({
   entry: {
     index: "./index.ts",
     helpers: "./utils/helpers/index.ts",
-    http: "./utils/http/index.ts",
+    http: "./utils/http/index.ts"
   },
   format: ["cjs", "esm"],
   splitting: true,

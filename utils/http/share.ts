@@ -7,7 +7,7 @@ import type {
   AxiosInterceptorOptions,
 } from "axios";
 import type { SetupAxios } from "./setupAxios";
-import type { Equal } from "../../ts";
+import type { Equal } from "../helpers";
 
 export const ContentTypeKey = "Content-Type";
 

@@ -26,6 +26,6 @@
     "allowSyntheticDefaultImports": true,
     "types": ["node"]
   },
-  "include": ["./"],
+  "include": ["./**/*.ts"],
   "exclude": ["dist/", "node_modules/"]
 }

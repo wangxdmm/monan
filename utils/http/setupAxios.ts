@@ -1,6 +1,6 @@
 import { get, isArray, isDef, isEmptyObject, isFunction, isObject, isRegExp } from "../helpers";
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import type { AtLeast } from "../../ts";
+import type { AtLeast } from "../ts";
 import type {
   Config,
   DynamicHandler,

@@ -2,7 +2,7 @@ import { DeprecatedRestful } from "./deprecatedRestful";
 import { Restful } from "./restful";
 import { genHandleResponse } from "./response";
 import type { IHttpConfig } from "./share";
-import type { AtLeast } from "../../ts";
+import type { AtLeast } from "../ts";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface EasyAxiosOptions<T> extends AtLeast<IHttpConfig<T>, "instance"> {}
