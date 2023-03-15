@@ -1,15 +1,16 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: {
-    index: "./index.ts",
-    helpers: "./utils/helpers/index.ts",
-    http: "./utils/http/index.ts"
+    index: './index.ts',
+    helpers: './src/helpers/index.ts',
+    http: './src/http/index.ts',
   },
-  format: ["cjs", "esm"],
+  format: ['cjs', 'esm'],
   splitting: true,
   sourcemap: false,
   minify: true,
+  silent: false,
   dts: process.env.DEV
     ? false
     : {
@@ -18,5 +19,5 @@ export default defineConfig({
         },
       },
   clean: true,
-  tsconfig: "./tsconfig.json",
-});
+  tsconfig: './tsconfig.json',
+})
