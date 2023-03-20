@@ -16,6 +16,7 @@ export default defineConfig({
     : {
         compilerOptions: {
           composite: false,
+          moduleResolution: 'bundler',
         },
       },
   clean: true,

@@ -106,8 +106,9 @@ export function genHandleResponse<T>(http: Restful<T>) {
   }
 
   function genHandleFunc<T>(response: BatchBackType<T>) {
-    return async (config?: HandleResponseConfig) =>
-      handleResponse(await response, config)
+    return async (config?: HandleResponseConfig) => {
+      return handleResponse(await response, config)
+    }
   }
 
   http.updateHandleFunc(genHandleFunc)

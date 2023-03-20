@@ -7,15 +7,18 @@ import type {
   ExtractAPI,
   GenHandleFunc,
   LabelDef,
+  ServerDefinedResponse,
   defineAPI,
 } from './share'
 import { ContentTypeEnum, ContentTypeKey } from './share'
+
+export const NO_ID_WHEN_INJECT_PARAM_ERROR = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
   defaultStrategies: Partial<DefaultStrategies> = {}
 
-  createDefaultStrategies<D>(
+  createDefaultStrategies<D = ServerDefinedResponse>(
     strategiesCreator: (ins: this) => DefaultStrategies<D>,
   ) {
     Object.assign(this.defaultStrategies, strategiesCreator(this))
@@ -52,15 +55,14 @@ export class Restful<T> extends SetupAxios<T> {
     let [method, url, metaStr] = def.split('::')
     let id = ''
     if (!method) {
-      console.error(
+      throw new Error(
         `${def} must have method: please check https://github.com/axios/axios`,
       )
-      return
     }
-    method = method.toLowerCase()
+    method = method.toLowerCase().trim()
     // get() -> use empty args func
     if (method.includes('(')) {
-      method = method.slice(0, -2) // TODO avoid space
+      method = method.slice(0, -2)
       meta.noArgs = true
     }
 
@@ -70,16 +72,25 @@ export class Restful<T> extends SetupAxios<T> {
         meta.makeInputAsParams = true
         url = url.slice(0, -1)
       }
-      if (!id)
-        id = url.split('/').pop()!
 
       if (!id) {
-        console.error(
+        let mayBeId = url.split('/').pop()
+        if (mayBeId && mayBeId.trim()) {
+          mayBeId = mayBeId.trim()
+          const injectParamReg = /{([^/.]+)}/g
+          if (!injectParamReg.test(mayBeId))
+            id = mayBeId
+          else
+            throw new Error(NO_ID_WHEN_INJECT_PARAM_ERROR)
+        }
+      }
+
+      if (!id) {
+        throw new Error(
           `We default use last word in path as id of the request, 
           like: "a/b/c" we will use c as id, or "a/b/c->alterName" we will use alterName as id,
           but there is nothing in ${def}, Please check the rule.`,
         )
-        return
       }
     }
 
@@ -176,6 +187,6 @@ export class Restful<T> extends SetupAxios<T> {
         }
       }
     })
-    return result as ExtractAPI<T> & Record<string, any>
+    return result as ExtractAPI<T>
   }
 }

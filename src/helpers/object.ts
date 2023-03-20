@@ -64,3 +64,23 @@ export function divideArray<T>(data: T[], dep = 2) {
   }
   return out
 }
+
+export function squashArr<T>(arr: T[]): T[] {
+  // arr = [1, 1, 2, 2, 1, 3, 3] -> [1, 2, 1, 3]
+  if (!arr)
+    return []
+
+  if (arr.length <= 1)
+    return arr
+
+  return arr.reduce((cur, next) => {
+    if (cur.length === 0) {
+      cur.push(next)
+    }
+    else {
+      if (cur[cur.length - 1] !== next)
+        cur.push(next)
+    }
+    return cur
+  }, [] as T[])
+}

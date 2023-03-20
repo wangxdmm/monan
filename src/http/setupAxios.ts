@@ -184,11 +184,11 @@ export class SetupAxios<T> {
     return Promise.resolve(back)
   }
 
-  useParamInject<RequestParam = any>(urlIn, paramsIn: RequestParam, config?: Config) {
+  patchUrl<RequestParam = any>(urlIn, paramsIn: RequestParam, config?: Config) {
     if (paramsIn && !isEmptyObject(paramsIn)) {
       const { __R_interParam = SetupAxios.interParam } = config || {}
-      const re = __R_interParam(urlIn, paramsIn, config?.__R_reverse)
-      return re
+      const result = __R_interParam(urlIn, paramsIn, config?.__R_reverse)
+      return result
     }
     return false
   }
@@ -200,10 +200,11 @@ export class SetupAxios<T> {
   ): {
       url: string
       dataOrParams: Partial<R>
+      originUrl: string
     } {
     let url = urlIn
     let dataOrParams: Partial<R> = paramsIn || {}
-    const result = this.useParamInject(urlIn, paramsIn, config)
+    const result = this.patchUrl(urlIn, paramsIn, config)
     if (result) {
       url = result.url
       dataOrParams = result.data!
@@ -212,6 +213,7 @@ export class SetupAxios<T> {
     return {
       url,
       dataOrParams,
+      originUrl: urlIn,
     }
   }
 

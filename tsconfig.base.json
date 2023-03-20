@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "useDefineForClassFields": true,
+    "noImplicitThis": true,
+    "preserveValueImports": true,
+    "importsNotUsedAsValues": "error",
+    "ignoreDeprecations": "5.0",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "target": "ES2018",
+    "module": "ESNext",
+    "noImplicitAny": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "rootDir": "./",
+    "lib": ["ES2018", "DOM", "DOM.Iterable"],
+    // "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["dist/", "node_modules/"]
+}

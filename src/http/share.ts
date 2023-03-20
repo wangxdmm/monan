@@ -142,9 +142,11 @@ export type UnionBack<T> = AxiosResponse<T, any> | SysError<T>
     total?: number;
   }
 } */
-export interface Response<
-  _T = any,
-  _S extends boolean | string | number = boolean,
+export interface ServerDefinedResponse<
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  T = any,
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  S extends boolean | string | number = boolean,
 > {
   // code: number;
   // data?: T;
@@ -158,7 +160,7 @@ export interface Response<
 export interface ResponseResult<
   T,
   D = T extends AxiosResponse<infer K>
-    ? K extends Response<infer R>
+    ? K extends ServerDefinedResponse<infer R>
       ? Equal<R, unknown> extends true
         ? K
         : R
@@ -171,7 +173,7 @@ export interface ResponseResult<
   backData?: D
   // server response = result && response
   wholeData?: R
-  error?: Response<D, false>
+  error?: ServerDefinedResponse<D, false>
   sysError?: T extends SysError ? T : never
   // axios Response
   response: AxiosResponse<R>
@@ -201,7 +203,7 @@ export interface DefaultStrategies<D = any> {
   showSuccessMessageTip: MessageTip
 }
 
-export type WrapResponse<T> = T extends Response<unknown> ? T : T extends UsePrimitiveType<infer P> ? P : Response<T>
+export type WrapResponse<T> = T extends ServerDefinedResponse<unknown> ? T : T extends UsePrimitiveType<infer P> ? P : ServerDefinedResponse<T>
 
 export type ExtractAPI<T> = T extends [infer F, ...infer Rest]
   ? F extends defineAPI<infer Id, infer Data, infer Response>
