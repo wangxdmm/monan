@@ -38,7 +38,7 @@ const { http, genHandleFunc } = defineEasyAxios<CodeHandlerTypes>({
 });
 
 // register default strategies for all request
-http.createDefaultStrategies<Response>((ins) => DefaultStrategies);
+http.createDefaultStrategies((ins) => DefaultStrategies);
 
 // dynamicly inject token
 http.registerDynamicRequestConfig('token', config => {
@@ -55,10 +55,10 @@ interface DefaultStrategies<D = any> {
   showSuccessMessageTip: MessageTip;
 }
 
-declare type defineAPI<Id, Data = any, Response = any> = {
+declare type defineAPI<Id, Data = any, ServerDefinedResponse = any> = {
   id: Id;
   data: Data;
-  response: Response;
+  response: ServerDefinedResponse;
 };
 
 // create restful api
@@ -80,7 +80,7 @@ http.create("prefix", "post::/posturl::timeout->1000,contentType->form,responseT
 
 // declare your own Response and message in env.d.ts or other global ts declaration file
 declare module '@runafe/platform-share' {
-  export interface Response<T = any, S = boolean> {
+  export interface ServerDefinedResponse<T = any, S = boolean> {
     code: number;
     data?: T;
     message?: string;

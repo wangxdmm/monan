@@ -12,7 +12,7 @@ import type {
 } from './share'
 import { ContentTypeEnum, ContentTypeKey } from './share'
 
-export const NO_ID_WHEN_INJECT_PARAM_ERROR = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
+export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
@@ -68,6 +68,7 @@ export class Restful<T> extends SetupAxios<T> {
 
     if (url) {
       [url, id] = url.split(valueDiv)
+      url && (url = url.trim())
       if (url.slice(-1) === '?') {
         meta.makeInputAsParams = true
         url = url.slice(0, -1)
@@ -81,7 +82,7 @@ export class Restful<T> extends SetupAxios<T> {
           if (!injectParamReg.test(mayBeId))
             id = mayBeId
           else
-            throw new Error(NO_ID_WHEN_INJECT_PARAM_ERROR)
+            throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
         }
       }
 

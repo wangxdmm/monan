@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
 import axios from 'axios'
 import moxios from 'moxios'
-import { ContentTypeEnum, HandleEnum, NO_ID_WHEN_INJECT_PARAM_ERROR, defineEasyAxios } from '..'
+import { ContentTypeEnum, HandleEnum, WHEN_INJECT_PARAM_NO_ID_ERROR_DES, defineEasyAxios } from '..'
 import { get } from '../../helpers'
 import type { Config, defineAPI } from '..'
 
@@ -246,7 +246,7 @@ describe('resutful', async () => {
   it('create inject param but can not find alter request name', () => {
     expect(() => http.create('.', [
       'get::/getByCode/{code}',
-    ])).toThrowError(new RegExp(NO_ID_WHEN_INJECT_PARAM_ERROR))
+    ])).toThrowError(new RegExp(WHEN_INJECT_PARAM_NO_ID_ERROR_DES))
   })
 
   it('create with simple param is ok', () => {
