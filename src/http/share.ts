@@ -99,9 +99,13 @@ export type MessageTip = (messageOrOptions?: string | Partial<MessageOptions>) =
 
 /**
  * You can define your own MessageOptions in your own project: like element-plus.MessageOptions
+ * --------------------------------------------------------------------------------------------------------
  * import type { MessageOptions } from 'element-plus';
+ *
  * declare module '@runafe/platform-share' {
- * export interface MessageOptions  extends OtherMessageOptions{}
+ *   export interface MessageOptions  extends OtherMessageOptions{}
+ * }
+ * --------------------------------------------------------------------------------------------------------
  */
 export interface MessageOptions {
   message?: string
