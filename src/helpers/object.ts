@@ -9,22 +9,39 @@ type TransMap<T, K extends keyof T> = Record<
   }
 >
 
-export function transAttr<T extends Record<string, any>, K extends keyof T>(obj: T, maps: TransMap<T, K>): T {
+export function transAttr<T extends Record<string, any>, K extends keyof T>(
+  obj: T,
+  maps: TransMap<T, K>,
+): T {
   if (!isObject(obj))
     return obj
 
   for (const [key, val] of Object.entries(maps)) {
     const { alterVal, when = _ => isUndef(_) } = val as any
-    if (when(obj[key]))
-      obj[key as keyof T] = isFunction(alterVal) ? alterVal(obj[key]) : alterVal
+    if (when(obj[key])) {
+      obj[key as keyof T] = isFunction(alterVal)
+        ? alterVal(obj[key])
+        : alterVal
+    }
   }
 
   return obj
 }
 
-export function toHash<T>(arr: Array<T>, path: string[] | string): Record<string, T>
-export function toHash<T>(arr: Array<T>, path: string[] | string, useIndex: true): Record<string, number>
-export function toHash<T>(arr: Array<T>, path: string[] | string, useIndex?: boolean) {
+export function toHash<T>(
+  arr: Array<T>,
+  path: string[] | string
+): Record<string, T>
+export function toHash<T>(
+  arr: Array<T>,
+  path: string[] | string,
+  useIndex: true
+): Record<string, number>
+export function toHash<T>(
+  arr: Array<T>,
+  path: string[] | string,
+  useIndex?: boolean,
+) {
   if (!isArray(arr))
     return null
 
@@ -36,8 +53,7 @@ export function toHash<T>(arr: Array<T>, path: string[] | string, useIndex?: boo
     else {
       if (useIndex)
         cur[key] = index
-      else
-        cur[key] = next
+      else cur[key] = next
     }
     return cur
   }, {} as Record<string, T | number>)
@@ -74,13 +90,13 @@ export function squashArr<T>(arr: T[]): T[] {
     return arr
 
   return arr.reduce((cur, next) => {
-    if (cur.length === 0) {
+    if (cur.length === 0)
       cur.push(next)
-    }
-    else {
-      if (cur[cur.length - 1] !== next)
-        cur.push(next)
-    }
+
+    else
+    if (cur[cur.length - 1] !== next)
+      cur.push(next)
+
     return cur
   }, [] as T[])
 }
@@ -89,34 +105,54 @@ export const EQUAL_FLAG = '.'
 export type UnifiedKey = string | number | symbol
 
 export function easyTrans<
-D,
-Def extends Record<UnifiedKey, K1 | [key: K1 | typeof EQUAL_FLAG, valueGetter: (v: D[K1], store: D, picked: Partial<Record<UnifiedKey, unknown>>) => unknown] | typeof EQUAL_FLAG>,
-P,
-K extends keyof Def,
-K1 extends keyof D,
-UniKeys extends UnifiedKey = P extends Record<UnifiedKey, unknown> ? ((keyof P) | K) : K,
->(dataStore: D, defs: Def, config?: { patchData?: P; filter?: (s: D[K1]) => boolean }) {
+  D,
+  Def extends Record<
+    UnifiedKey,
+    | K1
+    | [
+        key: K1 | typeof EQUAL_FLAG,
+        valueGetter: (
+          v: D[K1],
+          store: D,
+          picked: Partial<Record<UnifiedKey, unknown>>
+        ) => unknown,
+    ]
+    | typeof EQUAL_FLAG
+  >,
+  P,
+  K extends keyof Def,
+  K1 extends keyof D,
+  UniKeys extends UnifiedKey = P extends Record<UnifiedKey, unknown>
+    ? keyof P | K
+    : K,
+>(
+  dataStore: D,
+  defs: Def,
+  config?: { patchData?: P; filter?: (s: D[K1]) => boolean },
+) {
   const pickedObj: Partial<Record<UniKeys, unknown>> = {}
   const { patchData, filter } = config ?? {}
 
   for (const [k, condition] of Object.entries(defs)) {
     if (isArray(condition)) {
       const [key, valueGetter] = condition
-      pickedObj[k] = valueGetter(dataStore[(key === EQUAL_FLAG ? k : key) as K1], dataStore, pickedObj)
+      pickedObj[k] = valueGetter(
+        dataStore[(key === EQUAL_FLAG ? k : key) as K1],
+        dataStore,
+        pickedObj,
+      )
     }
     else if (condition === EQUAL_FLAG) {
       const val = dataStore[k]
       if (filter)
         filter(val) && (pickedObj[k] = val)
-      else
-        pickedObj[k] = val
+      else pickedObj[k] = val
     }
     else {
       const val = dataStore[condition]
       if (filter)
         filter(val) && (pickedObj[k] = val)
-      else
-        pickedObj[k] = val
+      else pickedObj[k] = val
     }
   }
 
