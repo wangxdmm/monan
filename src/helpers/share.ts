@@ -1,54 +1,31 @@
-import { isArray, isNumber, isString } from './typeAssert'
+import { isArray, isString } from './typeAssert'
 
-export type FieldPath = string | number
-export type FieldPathArray = FieldPath[]
-/* istanbul ignore next function */
+export type ObjIndex = string | number | symbol
 
 export function noop(..._args: any[]): void {}
 
 export function genAnyBackFunc<T = any>(t: T): () => T {
   return () => t
 }
-/**
- * set get pathSolve
- * @param path
- */
 
-function validPath(path: string[], pathOrigin: any): boolean {
-  let out = true
+export function pathResolve(path: ObjIndex[] | ObjIndex): ObjIndex[] {
+  let pathResolve: ObjIndex[] = []
 
-  if (!isArray(path)) {
-    out = false
-    console.error(`${path} should be Array`)
-  }
-  else {
-    for (let i = 0; i < path.length; i++) {
-      if (path[i] === 'undefined') {
-        out = false
-        console.error(
-          `(${pathOrigin}) => (${path})) should not include undefined. get method will back alterValue`,
-        )
-      }
-    }
-  }
-
-  return out
-}
-
-export function pathResolve(path: FieldPath | FieldPathArray): string[] {
-  let pathResolve: string[] = []
-  /* istanbul ignore else */
-  if (isString(path) || isNumber(path)) {
+  if (isString(path)) {
     pathResolve = String(path).split('.')
   }
-  else if (isArray(path)) {
+
+  else if (isArray<ObjIndex[]>(path)) {
     if (path.length === 0)
       return pathResolve
-    const flatPath = path
-      .filter(i => isString(i) || isNumber(i))
-      .map(i => String(i))
-      .reduce((cur: FieldPath, next: FieldPath) => `${cur}.${next}`)
-    pathResolve = flatPath.split('.')
+
+    pathResolve = path
+      .map((i) => {
+        if (isString(i))
+          return i.split('.')
+        return i
+      }).flat()
   }
-  return validPath(pathResolve, path) ? pathResolve : []
+
+  return pathResolve
 }

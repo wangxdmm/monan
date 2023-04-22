@@ -80,3 +80,7 @@ export function isValidArrIndex<T = number>(x: any): x is T {
 export function isServer(): boolean {
   return typeof window === 'undefined'
 }
+
+export function isSymbol<T = symbol>(x: unknown): x is T {
+  return typeof x === 'symbol'
+}

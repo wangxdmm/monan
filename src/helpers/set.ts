@@ -1,9 +1,9 @@
-import { type FieldPath, type FieldPathArray, pathResolve } from './share'
+import { type ObjIndex, pathResolve } from './share'
 import { isNumberPlus, isUndef } from './typeAssert'
 
 export function set(
   obj: any,
-  path: FieldPath | FieldPathArray,
+  path: ObjIndex[] | ObjIndex,
   value: any,
   useType?: string,
 ) {
