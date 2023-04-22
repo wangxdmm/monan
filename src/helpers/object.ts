@@ -1,5 +1,6 @@
 import { isArray, isDef, isFunction, isObject, isUndef } from './typeAssert'
 import { get } from './get'
+import type { UnifiedKey } from './share'
 
 type TransMap<T, K extends keyof T> = Record<
   K,
@@ -102,7 +103,6 @@ export function squashArr<T>(arr: T[]): T[] {
 }
 
 export const EQUAL_FLAG = '.'
-export type UnifiedKey = string | number | symbol
 
 export function easyTrans<
   D,

@@ -1,5 +1,5 @@
 import { isArray, isFunction, isObject, isString, isUndef } from './typeAssert'
-import { type ObjIndex, pathResolve } from './share'
+import { type UnifiedKey, pathResolve } from './share'
 
 interface GetConfig<T = any> {
   condition?: (value: unknown) => boolean
@@ -10,7 +10,7 @@ interface GetConfig<T = any> {
 
 export function get<T = any>(
   source: any,
-  path: ObjIndex[] | ObjIndex,
+  path: UnifiedKey[] | UnifiedKey,
   alterVal?: T,
   conditionOrConfig?: ((value: unknown) => boolean) | GetConfig<T>, // get策略
 ): T {
@@ -46,7 +46,7 @@ export function get<T = any>(
 
   const { condition, strict, emptyPathReturn: emptyPathBack, skipNullable } = config
 
-  const resolvedPath: ObjIndex[] = strict
+  const resolvedPath: UnifiedKey[] = strict
     ? (!isArray(path) ? [path] : path)
     : pathResolve(path)
 

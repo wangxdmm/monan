@@ -1,21 +1,21 @@
 import { isArray, isString } from './typeAssert'
 
-export type ObjIndex = string | number | symbol
+export type UnifiedKey = string | number | symbol
 
 export function noop(..._args: any[]): void {}
 
-export function genAnyBackFunc<T = any>(t: T): () => T {
+export function funcProvider<T = any>(t: T): () => T {
   return () => t
 }
 
-export function pathResolve(path: ObjIndex[] | ObjIndex): ObjIndex[] {
-  let pathResolve: ObjIndex[] = []
+export function pathResolve(path: UnifiedKey[] | UnifiedKey): UnifiedKey[] {
+  let pathResolve: UnifiedKey[] = []
 
   if (isString(path)) {
     pathResolve = String(path).split('.')
   }
 
-  else if (isArray<ObjIndex[]>(path)) {
+  else if (isArray<UnifiedKey[]>(path)) {
     if (path.length === 0)
       return pathResolve
 

@@ -1,9 +1,9 @@
-import { type ObjIndex, pathResolve } from './share'
-import { isNumberPlus, isUndef } from './typeAssert'
+import { type UnifiedKey, pathResolve } from './share'
+import { isNumberLike, isUndef } from './typeAssert'
 
 export function set(
   obj: any,
-  path: ObjIndex[] | ObjIndex,
+  path: UnifiedKey[] | UnifiedKey,
   value: any,
   useType?: string,
 ) {
@@ -25,7 +25,7 @@ export function set(
         ? useType === 'array'
           ? []
           : {}
-        : isNumberPlus(pathOut[index + 1])
+        : isNumberLike(pathOut[index + 1])
           ? []
           : {})
     }
