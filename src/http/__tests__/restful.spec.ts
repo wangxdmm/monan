@@ -34,7 +34,7 @@ http.createDefaultStrategies((ins) => {
         )
         return message
       }
-      return res.data.message
+      return res.data.message!
     },
   }
 })
@@ -251,7 +251,7 @@ describe('resutful', async () => {
 
   it('create with simple param is ok', () => {
     const api = http.create<[defineAPI<'post', { code: number }, { name: string }>]>('.', [
-      'post::/->post::contentType->multipart,timeout->98,responseType->blob',
+      'post::/->post::contentType->multipart,timeout->98,responseType->blob,contentType->multipart',
     ])
     const serveResponse = {
       success: true,
