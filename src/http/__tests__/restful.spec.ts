@@ -34,7 +34,7 @@ http.createDefaultStrategies((ins) => {
         )
         return message
       }
-      return res.data.message!
+      return res.data.message
     },
   }
 })

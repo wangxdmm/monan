@@ -182,7 +182,7 @@ export interface ResponseResult<
   // axios Response
   response: AxiosResponse<R>
   message?: string
-  notify: (mes?: Partial<Record<HandleEnumKeys, Partial<MessageOptions>>> | string | (string | undefined)[]) => void
+  notify: (mes?: Partial<Record<HandleEnumKeys, Partial<MessageOptions>>> | string | [success?: string, fail?: string, sysError?: string]) => void
 }
 
 export interface HandleResponseConfig {
@@ -202,7 +202,7 @@ export interface UsePrimitiveType<T> {
 export interface DefaultStrategies<D = any> {
   isSuccess: (res: AxiosResponse<D>) => boolean
   getBackData: (type: HandleEnum, res: AxiosResponse<D>) => D
-  getMessage: (type: HandleEnum, res: AxiosResponse<D>) => string
+  getMessage: (type: HandleEnum, res: AxiosResponse<D>) => string | undefined
   showErrorMessageTip: MessageTip
   showSuccessMessageTip: MessageTip
 }

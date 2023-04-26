@@ -10,7 +10,7 @@ export default defineConfig({
   format: ['cjs', 'esm', 'iife'],
   splitting: true,
   sourcemap: false,
-  minify: true,
+  minify: false,
   silent: false,
   dts: process.env.DEV
     ? false
