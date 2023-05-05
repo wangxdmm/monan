@@ -1,6 +1,6 @@
 {
   "name": "@runafe/platform-share",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "runafe share",
   "author": "wangxdmm <1121292341@qq.com>",
   "license": "ISC",
@@ -63,7 +63,8 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.36.0",
     "moxios": "^0.4.0",
-    "tsup": "^6.5.0",
+    "prettier": "^2.8.8",
+    "tsup": "^6.7.0",
     "typescript": "latest",
     "vitest": "^0.29.3"
   }

@@ -4,6 +4,7 @@ import { SetupAxios } from './setupAxios'
 import type {
   Config,
   DefaultStrategies,
+  DefineResponseResult,
   ExtractAPI,
   GenHandleFunc,
   LabelDef,
@@ -157,7 +158,7 @@ export class Restful<T> extends SetupAxios<T> {
     return configed
   }
 
-  create<T extends defineAPI<string, any, any>[]>(
+  create<T extends (defineAPI<string, any, any> | Record<string, (...args) => DefineResponseResult<unknown>>) []>(
     prefix: string,
     defs: string[],
   ) {

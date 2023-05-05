@@ -111,10 +111,10 @@ export interface MessageOptions {
   message?: string
 }
 
-export interface defineAPI<Id, Data = any, Response = any> {
+export interface defineAPI<Id, DataOrDefinition = any, Response = any, _a = any> {
   id: Id
-  data: Data
-  response: Response
+  dataOrDefinition: DataOrDefinition
+  response: (<T>(_p: T) => Response) | Response
 }
 
 export interface LabelDef {
@@ -182,7 +182,12 @@ export interface ResponseResult<
   // axios Response
   response: AxiosResponse<R>
   message?: string
-  notify: (mes?: Partial<Record<HandleEnumKeys, Partial<MessageOptions>>> | string | [success?: string, fail?: string, sysError?: string]) => void
+  notify: (
+    mes?:
+    | Partial<Record<HandleEnumKeys, Partial<MessageOptions>>>
+    | string
+    | [success?: string, fail?: string, sysError?: string]
+  ) => void
 }
 
 export interface HandleResponseConfig {
@@ -207,28 +212,39 @@ export interface DefaultStrategies<D = any> {
   showSuccessMessageTip: MessageTip
 }
 
-export type WrapResponse<T> = T extends ServerDefinedResponse<unknown> ? T : T extends UsePrimitiveType<infer P> ? P : ServerDefinedResponse<T>
+export type WrapResponse<T> = T extends ServerDefinedResponse<unknown>
+  ? T
+  : T extends UsePrimitiveType<infer P>
+    ? P
+    : ServerDefinedResponse<T>
 
+export type DefineResponseResult<T> = (
+  config?: HandleResponseConfig
+) => Promise<ResponseResult<UnionBack<WrapResponse<T>>>>
+
+export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
+  ? [Params] extends [void]
+      ? [D] extends [void]
+          ? [config?: Config]
+          : [data: D, config?: Config<D>]
+      : [params: Params, config?: Config<D>]
+  : Data extends [infer P]
+    ? [params: P, config?: Config]
+    : [Data] extends [void]
+        ? [config?: Config]
+        : [data: Data, config?: Config]
+
+// export type ComputedResponse<T, Response> = Response extends
 export type ExtractAPI<T> = T extends [infer F, ...infer Rest]
   ? F extends defineAPI<infer Id, infer Data, infer Response>
     ? Id extends string
-      ? {
-          [k in Id]: (
-            ...p: Data extends [infer Params, infer D]
-              ? [Params] extends [void]
-                  ? [D] extends [void]
-                      ? [config?: Config]
-                      : [data: D, config?: Config<D>]
-                  : [params: Params, config?: Config<D>]
-              : Data extends [infer P]
-                ? [params: P, config?: Config]
-                : [Data] extends [void]
-                    ? [config?: Config]
-                    : [data: Data, config?: Config]
-          ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<WrapResponse<Response>>>>;
-        } & ExtractAPI<Rest>
+      ? Data extends (...args: any[]) => any
+        ? { [k in Id]: Data } & ExtractAPI<Rest>
+        : {
+            [k in Id]: <const T extends DefineRequestFuncParams<Data>>(...p: T) => DefineResponseResult<Response>
+          } & ExtractAPI<Rest>
       : unknown
-    : unknown
+    : F // TODO self defined types
   : unknown
 
 export type GenHandleFunc = <T>(
