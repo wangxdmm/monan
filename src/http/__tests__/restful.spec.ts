@@ -47,7 +47,19 @@ describe('resutful', async () => {
   })
 
   it('create config and back is ok', () => {
-    const api = http.create<[defineAPI<'get', { name: string }, { name: string }>]>('.', ['get::/->get'])
+    const api = http.create<
+      [
+        defineAPI<'get', { name: string }, { name: string }>,
+        defineAPI<'get1', { name: string }, { name: string }>,
+        defineAPI<'get2', { name: string }, { name: string }>,
+        defineAPI<'get3', { name: string }, { name: string }>,
+        defineAPI<'get3', { name: string }, { name: string }>,
+        defineAPI<'get4', { name: string }, { name: string }>,
+        defineAPI<'get5', { name: string }, { name: string }>,
+        defineAPI<'get6', { name: string }, { name: string }>,
+        defineAPI<'get6', { name: string }, { name: string }>,
+      ]
+    >('.', ['get::/->get'])
 
     expectTypeOf(api.get).toBeFunction()
     expectTypeOf(api.get).parameter(0).toMatchTypeOf<{ name: string }>()
@@ -319,7 +331,7 @@ describe('resutful', async () => {
         'post',
         <const T extends Person>(
           d: T,
-          config?: Config,
+          config?: Config
         ) => DefineResponseResult<T extends { name: 'all' } ? Person[] : Person>
       >,
     ]
@@ -349,6 +361,26 @@ describe('resutful', async () => {
         )()
         .then(({ backData }) => {
           expectTypeOf(backData).toEqualTypeOf<Person | undefined>()
+        })
+    })
+  })
+
+  it('Blob type is ok', () => {
+    type API = [defineAPI<'post', string, Blob>]
+
+    const api = http.create<API>('.', [
+      'post::/->post::contentType->multipart,timeout->0,responseType->blob,contentType->multipart',
+    ])
+
+    return new Promise(() => {
+      api
+        .post('/download', {
+          data: {},
+        })({
+          getBackData: (result, res) => (result ? res.data : undefined),
+        })
+        .then(({ backData }) => {
+          expectTypeOf(backData).toEqualTypeOf<Blob | undefined>()
         })
     })
   })

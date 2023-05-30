@@ -235,17 +235,19 @@ export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
         : [data: Data, config?: Config]
 
 // export type ComputedResponse<T, Response> = Response extends
-export type ExtractAPI<T> = T extends [infer F, ...infer Rest]
-  ? F extends defineAPI<infer Id, infer Data, infer Response>
+export type ExtractAPI<T, R extends {} = {}> = T extends [infer F, ...infer Rest]
+  ? F extends defineAPI<infer Id, infer DataOrDefinition, infer Response>
     ? Id extends string
-      ? Data extends (...args: any[]) => any
-        ? { [k in Id]: Data } & ExtractAPI<Rest>
-        : {
-            [k in Id]: <const T extends DefineRequestFuncParams<Data>>(...p: T) => DefineResponseResult<Response>
-          } & ExtractAPI<Rest>
-      : unknown
-    : F // TODO self defined types
-  : unknown
+      ? DataOrDefinition extends (...args: any[]) => any
+        ? ExtractAPI<Rest, { [k in Id | keyof R]: k extends Id ? DataOrDefinition : k extends keyof R ? R[k] : never }>
+        : ExtractAPI<Rest, {
+          [k in Id | keyof R]: k extends Id ? <const T extends DefineRequestFuncParams<DataOrDefinition>>(
+            ...p: T
+          ) => DefineResponseResult<Response> : k extends keyof R ? R[k] : never
+        }>
+      : ExtractAPI<Rest, R> // skip
+    : F
+  : R // return Result
 
 export type GenHandleFunc = <T>(
   response: BatchBackType<T>
