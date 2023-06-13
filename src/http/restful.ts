@@ -185,7 +185,7 @@ export class Restful<T> extends SetupAxios<T> {
           config = this.patchConfigByMeta(dataOrParams, config, meta)
           config.url = `${prefix}${url}`
           config.method = method
-          return this.genHandleFunc(this.instance(config))
+          return this.genHandleFunc(() => this.instance(config))
         }
       }
     })

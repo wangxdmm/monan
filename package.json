@@ -1,6 +1,6 @@
 {
   "name": "@runafe/platform-share",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "runafe share",
   "author": "wangxdmm <1121292341@qq.com>",
   "license": "ISC",
@@ -46,7 +46,8 @@
     "dev": "cross-env DEV=1 tsup --watch",
     "lint": "eslint . --fix",
     "test:dev": "vitest dev",
-    "test": "vitest run"
+    "test": "vitest run",
+    "release": "bumpp --commit --push --tag"
   },
   "peerDependencies": {
     "axios": "^1.3.4"

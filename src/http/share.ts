@@ -80,8 +80,8 @@ export type FetchFunc<T = object, K = any> = (
 ) => Promise<AxiosResponse<K> | SysError>
 
 export type IRestResult = Record<string, FetchFunc>
-export type BatchRowBackType<T> = AxiosResponse<T> | SysError
-export type BatchBackType<T> = Promise<BatchRowBackType<T>>
+export type UnionBack<T> = AxiosResponse<T, any> | SysError<T>
+export type BatchBackType<T> = Promise<UnionBack<T>>
 // error response
 export interface SysError<T = any> {
   error: AxiosError<T>
@@ -133,8 +133,6 @@ export interface LabelDef {
     responseType?: 'arraybuffer' | 'document' | 'json' | 'text' | 'stream' | 'blob'
   }
 }
-
-export type UnionBack<T> = AxiosResponse<T, any> | SysError<T>
 
 // You can define your own Response in your own project like:
 /* declare module '@runafe/platform-share' {
@@ -222,6 +220,10 @@ export type DefineResponseResult<T> = (
   config?: HandleResponseConfig
 ) => Promise<ResponseResult<UnionBack<WrapResponse<T>>>>
 
+export interface MarkAsPartial<T> {
+  value: T
+}
+
 export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
   ? [Params] extends [void]
       ? [D] extends [void]
@@ -240,15 +242,20 @@ export type ExtractAPI<T, R extends {} = {}> = T extends [infer F, ...infer Rest
     ? Id extends string
       ? DataOrDefinition extends (...args: any[]) => any
         ? ExtractAPI<Rest, { [k in Id | keyof R]: k extends Id ? DataOrDefinition : k extends keyof R ? R[k] : never }>
-        : ExtractAPI<Rest, {
-          [k in Id | keyof R]: k extends Id ? <const T extends DefineRequestFuncParams<DataOrDefinition>>(
-            ...p: T
-          ) => DefineResponseResult<Response> : k extends keyof R ? R[k] : never
-        }>
+        : ExtractAPI<
+            Rest,
+            {
+              [k in Id | keyof R]: k extends Id
+                ? <const T extends DefineRequestFuncParams<DataOrDefinition>>(...p: T) => DefineResponseResult<Response>
+                : k extends keyof R
+                  ? R[k]
+                  : never
+            }
+          >
       : ExtractAPI<Rest, R> // skip
     : F
   : R // return Result
 
 export type GenHandleFunc = <T>(
-  response: BatchBackType<T>
+  response: () => BatchBackType<T>
 ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<T>>>

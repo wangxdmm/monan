@@ -17,20 +17,20 @@ http.createDefaultStrategies((ins) => {
     showErrorMessageTip() {},
     showSuccessMessageTip() {},
     isSuccess: (res) => {
-      return res.data.success
+      return res.data?.success
     },
     getBackData: (type: HandleEnum, res) => {
       if (type === HandleEnum.SYSTEM_ERROR)
         return res
 
-      return res.data.data
+      return res.data?.data
     },
     getMessage: (_type: HandleEnum, res) => {
       if (ins.isSysError(res)) {
         const message = get(res, 'error.response.data.message', res.error.message)
         return message
       }
-      return res.data.message
+      return res.data?.message
     },
   }
 })
@@ -340,7 +340,7 @@ describe('resutful', async () => {
       'post::/->post::contentType->multipart,timeout->0,responseType->blob,contentType->multipart',
     ])
 
-    return new Promise(() => {
+    return new Promise((resolve) => {
       api
         .post(
           { name: 'all' },
@@ -362,6 +362,15 @@ describe('resutful', async () => {
         .then(({ backData }) => {
           expectTypeOf(backData).toEqualTypeOf<Person | undefined>()
         })
+
+      moxios.wait(() => {
+        moxios.requests
+          .mostRecent()
+          .respondWith({})
+          .then(() => {
+            resolve(true)
+          })
+      })
     })
   })
 
@@ -372,7 +381,7 @@ describe('resutful', async () => {
       'post::/->post::contentType->multipart,timeout->0,responseType->blob,contentType->multipart',
     ])
 
-    return new Promise(() => {
+    return new Promise((resolve) => {
       api
         .post('/download', {
           data: {},
@@ -382,6 +391,15 @@ describe('resutful', async () => {
         .then(({ backData }) => {
           expectTypeOf(backData).toEqualTypeOf<Blob | undefined>()
         })
+
+      moxios.wait(() => {
+        moxios.requests
+          .mostRecent()
+          .respondWith({})
+          .then(() => {
+            resolve(true)
+          })
+      })
     })
   })
 })

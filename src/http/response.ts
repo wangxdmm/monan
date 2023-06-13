@@ -11,21 +11,14 @@ import type {
 } from './share'
 import { HandleEnum, handleEnumValues } from './share'
 
-export const mesSort = [
-  HandleEnum.SUCCESS,
-  HandleEnum.FAIL,
-  HandleEnum.SYSTEM_ERROR,
-]
+export const mesSort = [HandleEnum.SUCCESS, HandleEnum.FAIL, HandleEnum.SYSTEM_ERROR]
 
 export function genHandleResponse<T>(http: Restful<T>) {
   function isSysError<T = any>(x: any): x is SysError<T> {
     return http.isSysError(x)
   }
 
-  function handleResponse<T extends UnionBack<any>>(
-    res: T,
-    configIn?: HandleResponseConfig,
-  ): ResponseResult<T> {
+  function handleResponse<T extends UnionBack<any>>(res: T, configIn?: HandleResponseConfig): ResponseResult<T> {
     const config: HandleResponseConfig = Object.assign(
       {
         isSuccess: http.defaultIsSuccess,
@@ -87,8 +80,7 @@ export function genHandleResponse<T>(http: Restful<T>) {
         })
       }
 
-      const getMessage = (index: HandleEnumKeys) =>
-        Object.assign({ message: resResult.message }, mesHash[index])
+      const getMessage = (index: HandleEnumKeys) => Object.assign({ message: resResult.message }, mesHash[index])
       if (sysError) {
         http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR))
       }
@@ -105,10 +97,13 @@ export function genHandleResponse<T>(http: Restful<T>) {
     return resResult
   }
 
-  function genHandleFunc<T>(response: BatchBackType<T>) {
-    return async (config?: HandleResponseConfig) => {
-      return handleResponse(await response, config)
-    }
+  function genHandleFunc<T>(response: () => BatchBackType<T>) {
+    return (config?: HandleResponseConfig) =>
+      new Promise<ResponseResult<UnionBack<T>>>((resolve) => {
+        response().then((res) => {
+          resolve(handleResponse(res, config))
+        })
+      })
   }
 
   http.updateHandleFunc(genHandleFunc)
