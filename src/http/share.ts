@@ -135,15 +135,17 @@ export interface LabelDef {
 }
 
 // You can define your own Response in your own project like:
-/* declare module '@runafe/platform-share' {
-  export interface Response<T = any, S = boolean> {
-    code: number;
-    data?: T;
-    message?: string;
-    success: S;
-    total?: number;
-  }
-} */
+/*
+ declare module '@runafe/platform-share' {
+    export interface Response<T = any, S = boolean> {
+      code: number;
+      data?: T;
+      message?: string;
+      success: S;
+      total?: number;
+    }
+ }
+*/
 export interface ServerDefinedResponse<
   // eslint-disable-next-line unused-imports/no-unused-vars
   T = any,
