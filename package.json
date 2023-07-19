@@ -1,6 +1,6 @@
 {
   "name": "@runafe/platform-share",
-  "version": "1.0.19",
+  "version": "1.1.0-beta.0",
   "description": "runafe share",
   "author": "wangxdmm <1121292341@qq.com>",
   "license": "ISC",
@@ -30,11 +30,11 @@
   },
   "scripts": {
     "build": "pnpm exec rimraf dist && rollup -c rollup.config.js",
-    "dev": "cross-env DEV=1 tsup --watch",
+    "dev": "rollup -c rollup.config.js -w",
     "lint": "eslint . --fix",
     "test:dev": "vitest dev",
     "test": "vitest run",
-    "release": "bumpp --commit --push --tag"
+    "release": "bumpp --commit --tag"
   },
   "peerDependencies": {
     "axios": "^1.3.4"
