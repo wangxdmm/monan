@@ -1,4 +1,5 @@
 import path from 'node:path'
+import fs from 'node:fs'
 import esbuild from 'rollup-plugin-esbuild'
 import dts from 'rollup-plugin-dts'
 import { PluginPure as pure } from 'rollup-plugin-pure'
@@ -22,20 +23,20 @@ const pluginPure = pure({
 const output: OutputOptions[] = [
   {
     format: 'es',
-    file: `${dist}/dist/index.mjs`,
+    file: `${dist}/index.mjs`,
   },
   {
     format: 'cjs',
-    file: `${dist}/dist/index.cjs`,
+    file: `${dist}/index.cjs`,
   },
   {
     format: 'umd',
-    file: `${dist}/dist/index.umd.js`,
+    file: `${dist}/index.umd.js`,
     name: 'RunaFePlatformShare',
   },
   {
     format: 'umd',
-    file: `${dist}/dist/index.global.js`,
+    file: `${dist}/index.global.js`,
     name: 'RunaFePlatformShare',
   },
 ]
@@ -59,9 +60,26 @@ const pluginDts = dts({
 configs.push({
   input: `${root}/index.ts`,
   output: {
-    file: `${dist}/dist/index.d.ts`,
+    file: `${dist}/index.d.ts`,
   },
-  plugins: [pluginDts],
+  plugins: [
+    pluginDts,
+    {
+      name: 'fix-type',
+      async closeBundle() {
+        let dtf = fs.readFileSync(path.resolve(`${dist}/index.d.ts`), 'utf-8')
+        dtf = dtf.replace(/from 'clone'/, 'from \'./clone\'')
+        dtf = dtf.replace(/from 'throttle-debounce'/, 'from \'./throttle-debounce\'')
+        const dtsClone = fs.readFileSync(path.resolve(root, './node_modules/@types/clone/index.d.ts'))
+        const dtsThrottleDebounce = fs.readFileSync(
+          path.resolve(root, './node_modules/@types/throttle-debounce/index.d.ts'),
+        )
+        fs.writeFileSync(`${dist}/clone.d.ts`, dtsClone)
+        fs.writeFileSync(`${dist}/throttle-debounce.d.ts`, dtsThrottleDebounce)
+        fs.writeFileSync(`${dist}/index.d.ts`, dtf)
+      },
+    },
+  ],
 })
 
 export default configs
