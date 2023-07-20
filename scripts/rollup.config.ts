@@ -1,6 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs'
-import esbuild from 'rollup-plugin-esbuild'
+import esbuild, { minify } from 'rollup-plugin-esbuild'
 import dts from 'rollup-plugin-dts'
 import { PluginPure as pure } from 'rollup-plugin-pure'
 import { ModuleResolutionKind } from 'typescript'
@@ -12,7 +12,6 @@ const pluginEsbuild = esbuild({
   optimizeDeps: {
     include: ['clone', 'throttle-debounce'],
   },
-  minify: true,
 })
 const configs: RollupOptions[] = []
 
@@ -33,11 +32,13 @@ const output: OutputOptions[] = [
     format: 'umd',
     file: `${dist}/index.umd.js`,
     name: 'RunaFePlatformShare',
+    plugins: [minify()],
   },
   {
     format: 'umd',
     file: `${dist}/index.global.js`,
     name: 'RunaFePlatformShare',
+    plugins: [minify()],
   },
 ]
 
