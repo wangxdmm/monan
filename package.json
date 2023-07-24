@@ -5,6 +5,8 @@
   "author": "wangxdmm <1121292341@qq.com>",
   "license": "ISC",
   "homepage": "",
+  "jsdelivr": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.js",
   "sideEffects": false,
   "exports": {
     ".": {
