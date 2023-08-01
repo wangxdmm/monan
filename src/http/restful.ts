@@ -20,7 +20,7 @@ export class Restful<T> extends SetupAxios<T> {
   defaultStrategies: Partial<DefaultStrategies> = {}
 
   createDefaultStrategies<D = ServerDefinedResponse>(
-    strategiesCreator: (ins: this) => DefaultStrategies<D>,
+    strategiesCreator: (ins: this) => Partial<DefaultStrategies<D>>,
   ) {
     Object.assign(this.defaultStrategies, strategiesCreator(this))
   }
