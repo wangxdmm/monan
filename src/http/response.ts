@@ -81,13 +81,19 @@ export function genHandleResponse<T>(http: Restful<T>) {
       }
 
       const getMessage = (index: HandleEnumKeys) => Object.assign({ message: resResult.message }, mesHash[index])
-      if (sysError) {
-        http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR))
+      if (isSysError(res)) {
+        http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR), {
+          response: res.error.response,
+        })
       }
       else {
         result
-          ? http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS))
-          : http.showErrorMessageTip(getMessage(HandleEnum.FAIL))
+          ? http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS), {
+            response: res,
+          })
+          : http.showErrorMessageTip(getMessage(HandleEnum.FAIL), {
+            response: res,
+          })
       }
     }
 
