@@ -137,7 +137,7 @@ export interface LabelDef {
 // You can define your own Response in your own project like:
 /*
  declare module '@runafe/platform-share' {
-    export interface Response<T = any, S = boolean> {
+    export interface Response<T = unknown, S = boolean> {
       code: number;
       data?: T;
       message?: string;
@@ -148,7 +148,7 @@ export interface LabelDef {
 */
 export interface ServerDefinedResponse<
   // eslint-disable-next-line unused-imports/no-unused-vars
-  T = any,
+  T = unknown,
   // eslint-disable-next-line unused-imports/no-unused-vars
   S extends boolean | string | number = boolean,
 > {
@@ -192,6 +192,10 @@ export interface ResponseResult<
 
 export interface HandleResponseConfig {
   notificationDelay?: boolean
+  // default strategies are:
+  // 1. if result is sysError or is not success , showErrorMessageTip show automatically
+  // 2. sometime server always return a success message, for common use, we don't need to show it
+  showServerSuccessMessage?: boolean
   isSuccess?: (res: AxiosResponse<any>) => boolean
   getBackData?: (type: HandleEnum, res: UnionBack<any>) => any
   getMessage?: (type: HandleEnum, res: UnionBack<any>) => any

@@ -97,8 +97,14 @@ export function genHandleResponse<T>(http: Restful<T>) {
       }
     }
 
-    if (!config.notificationDelay && resResult.message !== undefined)
-      resResult.notify()
+    // Note: the result of getMessage should not be the condition to determine whether to notify, the only things getMessage works is to get a valid message by user config
+    // 1. notificationDelay is to determine when to notify success or fail message, and default is false
+    // 2. showServerSuccessMessage is to determine whether to notify success message, and  default is false
+    // 3. if result is false, we should always notify, and the only way to stub it is set notificationDelay to true
+    if (!config.notificationDelay) {
+      if (config.showServerSuccessMessage || !resResult.result)
+        resResult.notify()
+    }
 
     return resResult
   }
