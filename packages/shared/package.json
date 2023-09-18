@@ -1,0 +1,36 @@
+{
+  "name": "@monan/shared",
+  "version": "1.0.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*",
+    "./*": "./*"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "unpkg": "dist/index.umd.js",
+  "jsdelivr": "dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@monan/types": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/clone": "^2.1.2",
+    "@types/throttle-debounce": "^5.0.0",
+    "clone": "^2.1.2",
+    "throttle-debounce": "^5.0.0"
+  }
+}

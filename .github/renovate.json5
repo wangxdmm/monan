@@ -1,0 +1,31 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['config:base', 'schedule:weekly', 'group:allNonMajor'],
+  labels: ['dependencies'],
+  ignorePaths: ['**/__tests__/**'],
+  rangeStrategy: 'bump',
+  packageRules: [
+    {
+      depTypeList: ['peerDependencies'],
+      enabled: false,
+    },
+    {
+      groupName: 'build',
+      matchPackageNames: ['vitest', 'vite', 'rollup'],
+      matchPackagePrefixes: ['@vitest', 'rollup', '@rollup'],
+    },
+    {
+      groupName: 'types',
+      matchPackagePrefixes: ['@types'],
+      matchFileNames: [
+        '**/package.json'
+      ]
+    },
+    {
+      groupName: 'shared',
+      matchPackageNames: ['clone', 'throttle-debounce'],
+      matchFileNames: ['packages/shared/package.json'],
+    },
+  ],
+  ignoreDeps: ['@monan/types', '@monan/shared'],
+}

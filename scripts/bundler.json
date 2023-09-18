@@ -1,0 +1,18 @@
+{
+  "types": {
+    "sort": 0,
+    "type": "type"
+  },
+  "shared": {
+    "sort": 1,
+    "globalName": "MonanShared",
+    "optimizeDeps": [
+      "clone",
+      "throttle-debounce"
+    ]
+  },
+  "easy-axios": {
+    "sort": 2,
+    "globalName": "MonanEasyAxios"
+  }
+}

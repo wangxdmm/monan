@@ -1,0 +1,34 @@
+name: Test monan
+
+on:
+  push:
+    branches:
+      - 'dev'
+      - 'hot-fix/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.6.12
+
+      # after pnpm
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+      
+      - run: pnpm build
+      - run: pnpm test 

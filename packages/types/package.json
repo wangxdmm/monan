@@ -1,0 +1,16 @@
+{
+  "name": "@monan/types",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*",
+    "./*": "./*"
+  },
+  "module": true,
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  }
+}
