@@ -24,8 +24,11 @@
     "lib": ["ES2018", "DOM", "DOM.Iterable"],
     // "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": "./",
+    "paths": {
+      "@monan/*": ["packages/*/index.ts"]
+    }
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["dist/", "node_modules/"]
+  "exclude": ["dist", "node_modules/"]
 }
