@@ -95,7 +95,10 @@ export type Config<D = any> = AxiosRequestConfig<D> & {
   __R_interParam?: <T>(url: string, dataIn: T, reverse?: boolean) => { url: string; data: Partial<T> }
 }
 
-export type MessageTip = (messageOrOptions?: string | Partial<MessageOptions>, other?: { response?: AxiosResponse }) => void
+export type MessageTip = (
+  messageOrOptions?: string | Partial<MessageOptions>,
+  other?: { response?: AxiosResponse }
+) => void
 
 /**
  * You can define your own MessageOptions in your own project: like element-plus.MessageOptions
