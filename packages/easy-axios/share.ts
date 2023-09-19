@@ -271,7 +271,7 @@ export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
         : [data: Data, config?: Config]
 
 // export type ComputedResponse<T, Response> = Response extends
-export type ExtractAPI<T, R extends {} = {}> = T extends [infer F, ...infer Rest]
+export type ExtractAPI<T, R extends object = object> = T extends [infer F, ...infer Rest]
   ? F extends defineAPI<infer Id, infer DataOrDefinition, infer Response>
     ? Id extends string
       ? DataOrDefinition extends (...args: any[]) => any

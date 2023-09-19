@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import { resolve } from 'node:path'
+import process from 'node:process'
 import { $$ } from './execa'
 
 const root = resolve(__dirname, '..')

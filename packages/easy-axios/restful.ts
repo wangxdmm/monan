@@ -147,7 +147,7 @@ export class Restful<T> extends SetupAxios<T> {
         set(configed, 'data', userInputData)
 
       if (timeout && !configed.timeout)
-        set(configed, 'timeout', parseInt(timeout, 10))
+        set(configed, 'timeout', Number.parseInt(timeout, 10))
 
       if (responseType && !configed.responseType)
         set(configed, 'responseType', responseType)

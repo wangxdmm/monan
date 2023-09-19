@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
+import process from 'node:process'
 import fg from 'fast-glob'
 import { rimrafSync } from 'rimraf'
 import type { OutputOptions, RollupOptions } from 'rollup'
@@ -25,7 +26,7 @@ interface Meta {
 const Bundler = PreBundler as unknown as Record<string, Meta>
 const root = resolve(__dirname, '../')
 const configs: RollupOptions[] = []
-const getBundler = (dir: string): Meta => {
+function getBundler(dir: string): Meta {
   const pkgJson = JSON.parse(fs.readFileSync(join(dir, 'package.json')).toString())
   const shortName = pkgJson.name.split(namespace)[1]
   const pkg = Bundler[shortName]
@@ -34,7 +35,7 @@ const getBundler = (dir: string): Meta => {
   return pkg
 }
 const isTypePkg = (t: any): t is 'type' => t === 'type'
-const collectExternals = (pkg: Record<string, any>, optimizeDeps: string[]) => {
+function collectExternals(pkg: Record<string, any>, optimizeDeps: string[]) {
   const externals = new Set()
   const { devDependencies = {}, dependencies = {}, peerDependencies = {} } = pkg
 

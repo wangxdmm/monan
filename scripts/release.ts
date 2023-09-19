@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 import versionBump from 'bumpp'
 import consola from 'consola'
 import fg from 'fast-glob'

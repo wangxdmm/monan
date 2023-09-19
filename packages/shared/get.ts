@@ -1,6 +1,7 @@
 import type { PrimitiveKey } from '@monan/types'
 import { isArray, isFunction, isObject, isString, isUndef } from './typeAssert'
 import { pathResolve } from './share'
+
 interface GetConfig<T = any> {
   warn?: boolean
   condition?: (value: unknown) => boolean

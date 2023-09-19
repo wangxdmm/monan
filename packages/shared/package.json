@@ -4,8 +4,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
       "default": "./dist/index.mjs"
     },
     "./package.json": "./package.json",

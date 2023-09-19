@@ -46,7 +46,7 @@ export class ShortId {
       conversion = symbols[decimal - base * Math.floor(decimal / base)] + conversion
       decimal = Math.floor(decimal / base)
     }
-    return base < 11 ? parseInt(conversion) : conversion
+    return base < 11 ? Number.parseInt(conversion) : conversion
   }
 
   salts() {
