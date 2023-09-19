@@ -15,8 +15,8 @@ importers:
         specifier: ^0.4.15
         version: 0.4.15
       '@types/node':
-        specifier: ^18.17.17
-        version: 18.17.17
+        specifier: ^20.6.2
+        version: 20.6.2
       bumpp:
         specifier: ^9.2.0
         version: 9.2.0
@@ -672,6 +672,10 @@ packages:
 
   /@types/node@18.17.17:
     resolution: {integrity: sha512-cOxcXsQ2sxiwkykdJqvyFS+MLQPLvIdwh5l6gNg8qF6s+C7XSkEWOZjK+XhUZd+mYvHV/180g2cnCcIl4l06Pw==}
+    dev: true
+
+  /@types/node@20.6.2:
+    resolution: {integrity: sha512-Y+/1vGBHV/cYk6OI1Na/LHzwnlNCAfU3ZNGrc1LdRe/LAIbdDPTTv/HU3M7yXN448aTVDq3eKRm2cg7iKLb8gw==}
     dev: true
 
   /@types/normalize-package-data@2.4.1:
