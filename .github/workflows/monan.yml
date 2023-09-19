@@ -1,4 +1,4 @@
-name: Test monan
+name: monan utils
 
 on:
   push:
@@ -29,6 +29,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      
+
       - run: pnpm build
-      - run: pnpm test 
+      - run: pnpm test
