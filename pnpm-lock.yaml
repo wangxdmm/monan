@@ -69,8 +69,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(esbuild@0.18.20)(rollup@3.29.2)
       rollup-plugin-pure:
-        specifier: ^0.1.1
-        version: 0.1.1(rollup@3.29.2)
+        specifier: ^0.2.1
+        version: 0.2.1(rollup@3.29.2)
       syncpack:
         specifier: ^11.2.1
         version: 11.2.1
@@ -3465,8 +3465,8 @@ packages:
       - supports-color
     dev: true
 
-  /rollup-plugin-pure@0.1.1(rollup@3.29.2):
-    resolution: {integrity: sha512-LjQ4q4jKB6yzedRa3DxQzo6T2CW+WJWmzn8gkgmaNDtBFsL1nm7LIyvxKEROauuorYIk6QnWxWSRb09G9Z5CGg==}
+  /rollup-plugin-pure@0.2.1(rollup@3.29.2):
+    resolution: {integrity: sha512-syrId5HjF7P0EsxxSqcaQJo7csAH+o7x2kYnrJZOdYYT3ANXiTuYw/FcGi9d2MagRq5T7nYnVD5ogoHrNbGqYA==}
     peerDependencies:
       rollup: ^3.0.0
     dependencies:
