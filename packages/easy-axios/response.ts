@@ -11,14 +11,21 @@ import type {
 } from './share'
 import { HandleEnum, handleEnumValues } from './share'
 
-export const mesSort = [HandleEnum.SUCCESS, HandleEnum.FAIL, HandleEnum.SYSTEM_ERROR]
+export const mesSort = [
+  HandleEnum.SUCCESS,
+  HandleEnum.FAIL,
+  HandleEnum.SYSTEM_ERROR,
+]
 
 export function genHandleResponse<T>(http: Restful<T>) {
   function isSysError<T = any>(x: any): x is SysError<T> {
     return http.isSysError(x)
   }
 
-  function handleResponse<T extends UnionBack<any>>(res: T, configIn?: HandleResponseConfig): ResponseResult<T> {
+  function handleResponse<T extends UnionBack<any>>(
+    res: T,
+    configIn?: HandleResponseConfig,
+  ): ResponseResult<T> {
     const config: HandleResponseConfig = Object.assign(
       {
         isSuccess: http.defaultIsSuccess,
@@ -36,7 +43,10 @@ export function genHandleResponse<T>(http: Restful<T>) {
     const { result } = resResult
     if (isSysError(res)) {
       // resResult.response = res.error.response;
-      resResult.sysError = getBackData?.(HandleEnum.SYSTEM_ERROR, res) as ResponseResult<T>['sysError']
+      resResult.sysError = getBackData?.(
+        HandleEnum.SYSTEM_ERROR,
+        res,
+      ) as ResponseResult<T>['sysError']
       resResult.message = getMessage?.(HandleEnum.SYSTEM_ERROR, res)
     }
     else {
@@ -46,7 +56,10 @@ export function genHandleResponse<T>(http: Restful<T>) {
         resResult.message = getMessage?.(HandleEnum.FAIL, res)
       }
       else {
-        resResult.backData = getBackData?.(HandleEnum.SUCCESS, res) as ResponseResult<T>['backData']
+        resResult.backData = getBackData?.(
+          HandleEnum.SUCCESS,
+          res,
+        ) as ResponseResult<T>['backData']
         resResult.message = getMessage?.(HandleEnum.SUCCESS, res)
         resResult.wholeData = res.data
       }
@@ -57,10 +70,13 @@ export function genHandleResponse<T>(http: Restful<T>) {
       if (sysError && sysError.hasHandled)
         return
 
-      const mesHash = handleEnumValues.reduce((cur, next) => {
-        cur[next] = {}
-        return cur
-      }, {} as Record<HandleEnumKeys, MessageOptions>)
+      const mesHash = handleEnumValues.reduce(
+        (cur, next) => {
+          cur[next] = {}
+          return cur
+        },
+        {} as Record<HandleEnumKeys, MessageOptions>,
+      )
       if (isObject(messageOrOptions)) {
         handleEnumValues.forEach((mes) => {
           const cur = messageOrOptions[mes]
@@ -80,7 +96,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
         })
       }
 
-      const getMessage = (index: HandleEnumKeys) => Object.assign({ message: resResult.message }, mesHash[index])
+      const getMessage = (index: HandleEnumKeys) =>
+        Object.assign({ message: resResult.message }, mesHash[index])
       if (isSysError(res)) {
         http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR), {
           response: res.error.response,

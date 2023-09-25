@@ -13,7 +13,8 @@ import type {
 } from './share'
 import { ContentTypeEnum, ContentTypeKey } from './share'
 
-export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
+export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
+  = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
@@ -68,7 +69,7 @@ export class Restful<T> extends SetupAxios<T> {
     }
 
     if (url) {
-      [url, id] = url.split(valueDiv)
+      ;[url, id] = url.split(valueDiv)
       url && (url = url.trim())
       if (url.slice(-1) === '?') {
         meta.makeInputAsParams = true
@@ -77,13 +78,12 @@ export class Restful<T> extends SetupAxios<T> {
 
       if (!id) {
         let mayBeId = url.split('/').pop()
-        if (mayBeId && mayBeId.trim()) {
-          mayBeId = mayBeId.trim()
+        // eslint-disable-next-line no-cond-assign
+        if ((mayBeId = mayBeId?.trim())) {
           const injectParamReg = /{([^/.]+)}/g
           if (!injectParamReg.test(mayBeId))
             id = mayBeId
-          else
-            throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
+          else throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
         }
       }
 
@@ -158,10 +158,12 @@ export class Restful<T> extends SetupAxios<T> {
     return configed
   }
 
-  create<T extends (defineAPI<string, any, any> | Record<string, (...args) => DefineResponseResult<unknown>>) []>(
-    prefix: string,
-    defs: string[],
-  ) {
+  create<
+    T extends (
+      | defineAPI<string, any, any>
+      | Record<string, (...args) => DefineResponseResult<unknown>>
+    )[],
+  >(prefix: string, defs: string[]) {
     const result = {}
     defs.forEach((def) => {
       const defMes = this.parseDef(def)
