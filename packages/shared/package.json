@@ -19,7 +19,8 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "package.json"
+    "package.json",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"

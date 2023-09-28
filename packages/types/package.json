@@ -1,5 +1,6 @@
 {
   "name": "@monan/types",
+  "version": "1.0.0",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts"
@@ -8,6 +9,11 @@
     "./dist/*": "./dist/*",
     "./*": "./*"
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
   "module": true,
   "types": "dist/index.d.ts",
   "publishConfig": {
