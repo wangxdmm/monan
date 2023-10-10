@@ -35,12 +35,12 @@
     "moxios": "^0.4.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.4",
-    "rollup": "^3.29.2",
-    "rollup-plugin-dts": "^6.0.2",
-    "rollup-plugin-esbuild": "^6.0.1",
+    "rollup": "^3.29.4",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-esbuild": "^6.1.0",
     "rollup-plugin-pure": "^0.2.1",
     "syncpack": "^11.2.1",
     "typescript": "^5.2.2",
-    "vitest": "^0.34.4"
+    "vitest": "^0.34.6"
   }
 }
