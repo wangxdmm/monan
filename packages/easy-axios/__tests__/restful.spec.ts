@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
 import axios from 'axios'
 import moxios from 'moxios'
-import { get } from '@monan/shared'
+import { get, set } from '@monan/shared'
 import { ContentTypeEnum } from '../share'
 import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../restful'
 import { defineEasyAxios } from '../defineEasyAxios'
@@ -405,6 +405,68 @@ describe('resutful', async () => {
           .mostRecent()
           .respondWith({})
           .then(() => {
+            resolve(true)
+          })
+      })
+    })
+  })
+
+  it('Hooks is ok', () => {
+    http.registerHooks('setName', (c) => {
+      set(c, 'params.name', {
+        age: 22,
+      })
+      return c
+    })
+
+    http.registerHooks('setCode', (c) => {
+      set(c, 'data.wrap', { code: 33 })
+      return c
+    })
+
+    const api = http.create<[defineAPI<'post', { code: number }, { name: string }>]>('.', [
+      'post::/->post::hooks->setName=>setCode',
+    ])
+
+    const serveResponse = {
+      success: true,
+      data: {
+        name: 'wxd',
+      },
+    }
+
+    return new Promise((resolve) => {
+      const requestData = {
+        name: 'deleteName',
+      }
+      api.post(
+        { code: 22 },
+        {
+          data: requestData,
+        },
+      )()
+
+      moxios.wait(() => {
+        const request = moxios.requests.mostRecent()
+        request
+          .respondWith({
+            status: 200,
+            response: serveResponse,
+          })
+          .then(() => {
+            expect(request.config.params).toEqual(
+              {
+                name: {
+                  age: 22,
+                },
+              },
+            )
+            expect(request.config.data).toEqual(JSON.stringify({
+              name: 'deleteName',
+              wrap: {
+                code: 33,
+              },
+            }))
             resolve(true)
           })
       })

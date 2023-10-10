@@ -1,5 +1,5 @@
 import type { Method } from 'axios'
-import { get, noop, set } from '@monan/shared'
+import { get, isDef, isString, noop, set } from '@monan/shared'
 import { SetupAxios } from './setupAxios'
 import type {
   Config,
@@ -100,6 +100,10 @@ export class Restful<T> extends SetupAxios<T> {
       metaStr.split(',').forEach((m) => {
         const [k, v = true] = m.split(valueDiv)
         meta[k] = v
+        if (k === 'hooks' && isString(v) && isDef(v))
+          meta[k] = v.split('=>')
+        else
+          meta.hooks = []
       })
     }
 
@@ -187,6 +191,17 @@ export class Restful<T> extends SetupAxios<T> {
           config = this.patchConfigByMeta(dataOrParams, config, meta)
           config.url = `${prefix}${url}`
           config.method = method
+          const { hooks } = meta || {}
+          // mark hooks to hanlder def
+          if (hooks?.length) {
+            config = hooks.reduce((acc, hookName) => {
+              const hook = this.hooks.get(hookName)
+              if (hook)
+                return hook(acc, this)
+              return acc
+            }, config)
+          }
+
           return this.genHandleFunc(() => this.instance(config))
         }
       }

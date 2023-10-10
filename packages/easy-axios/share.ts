@@ -12,7 +12,13 @@ import type { SetupAxios } from './setupAxios'
 
 export const ContentTypeKey = 'Content-Type'
 
-export function interParam<T, K extends keyof T>(urlIn: string, dataIn: T, reserve = false) {
+export type DefHook<T> = (config: Config, ins: SetupAxios<T>) => Config
+
+export function interParam<T, K extends keyof T>(
+  urlIn: string,
+  dataIn: T,
+  reserve = false,
+) {
   let url = urlIn
   const data = isObject(dataIn) ? { ...dataIn } : dataIn
   const matchs = url.match(/{([^/.]+)}/g)
@@ -85,7 +91,10 @@ export interface IHttpConfig<T> {
   errorFlag: string
   codeHandler: ICodeHandler<T>[]
   request(config: AxiosRequestConfig, ins: SetupAxios<T>): AxiosRequestConfig
-  interceptorOptions(type: InterceptorOptionsType, ins: SetupAxios<T>): AxiosInterceptorOptions
+  interceptorOptions(
+    type: InterceptorOptionsType,
+    ins: SetupAxios<T>,
+  ): AxiosInterceptorOptions
   response(res: AxiosResponse, ins: SetupAxios<T>): AxiosResponse
   transIns(ins: AxiosInstance, setUpIns: SetupAxios<T>): void
 }
@@ -97,14 +106,21 @@ export interface DynamicRequestConfig<T, R = any> {
 
 export type InterceptorOptionsType = 'request' | 'response'
 
-export type GetHandlerIds<T> = T extends readonly [{ id: infer K }, ...infer Rest] ? K | GetHandlerIds<Rest> : never
+export type GetHandlerIds<T> = T extends readonly [
+  { id: infer K },
+  ...infer Rest,
+]
+  ? K | GetHandlerIds<Rest>
+  : never
 
-export type DynamicHandler<T> = (params: Parameters<ICodeHandler<T>['handler']>[0]) => any
+export type DynamicHandler<T> = (
+  params: Parameters<ICodeHandler<T>['handler']>[0],
+) => any
 
 export type FetchFunc<T = object, K = any> = (
   data?: T,
   reserve?: boolean,
-  others?: object
+  others?: object,
 ) => Promise<AxiosResponse<K> | SysError>
 
 export type IRestResult = Record<string, FetchFunc>
@@ -120,29 +136,40 @@ export interface SysError<T = any> {
 
 export type Config<D = any> = AxiosRequestConfig<D> & {
   __R_reverse?: boolean
-  __R_interParam?: <T>(url: string, dataIn: T, reverse?: boolean) => { url: string; data: Partial<T> }
+  __R_interParam?: <T>(
+    url: string,
+    dataIn: T,
+    reverse?: boolean,
+  ) => { url: string; data: Partial<T> }
 }
 
 export type MessageTip = (
   messageOrOptions?: string | Partial<MessageOptions>,
-  other?: { response?: AxiosResponse }
+  other?: { response?: AxiosResponse },
 ) => void
 
 /**
- * You can define your own MessageOptions in your own project: like element-plus.MessageOptions
- * --------------------------------------------------------------------------------------------------------
- * import type { MessageOptions } from 'element-plus';
+ * You can define your own MessageOptions in your own project eg:
+ * element-plus.MessageOptions
+ *
+ * ```ts
+ * import type { MessageOptions } from 'element-plus'
  *
  * declare module '@monan/platform-share' {
- *   export interface MessageOptions  extends OtherMessageOptions{}
+ *   export interface MessageOptions extends OtherMessageOptions {}
  * }
- * --------------------------------------------------------------------------------------------------------
+ * ```
  */
 export interface MessageOptions {
   message?: string
 }
 
-export interface defineAPI<Id, DataOrDefinition = any, Response = any, _a = any> {
+export interface defineAPI<
+  Id,
+  DataOrDefinition = any,
+  Response = any,
+  _a = any,
+> {
   id: Id
   dataOrDefinition: DataOrDefinition
   response: (<T>(_p: T) => Response) | Response
@@ -153,6 +180,7 @@ export interface LabelDef {
   url: string
   id: string
   meta?: {
+    hooks?: string[]
     noArgs?: boolean // no arguments
     contentType?: ContentTypeEnum
     // make userInputData as axios.params
@@ -161,22 +189,32 @@ export interface LabelDef {
     // Must be a plain object or a URLSearchParams object
     makeInputAsParams?: boolean
     timeout?: string
-    responseType?: 'arraybuffer' | 'document' | 'json' | 'text' | 'stream' | 'blob'
+    responseType?:
+    | 'arraybuffer'
+    | 'document'
+    | 'json'
+    | 'text'
+    | 'stream'
+    | 'blob'
   }
 }
 
-// You can define your own Response in your own project like:
-/*
- declare module '@monan/platform-share' {
-    export interface Response<T = unknown, S = boolean> {
-      code: number;
-      data?: T;
-      message?: string;
-      success: S;
-      total?: number;
-    }
- }
-*/
+/**
+ * You can define your own Response in your own project like:
+ *
+ * ```ts
+ * declare module '@monan/platform-share' {
+ *   export interface Response<T = unknown, S = boolean> {
+ *     code: number
+ *     data?: T
+ *     message?: string
+ *     success: S
+ *     total?: number
+ *   }
+ * }
+ * ```
+ */
+
 export interface ServerDefinedResponse<
   // eslint-disable-next-line unused-imports/no-unused-vars
   T = unknown,
@@ -216,7 +254,7 @@ export interface ResponseResult<
     mes?:
     | Partial<Record<HandleEnumKeys, Partial<MessageOptions>>>
     | string
-    | [success?: string, fail?: string, sysError?: string]
+    | [success?: string, fail?: string, sysError?: string],
   ) => void
 }
 
@@ -239,7 +277,9 @@ export interface UsePrimitiveType<T> {
 }
 
 export interface DefaultStrategies<D = any>
-  extends Required<Pick<HandleResponseConfig<D>, 'isSuccess' | 'getBackData' | 'getMessage'>> {
+  extends Required<
+    Pick<HandleResponseConfig<D>, 'isSuccess' | 'getBackData' | 'getMessage'>
+  > {
   showErrorMessageTip: MessageTip
   showSuccessMessageTip: MessageTip
 }
@@ -251,7 +291,7 @@ export type WrapResponse<T> = T extends ServerDefinedResponse<unknown>
     : ServerDefinedResponse<T>
 
 export type DefineResponseResult<T> = (
-  config?: HandleResponseConfig
+  config?: HandleResponseConfig,
 ) => Promise<ResponseResult<UnionBack<WrapResponse<T>>>>
 
 export interface MarkAsPartial<T> {
@@ -271,16 +311,30 @@ export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
         : [data: Data, config?: Config]
 
 // export type ComputedResponse<T, Response> = Response extends
-export type ExtractAPI<T, R extends object = object> = T extends [infer F, ...infer Rest]
+export type ExtractAPI<T, R extends object = object> = T extends [
+  infer F,
+  ...infer Rest,
+]
   ? F extends defineAPI<infer Id, infer DataOrDefinition, infer Response>
     ? Id extends string
       ? DataOrDefinition extends (...args: any[]) => any
-        ? ExtractAPI<Rest, { [k in Id | keyof R]: k extends Id ? DataOrDefinition : k extends keyof R ? R[k] : never }>
+        ? ExtractAPI<
+            Rest,
+            {
+              [k in Id | keyof R]: k extends Id
+                ? DataOrDefinition
+                : k extends keyof R
+                  ? R[k]
+                  : never
+            }
+          >
         : ExtractAPI<
             Rest,
             {
               [k in Id | keyof R]: k extends Id
-                ? <const T extends DefineRequestFuncParams<DataOrDefinition>>(...p: T) => DefineResponseResult<Response>
+                ? <const T extends DefineRequestFuncParams<DataOrDefinition>>(
+                ...p: T
+              ) => DefineResponseResult<Response>
                 : k extends keyof R
                   ? R[k]
                   : never
@@ -291,5 +345,5 @@ export type ExtractAPI<T, R extends object = object> = T extends [infer F, ...in
   : R // return Result
 
 export type GenHandleFunc = <T>(
-  response: () => BatchBackType<T>
+  response: () => BatchBackType<T>,
 ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<T>>>

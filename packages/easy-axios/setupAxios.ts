@@ -1,8 +1,22 @@
-import { get, isArray, isDef, isEmptyObject, isFunction, isRegExp } from '@monan/shared'
+import {
+  get,
+  isArray,
+  isDef,
+  isEmptyObject,
+  isFunction,
+  isRegExp,
+} from '@monan/shared'
 import type { AtLeast } from '@monan/types'
-import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios'
 import type {
   Config,
+  DefHook,
   DynamicHandler,
   DynamicRequestConfig,
   ICodeHandlerParam,
@@ -25,6 +39,8 @@ export class SetupAxios<T> {
     dynamicHandlerIds: [],
   }
 
+  hooks = new Map<string, DefHook<T>>()
+
   constructor(config: AtLeast<IHttpConfig<T>, 'instance'>) {
     this.config = {
       ...this.defaultConfig,
@@ -44,6 +60,10 @@ export class SetupAxios<T> {
   registerDynamicHandler(name: T, fn: DynamicHandler<T>) {
     if (isDef(name))
       this.dynamicHanlder.set(name, fn)
+  }
+
+  registerHooks(name: string, fn: (config: Config) => Config) {
+    this.hooks.set(name, fn)
   }
 
   getDynamicHandler(name: T) {
@@ -76,8 +96,11 @@ export class SetupAxios<T> {
       return
     }
     const config = this.dynamicRequestConfig.get(name)
-    if (config)
-      return all ? (config as DynamicRequestConfig<T>) : (config.invoke as DynamicRequestConfig<T>['invoke'])
+    if (config) {
+      return all
+        ? (config as DynamicRequestConfig<T>)
+        : (config.invoke as DynamicRequestConfig<T>['invoke'])
+    }
   }
 
   removeDynamicRequestConfig(name: string) {
@@ -101,7 +124,9 @@ export class SetupAxios<T> {
     // TODO add remove interceptors logic
     instance.interceptors.request.use(
       // TODO axios bug
-      this.preRequest as (v: InternalAxiosRequestConfig) => InternalAxiosRequestConfig,
+      this.preRequest as (
+        v: InternalAxiosRequestConfig,
+      ) => InternalAxiosRequestConfig,
       this.catchError.bind(this),
       this.getInterceptorOptions('request'),
     )
@@ -118,7 +143,10 @@ export class SetupAxios<T> {
       // dynamicly inject request configs like: token
       // TODO support async config
       this.dynamicRequestConfig.forEach((val) => {
-        if (val.when === true || (isFunction(val.when) && val.when(processedConfig, this)))
+        if (
+          val.when === true
+          || (isFunction(val.when) && val.when(processedConfig, this))
+        )
           processedConfig = val.invoke(processedConfig)
       })
       if (this.config.request)
@@ -161,7 +189,11 @@ export class SetupAxios<T> {
 
     for (let i = 0; i < codeHandler.length; i++) {
       const { on, async, handler, id } = codeHandler[i]
-      if (!on || (isArray<number>(on) && on.includes(code)) || (isRegExp(on) && on.test(String(code)))) {
+      if (
+        !on
+        || (isArray<number>(on) && on.includes(code))
+        || (isRegExp(on) && on.test(String(code)))
+      ) {
         if (isRegExp(on))
           on.lastIndex = 0
 
