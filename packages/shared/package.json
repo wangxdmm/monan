@@ -29,8 +29,8 @@
     "@monan/types": "workspace:^"
   },
   "devDependencies": {
-    "@types/clone": "^2.1.2",
-    "@types/throttle-debounce": "^5.0.0",
+    "@types/clone": "^2.1.4",
+    "@types/throttle-debounce": "^5.0.2",
     "clone": "^2.1.2",
     "throttle-debounce": "^5.0.0"
   }

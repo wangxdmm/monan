@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.3.4",
-    "@types/moxios": "^0.4.15",
+    "@types/moxios": "^0.4.17",
     "@types/node": "^20.10.4",
     "bumpp": "^9.2.0",
     "consola": "^3.2.3",
