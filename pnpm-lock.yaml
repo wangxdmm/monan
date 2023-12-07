@@ -12,7 +12,7 @@ importers:
         specifier: ^2.3.4
         version: 2.3.4(eslint@8.55.0)(typescript@5.3.3)(vitest@1.0.2)
       '@types/moxios':
-        specifier: ^0.4.15
+        specifier: ^0.4.17
         version: 0.4.17
       '@types/node':
         specifier: ^20.10.4
@@ -103,10 +103,10 @@ importers:
         version: link:../types
     devDependencies:
       '@types/clone':
-        specifier: ^2.1.2
+        specifier: ^2.1.4
         version: 2.1.4
       '@types/throttle-debounce':
-        specifier: ^5.0.0
+        specifier: ^5.0.2
         version: 5.0.2
       clone:
         specifier: ^2.1.2
