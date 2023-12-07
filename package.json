@@ -19,8 +19,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.3.4",
-    "@types/moxios": "^0.4.15",
-    "@types/node": "^18.18.0",
+    "@types/moxios": "^0.4.17",
+    "@types/node": "^18.19.3",
     "bumpp": "^9.2.0",
     "consola": "^3.2.3",
     "cross-env": "^7.0.3",
