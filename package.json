@@ -29,7 +29,7 @@
     "esbuild": "^0.19.8",
     "esbuild-register": "^3.5.0",
     "eslint": "^8.55.0",
-    "esno": "^0.17.0",
+    "esno": "^4.0.0",
     "execa": "^8.0.1",
     "fast-glob": "^3.3.2",
     "moxios": "^0.4.0",
