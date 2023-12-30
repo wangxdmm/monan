@@ -41,7 +41,7 @@
     "rimraf": "^5.0.5",
     "prettier-plugin-jsdoc": "^1.1.1",
     "rollup-plugin-pure": "^0.2.1",
-    "syncpack": "^11.2.1",
+    "syncpack": "^12.3.0",
     "typescript": "^5.3.3"
   }
 }
