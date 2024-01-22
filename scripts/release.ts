@@ -9,7 +9,7 @@ import { $$ } from './execa'
 
 const root = path.resolve(__dirname, '../')
 
-interface Info { pkg: Record<string, string>; dir: string }
+interface Info { pkg: Record<string, string>, dir: string }
 
 const allPkgs = fg
   .sync(['./**/package.json'], {

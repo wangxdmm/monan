@@ -18,9 +18,9 @@
   "jsdelivr": "dist/index.umd.js",
   "types": "./dist/index.d.ts",
   "files": [
+    "README.md",
     "dist",
-    "package.json",
-    "README.md"
+    "package.json"
   ],
   "publishConfig": {
     "access": "public"

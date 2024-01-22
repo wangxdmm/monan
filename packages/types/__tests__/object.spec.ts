@@ -1,8 +1,8 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import type { AtLeast, PickValue, ValueIs } from '../object'
 
-describe('Type Object is ok', () => {
-  it('PickValue, ValueIs is ok', () => {
+describe('type Object is ok', () => {
+  it('pickValue, ValueIs is ok', () => {
     interface Test {
       a: string
       b: number
@@ -16,7 +16,7 @@ describe('Type Object is ok', () => {
     expectTypeOf<ValueIs<Test, 'c', boolean>>().toEqualTypeOf<false>()
   })
 
-  it('AtLeast is ok', () => {
+  it('atLeast is ok', () => {
     interface Test {
       a: string
       b: number

@@ -140,7 +140,7 @@ export type Config<D = any> = AxiosRequestConfig<D> & {
     url: string,
     dataIn: T,
     reverse?: boolean,
-  ) => { url: string; data: Partial<T> }
+  ) => { url: string, data: Partial<T> }
 }
 
 export type MessageTip = (
@@ -190,12 +190,12 @@ export interface LabelDef {
     makeInputAsParams?: boolean
     timeout?: string
     responseType?:
-    | 'arraybuffer'
-    | 'document'
-    | 'json'
-    | 'text'
-    | 'stream'
-    | 'blob'
+      | 'arraybuffer'
+      | 'document'
+      | 'json'
+      | 'text'
+      | 'stream'
+      | 'blob'
   }
 }
 
@@ -252,9 +252,9 @@ export interface ResponseResult<
   message?: string
   notify: (
     mes?:
-    | Partial<Record<HandleEnumKeys, Partial<MessageOptions>>>
-    | string
-    | [success?: string, fail?: string, sysError?: string],
+      | Partial<Record<HandleEnumKeys, Partial<MessageOptions>>>
+      | string
+      | [success?: string, fail?: string, sysError?: string],
   ) => void
 }
 

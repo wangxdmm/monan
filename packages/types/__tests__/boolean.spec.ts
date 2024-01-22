@@ -1,5 +1,5 @@
 import { it } from 'vitest'
 
-it('Boolean is ok', () => {
+it('boolean is ok', () => {
 
 })

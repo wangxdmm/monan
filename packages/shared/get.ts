@@ -8,6 +8,11 @@ interface GetConfig<T = any> {
   strict?: boolean
   emptyPathReturn?: () => T
   skipNullable?: boolean
+  alterCondition?: (
+    key: PrimitiveKey[],
+    breakValue: any,
+    inputAlterValue: T,
+  ) => T
 }
 
 export function get<T = any>(
@@ -21,14 +26,14 @@ export function get<T = any>(
     strict: false,
     condition: isUndef,
     skipNullable: false,
+    alterCondition: (_key, _breakValue, inputAlterValue) => inputAlterValue,
     emptyPathReturn: () => {
       if (alterVal === undefined) {
         return source as T
-      }
-      else {
+      } else {
         if (config.warn) {
           console.warn(
-            'Because your provided path is empty and alterValue is not undefined, so we use the default \'config.emptyPathReturn\' to return the alterValue, If you want to change the result please pass your own emptyPathReturn function !',
+            "Because your provided path is empty and alterValue is not undefined, so we use the default 'config.emptyPathReturn' to return the alterValue, If you want to change the result please pass your own emptyPathReturn function !",
           )
         }
         return alterVal
@@ -36,33 +41,43 @@ export function get<T = any>(
     },
   }
 
-  if (isFunction(conditionOrConfig))
-    config.condition = conditionOrConfig
+  if (isFunction(conditionOrConfig)) config.condition = conditionOrConfig
 
   if (isObject<GetConfig>(conditionOrConfig))
     Object.assign(config, conditionOrConfig)
 
   if (isUndef(source)) {
     if (alterVal === undefined) {
-      if (config.warn)
-        console.error(`input(${source}) and alter(${alterVal}) can not be undefined together`)
+      if (config.warn) {
+        console.error(
+          `input(${source}) and alter(${alterVal}) can not be undefined together`,
+        )
+      }
     }
 
     return alterVal as T // source alterValue
   }
 
-  const { condition, strict, emptyPathReturn: emptyPathBack, skipNullable } = config
+  const {
+    condition,
+    strict,
+    alterCondition,
+    emptyPathReturn: emptyPathBack,
+    skipNullable,
+  } = config
 
-  const resolvedPath: PrimitiveKey[] = strict ? (!isArray(path) ? [path] : path) : pathResolve(path)
+  const resolvedPath: PrimitiveKey[] = strict
+    ? !isArray(path)
+      ? [path]
+      : path
+    : pathResolve(path)
 
-  if (resolvedPath.length === 0)
-    return emptyPathBack()
+  if (resolvedPath.length === 0) return emptyPathBack()
 
   let result = source
   for (let i = 0; i < resolvedPath.length; i++) {
     const curPath = resolvedPath[i]
-    if (isString(curPath) && curPath.trim() === '')
-      continue
+    if (isString(curPath) && curPath.trim() === '') continue
 
     if (isUndef(curPath)) {
       if (!skipNullable)
@@ -72,10 +87,9 @@ export function get<T = any>(
 
     const out = i === 0 ? source[curPath] : result[curPath]
     if (condition(out)) {
-      result = alterVal
+      result = alterCondition(resolvedPath.slice(0, i + 1), out, alterVal as T)
       break
-    }
-    else {
+    } else {
       result = out
     }
   }

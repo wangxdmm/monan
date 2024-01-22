@@ -28,7 +28,7 @@ describe('resutful', async () => {
         c: 'd',
         empty: 'c',
         g: '.',
-        h: ['.', (v, s, picked) => ((s.d === 0 && picked.c === 1) ? v : 20)],
+        h: ['.', (v, s, picked) => (s.d === 0 && picked.c === 1 ? v : 20)],
       },
     )
 
@@ -56,7 +56,7 @@ describe('resutful', async () => {
   it('get', () => {
     const s = Symbol('obj')
     const obj = {
-      'a': {
+      a: {
         b: {
           c: 1,
           e: null,
@@ -67,19 +67,34 @@ describe('resutful', async () => {
       [s]: 'sym',
     }
 
-    const arr = [1, 2, 4, null];
-    (arr as any).__s = [2, 's']
+    const arr = [1, 2, 4, null]
+    ;(arr as any).__s = [2, 's']
 
     expect(get(obj, 'a.b.c')).toBe(1)
     expect(get(obj, 'a.b.e', 10)).toBe(10)
     expect(get(obj, ['a.b', 'c'])).toBe(1)
-    expect(() => get(obj, ['a.b.c', undefined as any])).toThrowError('The key you passed can not be')
-    expect(get(obj, ['a', undefined as any, 'b', 'c'], undefined, { skipNullable: true })).toBe(1)
+    expect(() => get(obj, ['a.b.c', undefined as any])).toThrowError(
+      'The key you passed can not be',
+    )
+    expect(
+      get(obj, ['a', undefined as any, 'b', 'c'], undefined, {
+        skipNullable: true,
+      }),
+    ).toBe(1)
     expect(get(obj, 'a.b.e', 20)).toBe(20)
-    expect(get(obj, 'a.b.f', 20, v => v === '')).toBe(20)
-    expect(get(obj, 'a.b.f', 20, {
-      condition: v => v === '',
-    })).toBe(20)
+    expect(
+      get(obj, 'a.b.e', undefined, {
+        alterCondition: (_path, val, alterVal) => {
+          return val === null ? val : alterVal
+        },
+      }),
+    ).toBe(null)
+    expect(get(obj, 'a.b.f', 20, (v) => v === '')).toBe(20)
+    expect(
+      get(obj, 'a.b.f', 20, {
+        condition: (v) => v === '',
+      }),
+    ).toBe(20)
     expect(get(obj, 'a.b.c', 20, { strict: true })).toBe(10)
     expect(get(obj, [s], 30)).toBe('sym')
     expect(get(obj, '')).toEqual(obj)

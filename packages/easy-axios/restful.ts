@@ -136,11 +136,11 @@ export class Restful<T> extends SetupAxios<T> {
 
       if (contentType && !get(configed, ['headers', ContentTypeKey])) {
         ContentTypeEnum[contentType]
-          && set(
-            configed,
-            ['headers', ContentTypeKey],
-            ContentTypeEnum[contentType],
-          )
+        && set(
+          configed,
+          ['headers', ContentTypeKey],
+          ContentTypeEnum[contentType],
+        )
       }
 
       if (params && !configed.params)
@@ -167,7 +167,9 @@ export class Restful<T> extends SetupAxios<T> {
       | defineAPI<string, any, any>
       | Record<string, (...args) => DefineResponseResult<unknown>>
     )[],
-  >(prefix: string, defs: string[]) {
+  >(prefix: string,
+    defs: string[],
+  ) {
     const result = {}
     defs.forEach((def) => {
       const defMes = this.parseDef(def)

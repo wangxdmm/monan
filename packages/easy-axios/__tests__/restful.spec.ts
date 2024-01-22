@@ -330,7 +330,7 @@ describe('resutful', async () => {
     })
   })
 
-  it('ExtractAPI data is function is ok', () => {
+  it('extractAPI data is function is ok', () => {
     interface Person {
       name: string
     }
@@ -382,7 +382,7 @@ describe('resutful', async () => {
     })
   })
 
-  it('Blob type is ok', () => {
+  it('blob type is ok', () => {
     type API = [defineAPI<'post', string, Blob>]
 
     const api = http.create<API>('.', [
@@ -411,7 +411,7 @@ describe('resutful', async () => {
     })
   })
 
-  it('Hooks is ok', () => {
+  it('hooks is ok', () => {
     http.registerHooks('setName', (c) => {
       set(c, 'params.name', {
         age: 22,

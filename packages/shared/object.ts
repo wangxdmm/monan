@@ -101,7 +101,7 @@ export function easyTrans<
   K extends keyof Def,
   K1 extends keyof D,
   UniKeys extends PrimitiveKey = P extends Record<PrimitiveKey, unknown> ? keyof P | K : K,
->(dataStore: D, defs: Def, config?: { patchData?: P; filter?: (s: D[K1]) => boolean }) {
+>(dataStore: D, defs: Def, config?: { patchData?: P, filter?: (s: D[K1]) => boolean }) {
   const pickedObj: Partial<Record<UniKeys, unknown>> = {}
   const { patchData, filter } = config ?? {}
 

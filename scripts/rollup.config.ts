@@ -88,7 +88,7 @@ const buildedLibs = fg
     return getBundler(dirname(a)).sort - getBundler(dirname(b)).sort
   }).filter((l) => {
     return shouldBuildLibs.length === 0
-    || shouldBuildLibs.some(lib => l.includes(lib))
+      || shouldBuildLibs.some(lib => l.includes(lib))
   })
 
 if (buildedLibs.length === 0)
