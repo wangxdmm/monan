@@ -7,8 +7,14 @@ import type { OutputOptions, RollupOptions } from 'rollup'
 import dts from 'rollup-plugin-dts'
 import esbuild, { minify } from 'rollup-plugin-esbuild'
 import { PluginPure as pure } from 'rollup-plugin-pure'
-import { ModuleResolutionKind } from 'typescript'
-import PreBundler from './bundler.json'
+
+// TODO why?
+// [!] SyntaxError: Named export 'ModuleResolutionKind' not found. The requested module 'typescript' is a CommonJS module, which may not support all module.exports as named exports.
+// CommonJS modules can always be imported via the default export, for example using:
+// import pkg from 'typescript';
+// const { ModuleResolutionKind } = pkg;
+import pkg from 'typescript';
+const { ModuleResolutionKind } = pkg;
 
 const shouldBuildLibs = process.env?.PKGS?.split(',').filter(Boolean) || []
 const namespace = '@monan/'
@@ -23,8 +29,8 @@ interface Meta {
   rowPkg: Record<string, any>
 }
 
-const Bundler = PreBundler as unknown as Record<string, Meta>
-const root = resolve(__dirname, '../')
+const Bundler = JSON.parse(fs.readFileSync("./bundler.json").toString()) as unknown as Record<string, Meta>
+const root = resolve('./')
 const configs: RollupOptions[] = []
 function getBundler(dir: string): Meta {
   const pkgJson = JSON.parse(fs.readFileSync(join(dir, 'package.json')).toString())

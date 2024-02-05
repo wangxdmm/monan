@@ -30,10 +30,11 @@ export function get<T = any>(
     emptyPathReturn: () => {
       if (alterVal === undefined) {
         return source as T
-      } else {
+      }
+      else {
         if (config.warn) {
           console.warn(
-            "Because your provided path is empty and alterValue is not undefined, so we use the default 'config.emptyPathReturn' to return the alterValue, If you want to change the result please pass your own emptyPathReturn function !",
+            'Because your provided path is empty and alterValue is not undefined, so we use the default \'config.emptyPathReturn\' to return the alterValue, If you want to change the result please pass your own emptyPathReturn function !',
           )
         }
         return alterVal
@@ -41,7 +42,8 @@ export function get<T = any>(
     },
   }
 
-  if (isFunction(conditionOrConfig)) config.condition = conditionOrConfig
+  if (isFunction(conditionOrConfig))
+    config.condition = conditionOrConfig
 
   if (isObject<GetConfig>(conditionOrConfig))
     Object.assign(config, conditionOrConfig)
@@ -68,16 +70,18 @@ export function get<T = any>(
 
   const resolvedPath: PrimitiveKey[] = strict
     ? !isArray(path)
-      ? [path]
-      : path
+        ? [path]
+        : path
     : pathResolve(path)
 
-  if (resolvedPath.length === 0) return emptyPathBack()
+  if (resolvedPath.length === 0)
+    return emptyPathBack()
 
   let result = source
   for (let i = 0; i < resolvedPath.length; i++) {
     const curPath = resolvedPath[i]
-    if (isString(curPath) && curPath.trim() === '') continue
+    if (isString(curPath) && curPath.trim() === '')
+      continue
 
     if (isUndef(curPath)) {
       if (!skipNullable)
@@ -89,7 +93,8 @@ export function get<T = any>(
     if (condition(out)) {
       result = alterCondition(resolvedPath.slice(0, i + 1), out, alterVal as T)
       break
-    } else {
+    }
+    else {
       result = out
     }
   }

@@ -26,12 +26,12 @@ async function work(
     await task()
 }
 
-async function runRollup(isWatch) {
+async function runRollup(isWatch: boolean) {
   if (isWatch)
-    await $$`pnpm exec env-cmd -e build rollup -c rollup.config.js -w`
+    await $$`pnpm exec env-cmd -e build rollup -c rollup.config.ts --configPlugin rollup-plugin-esbuild -w`
 
   else
-    await $$`pnpm exec env-cmd -e build rollup -c rollup.config.js`
+    await $$`pnpm exec env-cmd -e build rollup -c rollup.config.ts --configPlugin rollup-plugin-esbuild`
 }
 
 (async () => {

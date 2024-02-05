@@ -90,13 +90,13 @@ export interface IHttpConfig<T> {
   autoSetting: boolean
   errorFlag: string
   codeHandler: ICodeHandler<T>[]
-  request(config: AxiosRequestConfig, ins: SetupAxios<T>): AxiosRequestConfig
-  interceptorOptions(
+  request: (config: AxiosRequestConfig, ins: SetupAxios<T>) => AxiosRequestConfig
+  interceptorOptions: (
     type: InterceptorOptionsType,
     ins: SetupAxios<T>,
-  ): AxiosInterceptorOptions
-  response(res: AxiosResponse, ins: SetupAxios<T>): AxiosResponse
-  transIns(ins: AxiosInstance, setUpIns: SetupAxios<T>): void
+  ) => AxiosInterceptorOptions
+  response: (res: AxiosResponse, ins: SetupAxios<T>) => AxiosResponse
+  transIns: (ins: AxiosInstance, setUpIns: SetupAxios<T>) => void
 }
 
 export interface DynamicRequestConfig<T, R = any> {

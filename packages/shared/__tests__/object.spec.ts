@@ -56,7 +56,7 @@ describe('resutful', async () => {
   it('get', () => {
     const s = Symbol('obj')
     const obj = {
-      a: {
+      'a': {
         b: {
           c: 1,
           e: null,
@@ -89,10 +89,10 @@ describe('resutful', async () => {
         },
       }),
     ).toBe(null)
-    expect(get(obj, 'a.b.f', 20, (v) => v === '')).toBe(20)
+    expect(get(obj, 'a.b.f', 20, v => v === '')).toBe(20)
     expect(
       get(obj, 'a.b.f', 20, {
-        condition: (v) => v === '',
+        condition: v => v === '',
       }),
     ).toBe(20)
     expect(get(obj, 'a.b.c', 20, { strict: true })).toBe(10)
