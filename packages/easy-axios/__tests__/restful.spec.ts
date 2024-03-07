@@ -71,7 +71,8 @@ describe('resutful', async () => {
 
     expectTypeOf(api.get).toBeFunction()
     expectTypeOf(api.get).parameter(0).toMatchTypeOf<{ name: string }>()
-
+    expect(api.get.des).toBe('get::/->get')
+    
     const serveResponse = {
       success: true,
       data: {

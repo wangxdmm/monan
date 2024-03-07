@@ -6,7 +6,7 @@ import type {
   AxiosResponse,
   Method,
 } from 'axios'
-import type { Equal } from '@monan/types'
+import type { AnyFn, Equal } from '@monan/types'
 import { isObject } from '@monan/shared'
 import type { SetupAxios } from './setupAxios'
 
@@ -310,6 +310,11 @@ export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
         ? [config?: Config]
         : [data: Data, config?: Config]
 
+export type DescribeApi<T extends AnyFn> = {
+  des: string
+  (...args: Parameters<T>): ReturnType<T>
+}
+
 // export type ComputedResponse<T, Response> = Response extends
 export type ExtractAPI<T, R extends object = object> = T extends [
   infer F,
@@ -332,9 +337,9 @@ export type ExtractAPI<T, R extends object = object> = T extends [
             Rest,
             {
               [k in Id | keyof R]: k extends Id
-                ? <const T extends DefineRequestFuncParams<DataOrDefinition>>(
+                ? DescribeApi<<const T extends DefineRequestFuncParams<DataOrDefinition>>(
                 ...p: T
-              ) => DefineResponseResult<Response>
+              ) => DefineResponseResult<Response>>
                 : k extends keyof R
                   ? R[k]
                   : never

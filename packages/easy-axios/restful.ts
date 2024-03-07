@@ -175,7 +175,7 @@ export class Restful<T> extends SetupAxios<T> {
       const defMes = this.parseDef(def)
       if (defMes && defMes.id) {
         const { method, id, url: urlDef, meta } = defMes
-        result[id] = (...args) => {
+        const callFn = (...args) => {
           let config: Config
           let userInputData
           if (meta?.noArgs) {
@@ -206,6 +206,9 @@ export class Restful<T> extends SetupAxios<T> {
 
           return this.genHandleFunc(() => this.instance(config))
         }
+
+        callFn.des = def
+        result[id] = callFn
       }
     })
     return result as ExtractAPI<T>
