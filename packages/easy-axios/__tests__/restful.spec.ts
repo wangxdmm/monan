@@ -1,11 +1,24 @@
-import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  expectTypeOf,
+  it,
+} from 'vitest'
 import axios from 'axios'
 import moxios from 'moxios'
 import { get, set } from '@monan/shared'
-import { ContentTypeEnum } from '../share'
+import { ContentTypeEnum, monanSymbol } from '../share'
+import { isMonanRequest } from '../is'
 import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../restful'
 import { defineEasyAxios } from '../defineEasyAxios'
-import type { Config, DefineResponseResult, HandleEnum, defineAPI } from '../share'
+import type {
+  Config,
+  DefineResponseResult,
+  HandleEnum,
+  defineAPI,
+} from '../share'
 
 declare module '../share' {
   export interface ServerDefinedResponse<T = unknown, S = boolean> {
@@ -30,8 +43,7 @@ http.createDefaultStrategies((ins) => {
       return res.data?.success
     },
     getBackData: (_type, res) => {
-      if (ins.isSysError(res))
-        return res
+      if (ins.isSysError(res)) return res
       return res.data?.data
     },
     getMessage: (_type: HandleEnum, res) => {
@@ -47,11 +59,11 @@ const { instance } = http
 
 describe('resutful', async () => {
   beforeEach(() => {
-    moxios.install(instance)
+    moxios.install(instance as any)
   })
 
   afterEach(() => {
-    moxios.uninstall(instance)
+    moxios.uninstall(instance as any)
   })
 
   it('create config and back is ok', () => {
@@ -71,8 +83,8 @@ describe('resutful', async () => {
 
     expectTypeOf(api.get).toBeFunction()
     expectTypeOf(api.get).parameter(0).toMatchTypeOf<{ name: string }>()
-    expect(api.get.des).toBe('get::/->get')
-    
+    expect(api.get.is).toBe(monanSymbol)
+
     const serveResponse = {
       success: true,
       data: {
@@ -88,8 +100,8 @@ describe('resutful', async () => {
         .then(({ backData, result }) => {
           expectTypeOf(backData).toMatchTypeOf<
             | {
-              name: string
-            }
+                name: string
+              }
             | undefined
           >()
           expect(result).toBeTruthy()
@@ -117,7 +129,10 @@ describe('resutful', async () => {
   })
 
   it('create empty request is ok', () => {
-    const api = http.create<[defineAPI<'get', void, { success: boolean }>]>('.', ['get()::/->get'])
+    const api = http.create<[defineAPI<'get', void, { success: boolean }>]>(
+      '.',
+      ['get()::/->get'],
+    )
     const serveResponse = {
       success: true,
       data: {
@@ -157,7 +172,9 @@ describe('resutful', async () => {
   })
 
   it('use inputData as params in request is ok', () => {
-    const api = http.create<[defineAPI<'del', { code: number }, { success: boolean }>]>('.', ['delete::/del?'])
+    const api = http.create<
+      [defineAPI<'del', { code: number }, { success: boolean }>]
+    >('.', ['delete::/del?'])
     const serveResponse = {
       success: true,
       data: {
@@ -197,9 +214,15 @@ describe('resutful', async () => {
   })
 
   it('create both params and data request', () => {
-    const api = http.create<[defineAPI<'post', [{ code: number }, { name: string }], { success: boolean }>]>('.', [
-      'post::/?->post',
-    ])
+    const api = http.create<
+      [
+        defineAPI<
+          'post',
+          [{ code: number }, { name: string }],
+          { success: boolean }
+        >,
+      ]
+    >('.', ['post::/?->post'])
     const serveResponse = {
       success: true,
       data: {
@@ -246,9 +269,9 @@ describe('resutful', async () => {
   })
 
   it('create inject param', () => {
-    const api = http.create<[defineAPI<'getByCode', { code: number }, { name: boolean }>]>('.', [
-      'get::/{code}/getByCode',
-    ])
+    const api = http.create<
+      [defineAPI<'getByCode', { code: number }, { name: boolean }>]
+    >('.', ['get::/{code}/getByCode'])
     const serveResponse = {
       success: true,
       data: {
@@ -293,7 +316,9 @@ describe('resutful', async () => {
   })
 
   it('create with simple param is ok', () => {
-    const api = http.create<[defineAPI<'post', { code: number }, { name: string }>]>('.', [
+    const api = http.create<
+      [defineAPI<'post', { code: number }, { name: string }>]
+    >('.', [
       'post::/->post::contentType->multipart,timeout->98,responseType->blob,contentType->multipart',
     ])
     const serveResponse = {
@@ -323,7 +348,9 @@ describe('resutful', async () => {
           })
           .then(() => {
             expect(request.config.timeout).toBe(98)
-            expect(request.config.headers?.['Content-Type']).toEqual(ContentTypeEnum.MULTIPART)
+            expect(request.config.headers?.['Content-Type']).toEqual(
+              ContentTypeEnum.MULTIPART,
+            )
             expect(request.config.responseType).toBe('blob')
             resolve(true)
           })
@@ -340,7 +367,7 @@ describe('resutful', async () => {
         'post',
         <const T extends Person>(
           d: T,
-          config?: Config
+          config?: Config,
         ) => DefineResponseResult<T extends { name: 'all' } ? Person[] : Person>
       >,
     ]
@@ -425,9 +452,9 @@ describe('resutful', async () => {
       return c
     })
 
-    const api = http.create<[defineAPI<'post', { code: number }, { name: string }>]>('.', [
-      'post::/->post::hooks->setName=>setCode',
-    ])
+    const api = http.create<
+      [defineAPI<'post', { code: number }, { name: string }>]
+    >('.', ['post::/->post::hooks->setName=>setCode'])
 
     const serveResponse = {
       success: true,
@@ -455,22 +482,30 @@ describe('resutful', async () => {
             response: serveResponse,
           })
           .then(() => {
-            expect(request.config.params).toEqual(
-              {
-                name: {
-                  age: 22,
+            expect(request.config.params).toEqual({
+              name: {
+                age: 22,
+              },
+            })
+            expect(request.config.data).toEqual(
+              JSON.stringify({
+                name: 'deleteName',
+                wrap: {
+                  code: 33,
                 },
-              },
+              }),
             )
-            expect(request.config.data).toEqual(JSON.stringify({
-              name: 'deleteName',
-              wrap: {
-                code: 33,
-              },
-            }))
             resolve(true)
           })
       })
     })
+  })
+
+  it('symbol is ok', async () => {
+    const api = http.create<
+      [defineAPI<'post', { code: number }, { name: string }>]
+    >('.', ['post::/->post::hooks->setName=>setCode'])
+
+    expect(isMonanRequest(api.post)).toBe(true)
   })
 })

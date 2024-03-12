@@ -11,10 +11,10 @@ import type {
   ServerDefinedResponse,
   defineAPI,
 } from './share'
-import { ContentTypeEnum, ContentTypeKey } from './share'
+import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
 
-export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
-  = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
+export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES =
+  'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
@@ -81,8 +81,7 @@ export class Restful<T> extends SetupAxios<T> {
         // eslint-disable-next-line no-cond-assign
         if ((mayBeId = mayBeId?.trim())) {
           const injectParamReg = /{([^/.]+)}/g
-          if (!injectParamReg.test(mayBeId))
-            id = mayBeId
+          if (!injectParamReg.test(mayBeId)) id = mayBeId
           else throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
         }
       }
@@ -100,10 +99,8 @@ export class Restful<T> extends SetupAxios<T> {
       metaStr.split(',').forEach((m) => {
         const [k, v = true] = m.split(valueDiv)
         meta[k] = v
-        if (k === 'hooks' && isString(v) && isDef(v))
-          meta[k] = v.split('=>')
-        else
-          meta.hooks = []
+        if (k === 'hooks' && isString(v) && isDef(v)) meta[k] = v.split('=>')
+        else meta.hooks = []
       })
     }
 
@@ -131,32 +128,28 @@ export class Restful<T> extends SetupAxios<T> {
       let contentType
       const { timeout, makeInputAsParams: params, responseType } = meta
 
-      if (meta.contentType)
-        contentType = meta.contentType.toUpperCase()
+      if (meta.contentType) contentType = meta.contentType.toUpperCase()
 
       if (contentType && !get(configed, ['headers', ContentTypeKey])) {
-        ContentTypeEnum[contentType]
-        && set(
-          configed,
-          ['headers', ContentTypeKey],
-          ContentTypeEnum[contentType],
-        )
+        ContentTypeEnum[contentType] &&
+          set(
+            configed,
+            ['headers', ContentTypeKey],
+            ContentTypeEnum[contentType],
+          )
       }
 
-      if (params && !configed.params)
-        set(configed, 'params', userInputData)
+      if (params && !configed.params) set(configed, 'params', userInputData)
 
       // default userInputData is set to config.data
-      if (!params && !configed.data)
-        set(configed, 'data', userInputData)
+      if (!params && !configed.data) set(configed, 'data', userInputData)
 
       if (timeout && !configed.timeout)
         set(configed, 'timeout', Number.parseInt(timeout, 10))
 
       if (responseType && !configed.responseType)
         set(configed, 'responseType', responseType)
-    }
-    else if (!configed.data) {
+    } else if (!configed.data) {
       set(configed, 'data', userInputData)
     }
     return configed
@@ -167,9 +160,7 @@ export class Restful<T> extends SetupAxios<T> {
       | defineAPI<string, any, any>
       | Record<string, (...args) => DefineResponseResult<unknown>>
     )[],
-  >(prefix: string,
-    defs: string[],
-  ) {
+  >(prefix: string, defs: string[]) {
     const result = {}
     defs.forEach((def) => {
       const defMes = this.parseDef(def)
@@ -180,8 +171,7 @@ export class Restful<T> extends SetupAxios<T> {
           let userInputData
           if (meta?.noArgs) {
             config = args[0]
-          }
-          else {
+          } else {
             config = args[1]
             userInputData = args[0]
           }
@@ -198,8 +188,7 @@ export class Restful<T> extends SetupAxios<T> {
           if (hooks?.length) {
             config = hooks.reduce((acc, hookName) => {
               const hook = this.hooks.get(hookName)
-              if (hook)
-                return hook(acc, this)
+              if (hook) return hook(acc, this)
               return acc
             }, config)
           }
@@ -207,7 +196,7 @@ export class Restful<T> extends SetupAxios<T> {
           return this.genHandleFunc(() => this.instance(config))
         }
 
-        callFn.des = def
+        callFn.is = monanSymbol
         result[id] = callFn
       }
     })

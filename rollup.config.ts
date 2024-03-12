@@ -13,8 +13,9 @@ import { PluginPure as pure } from 'rollup-plugin-pure'
 // CommonJS modules can always be imported via the default export, for example using:
 // import pkg from 'typescript';
 // const { ModuleResolutionKind } = pkg;
-import pkg from 'typescript';
-const { ModuleResolutionKind } = pkg;
+import pkg from 'typescript'
+
+const { ModuleResolutionKind } = pkg
 
 const shouldBuildLibs = process.env?.PKGS?.split(',').filter(Boolean) || []
 const namespace = '@monan/'
@@ -29,7 +30,7 @@ interface Meta {
   rowPkg: Record<string, any>
 }
 
-const Bundler = JSON.parse(fs.readFileSync("./bundler.json").toString()) as unknown as Record<string, Meta>
+const Bundler = JSON.parse(fs.readFileSync('./bundler.json').toString()) as unknown as Record<string, Meta>
 const root = resolve('./')
 const configs: RollupOptions[] = []
 function getBundler(dir: string): Meta {

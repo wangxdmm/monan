@@ -10,6 +10,7 @@ import type { AnyFn, Equal } from '@monan/types'
 import { isObject } from '@monan/shared'
 import type { SetupAxios } from './setupAxios'
 
+export const monanSymbol = Symbol("__monan_axios__")
 export const ContentTypeKey = 'Content-Type'
 
 export type DefHook<T> = (config: Config, ins: SetupAxios<T>) => Config
@@ -310,8 +311,9 @@ export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
         ? [config?: Config]
         : [data: Data, config?: Config]
 
-export type DescribeApi<T extends AnyFn> = {
-  des: string
+export interface CombinedApi<T extends AnyFn> {
+  is: typeof monanSymbol,
+  config: Config 
   (...args: Parameters<T>): ReturnType<T>
 }
 
@@ -337,7 +339,7 @@ export type ExtractAPI<T, R extends object = object> = T extends [
             Rest,
             {
               [k in Id | keyof R]: k extends Id
-                ? DescribeApi<<const T extends DefineRequestFuncParams<DataOrDefinition>>(
+                ? CombinedApi<<const T extends DefineRequestFuncParams<DataOrDefinition>>(
                 ...p: T
               ) => DefineResponseResult<Response>>
                 : k extends keyof R

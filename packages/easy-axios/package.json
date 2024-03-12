@@ -22,7 +22,7 @@
     "package.json"
   ],
   "peerDependencies": {
-    "axios": "^1.5.0"
+    "axios": ">= 1.5.0"
   },
   "publishConfig": {
     "access": "public"
