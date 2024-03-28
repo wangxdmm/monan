@@ -18,18 +18,18 @@
     "release": "esno ./scripts/release.ts"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.6.4",
+    "@antfu/eslint-config": "^2.11.4",
     "@types/moxios": "^0.4.17",
     "@types/node": "^20.11.16",
-    "bumpp": "^9.3.0",
+    "bumpp": "^9.4.0",
     "consola": "^3.2.3",
     "cross-env": "^7.0.3",
     "enquirer": "^2.4.1",
     "env-cmd": "^10.1.0",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.20.2",
     "esbuild-register": "^3.5.0",
-    "eslint": "^8.56.0",
-    "esno": "^4.0.0",
+    "eslint": "^8.57.0",
+    "esno": "^4.7.0",
     "execa": "^8.0.1",
     "fast-glob": "^3.3.2",
     "moxios": "^0.4.0",
@@ -41,7 +41,7 @@
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-pure": "^0.2.1",
     "syncpack": "^12.3.0",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.3",
     "vitest": "^1.2.2"
   }
 }
