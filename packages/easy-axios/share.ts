@@ -10,7 +10,7 @@ import type { AnyFn, Equal } from '@monan/types'
 import { isObject } from '@monan/shared'
 import type { SetupAxios } from './setupAxios'
 
-export const monanSymbol = Symbol("__monan_axios__")
+export const monanSymbol = Symbol('__monan_axios__')
 export const ContentTypeKey = 'Content-Type'
 
 export type DefHook<T> = (config: Config, ins: SetupAxios<T>) => Config
@@ -27,8 +27,7 @@ export function interParam<T, K extends keyof T>(
     matchs.forEach((param) => {
       const key: K = param.replace(/[{}]/gi, '') as K
       url = url.replace(param, String(data[key]))
-      if (!reserve)
-        delete data[key]
+      if (!reserve) delete data[key]
     })
   }
   return { url, data }
@@ -91,7 +90,10 @@ export interface IHttpConfig<T> {
   autoSetting: boolean
   errorFlag: string
   codeHandler: ICodeHandler<T>[]
-  request: (config: AxiosRequestConfig, ins: SetupAxios<T>) => AxiosRequestConfig
+  request: (
+    config: AxiosRequestConfig,
+    ins: SetupAxios<T>,
+  ) => AxiosRequestConfig
   interceptorOptions: (
     type: InterceptorOptionsType,
     ins: SetupAxios<T>,
@@ -141,7 +143,7 @@ export type Config<D = any> = AxiosRequestConfig<D> & {
     url: string,
     dataIn: T,
     reverse?: boolean,
-  ) => { url: string, data: Partial<T> }
+  ) => { url: string; data: Partial<T> }
 }
 
 export type MessageTip = (
@@ -285,11 +287,12 @@ export interface DefaultStrategies<D = any>
   showSuccessMessageTip: MessageTip
 }
 
-export type WrapResponse<T> = T extends ServerDefinedResponse<unknown>
-  ? T
-  : T extends UsePrimitiveType<infer P>
-    ? P
-    : ServerDefinedResponse<T>
+export type WrapResponse<T> =
+  T extends ServerDefinedResponse<unknown>
+    ? T
+    : T extends UsePrimitiveType<infer P>
+      ? P
+      : ServerDefinedResponse<T>
 
 export type DefineResponseResult<T> = (
   config?: HandleResponseConfig,
@@ -301,19 +304,19 @@ export interface MarkAsPartial<T> {
 
 export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
   ? [Params] extends [void]
-      ? [D] extends [void]
-          ? [config?: Config]
-          : [data: D, config?: Config<D>]
-      : [params: Params, config?: Config<D>]
+    ? [D] extends [void]
+      ? [config?: Config]
+      : [data: D, config?: Config<D>]
+    : [params: Params, config?: Config<D>]
   : Data extends [infer P]
     ? [params: P, config?: Config]
     : [Data] extends [void]
-        ? [config?: Config]
-        : [data: Data, config?: Config]
+      ? [config?: Config]
+      : [data: Data, config?: Config]
 
 export interface CombinedApi<T extends AnyFn> {
-  is: typeof monanSymbol,
-  config: Config 
+  is: typeof monanSymbol
+  config: Config
   (...args: Parameters<T>): ReturnType<T>
 }
 
@@ -339,9 +342,11 @@ export type ExtractAPI<T, R extends object = object> = T extends [
             Rest,
             {
               [k in Id | keyof R]: k extends Id
-                ? CombinedApi<<const T extends DefineRequestFuncParams<DataOrDefinition>>(
-                ...p: T
-              ) => DefineResponseResult<Response>>
+                ? CombinedApi<
+                    <const T extends DefineRequestFuncParams<DataOrDefinition>>(
+                      ...p: T
+                    ) => DefineResponseResult<Response>
+                  >
                 : k extends keyof R
                   ? R[k]
                   : never

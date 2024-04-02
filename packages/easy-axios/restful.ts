@@ -160,6 +160,7 @@ export class Restful<T> extends SetupAxios<T> {
       | defineAPI<string, any, any>
       | Record<string, (...args) => DefineResponseResult<unknown>>
     )[],
+    P = {},
   >(prefix: string, defs: string[]) {
     const result = {}
     defs.forEach((def) => {
@@ -200,6 +201,6 @@ export class Restful<T> extends SetupAxios<T> {
         result[id] = callFn
       }
     })
-    return result as ExtractAPI<T>
+    return result as ExtractAPI<T> & P
   }
 }

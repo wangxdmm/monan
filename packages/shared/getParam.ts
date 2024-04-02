@@ -4,7 +4,7 @@ import { isFunction, isObject, isPromise, isUndef } from './typeAssert'
 type CallsFn<T> = (
   data: T,
   dataAll?: T,
-  dataRawAll?: T[]
+  dataRawAll?: T[],
 ) => boolean | Promise<boolean>
 
 // 返回特定结构参数函数
@@ -57,8 +57,7 @@ export function getParam<T = object>(
   }
 
   const isPartialT = (x: any): x is PT => {
-    if (x.fetch === undefined && isObject(x))
-      return true
+    if (x.fetch === undefined && isObject(x)) return true
 
     return false
   }
@@ -68,13 +67,12 @@ export function getParam<T = object>(
       const result = calls(data, before(dataResult), dataResult)
       if (isPromise(result)) {
         result
-          .then(val => resolve((valid = val)))
+          .then((val) => resolve((valid = val)))
           .catch((error) => {
             console.error(error)
             falseResolve(resolve)
           })
-      }
-      else {
+      } else {
         resolve((valid = result))
       }
     })
@@ -83,21 +81,28 @@ export function getParam<T = object>(
   return new Promise((resolve: resolveFn<T>) => {
     const next = (step: number) => {
       const cur = items[step]
-      if (step === len)
-        commonBack(resolve)
+      if (step === len) commonBack(resolve)
 
       if (!isUndef(cur)) {
         let calls: CallsFn<PT> = () => true
         let async = false
         let fetch: FetchType<PT>
 
-        if (isFunction(cur) || isPartialT(cur) /* 对象 */)
-          fetch = cur
-        else ({ fetch, async = async, calls = calls } = cur)
+        if (isFunction(cur) || isPartialT(cur) /* 对象 */) fetch = cur
+        else {
+          fetch = cur.fetch
+
+          if (cur.async) {
+            async = cur.async
+          }
+
+          if (cur.calls) {
+            calls = cur.calls
+          }
+        }
 
         // null undefined 直接return
-        if (isUndef(fetch))
-          falseResolve(resolve)
+        if (isUndef(fetch)) falseResolve(resolve)
 
         const invokeCalls = (
           resolve: resolveFn<T>,
@@ -105,8 +110,7 @@ export function getParam<T = object>(
           calls: CallsFn<PT>,
         ) => {
           validCalls(resolve, data, calls).then((valid) => {
-            if (valid)
-              next(step + 1)
+            if (valid) next(step + 1)
             else commonBack(resolve)
           })
         }
@@ -115,8 +119,7 @@ export function getParam<T = object>(
           async: boolean,
           fetch: FetchType<PT>,
         ): fetch is (...args: any[]) => Promise<PT> => {
-          if (async === true && isFunction(fetch))
-            return true
+          if (async === true && isFunction(fetch)) return true
 
           return false
         }
@@ -133,29 +136,24 @@ export function getParam<T = object>(
               falseResolve(resolve)
             })
           // function
-        }
-        else if (isFunction(fetch) && !async) {
+        } else if (isFunction(fetch) && !async) {
           // 非异步
           try {
             const data = fetch()
             dataResult.push(data)
             invokeCalls(resolve, data, calls)
-          }
-          catch (error) {
+          } catch (error) {
             console.error(error)
             falseResolve(resolve)
           }
           // object
-        }
-        else if (isObject<PT>(fetch)) {
+        } else if (isObject<PT>(fetch)) {
           dataResult.push(fetch)
           invokeCalls(resolve, fetch, calls)
-        }
-        else {
+        } else {
           falseResolve(resolve)
         }
-      }
-      else {
+      } else {
         falseResolve(resolve)
       }
     }
