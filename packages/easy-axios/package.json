@@ -1,6 +1,6 @@
 {
   "name": "@monan/easy-axios",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -28,7 +28,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@monan/shared": "workspace:^",
-    "@monan/types": "workspace:^"
+    "@monan/shared": "workspace:*",
+    "@monan/types": "workspace:*"
   }
 }
