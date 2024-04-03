@@ -1,6 +1,6 @@
 {
   "name": "@monan/shared",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
