@@ -51,6 +51,24 @@ describe('resutful', async () => {
       a: 20,
       h: 'test',
     })
+
+
+    const result_4 = easyTrans(
+      { a: undefined, b: null, c: '', d: 0, g: '==', h: 'test' },
+      { a: ['.', () => 20], b: 'b', h: '.' },
+      { assignRest: true },
+    )
+
+    expect(result_4).toMatchInlineSnapshot(`
+      {
+        "a": 20,
+        "b": null,
+        "c": "",
+        "d": 0,
+        "g": "==",
+        "h": "test",
+      }
+    `)
   })
 
   it('get', () => {
