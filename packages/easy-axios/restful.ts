@@ -13,6 +13,8 @@ import type {
 } from './share'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
 
+const requestSet = new Set<string>()
+
 export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES =
   'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
@@ -193,6 +195,25 @@ export class Restful<T> extends SetupAxios<T> {
               return acc
             }, config)
           }
+
+          const requestToken: string = `${config.method}+${config.url}+${JSON.stringify(config.data)}+${JSON.stringify(
+            config.params,
+          )}`
+
+          if (this.config.interval) {
+            if (requestSet.has(requestToken)) {
+              return () =>(Promise.resolve({})) 
+            }
+
+            requestSet.add(requestToken)
+
+            setTimeout(() => {
+              requestToken && requestSet.delete(requestToken)
+            }, this.config.interval)
+          }
+
+          // mark to test
+          config.__R_spy?.(requestToken)
 
           return this.genHandleFunc(() => this.instance(config))
         }

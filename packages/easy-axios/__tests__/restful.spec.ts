@@ -5,6 +5,7 @@ import {
   expect,
   expectTypeOf,
   it,
+  vi,
 } from 'vitest'
 import axios from 'axios'
 import moxios from 'moxios'
@@ -35,6 +36,7 @@ const { http } = defineEasyAxios<'tokenOutDate'>({
     baseURL: 'v1',
     timeout: 10,
   }),
+  interval: 40,
 })
 
 http.createDefaultStrategies((ins) => {
@@ -42,11 +44,11 @@ http.createDefaultStrategies((ins) => {
     isSuccess: (res) => {
       return res.data?.success
     },
-    getBackData: (_type, res) => {
+    getBackData: ({ res }) => {
       if (ins.isSysError(res)) return res
       return res.data?.data
     },
-    getMessage: (_type: HandleEnum, res) => {
+    getMessage: ({ res }) => {
       if (ins.isSysError(res))
         return get(res, 'error.response.data.message', res.error.message)
 
@@ -422,7 +424,8 @@ describe('resutful', async () => {
         .post('/download', {
           data: {},
         })({
-          getBackData: (result, res) => (result ? res.data : undefined),
+          getBackData: ({ type: result, res }) =>
+            result ? res.data : undefined,
         })
         .then(({ backData }) => {
           expectTypeOf(backData).toEqualTypeOf<Blob | undefined>()
@@ -507,5 +510,54 @@ describe('resutful', async () => {
     >('.', ['post::/->post::hooks->setName=>setCode'])
 
     expect(isMonanRequest(api.post)).toBe(true)
+  })
+
+  it('interval is ok', async () => {
+    const api = http.create<[defineAPI<'post', void, { name: string }>]>('./interval', [
+      'post()::/->post',
+    ])
+
+    const spy = vi.fn()
+
+    api.post({
+      __R_spy: spy,
+    })()
+    api.post({
+      __R_spy: spy,
+    })()
+    api.post({
+      __R_spy: spy,
+    })()
+    api.post({
+      __R_spy: spy,
+    })()
+
+    return new Promise((resolve) => {
+      expect(spy.mock.calls).toMatchInlineSnapshot(`
+        [
+          [
+            "post+./interval/+{}+undefined",
+          ],
+        ]
+      `)
+
+      setTimeout(() => {
+        api.post({
+          __R_spy: spy,
+        })()
+
+        expect(spy.mock.calls).toMatchInlineSnapshot(`
+          [
+            [
+              "post+./interval/+{}+undefined",
+            ],
+            [
+              "post+./interval/+{}+undefined",
+            ],
+          ]
+        `)
+        resolve(true)
+      }, 50)
+    })
   })
 })

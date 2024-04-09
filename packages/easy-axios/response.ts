@@ -43,32 +43,43 @@ export function genHandleResponse<T>(http: Restful<T>) {
     const { result } = resResult
     if (isSysError(res)) {
       // resResult.response = res.error.response;
-      resResult.sysError = getBackData?.(
-        HandleEnum.SYSTEM_ERROR,
+      resResult.sysError = getBackData?.({
+        type: HandleEnum.SYSTEM_ERROR,
         res,
-      ) as ResponseResult<T>['sysError']
-      resResult.message = getMessage?.(HandleEnum.SYSTEM_ERROR, res)
-    }
-    else {
+        http,
+      }) as ResponseResult<T>['sysError']
+      resResult.message = getMessage?.({
+        type: HandleEnum.SYSTEM_ERROR,
+        res,
+        http,
+      })
+    } else {
       // resResult.response = res;
       if (!result) {
         resResult.error = res.data // getBackData!(HandleEnum.FAIL, res);
-        resResult.message = getMessage?.(HandleEnum.FAIL, res)
-      }
-      else {
-        resResult.backData = getBackData?.(
-          HandleEnum.SUCCESS,
+        resResult.message = getMessage?.({
+          type: HandleEnum.FAIL,
           res,
-        ) as ResponseResult<T>['backData']
-        resResult.message = getMessage?.(HandleEnum.SUCCESS, res)
+          http,
+        })
+      } else {
+        resResult.backData = getBackData?.({
+          type: HandleEnum.SUCCESS,
+          res,
+          http,
+        }) as ResponseResult<T>['backData']
+        resResult.message = getMessage?.({
+          type: HandleEnum.SUCCESS,
+          res,
+          http,
+        })
         resResult.wholeData = res.data
       }
     }
 
     resResult.notify = (messageOrOptions) => {
       const { sysError, result } = resResult
-      if (sysError && sysError.hasHandled)
-        return
+      if (sysError && sysError.hasHandled) return
 
       const mesHash = handleEnumValues.reduce(
         (cur, next) => {
@@ -80,16 +91,12 @@ export function genHandleResponse<T>(http: Restful<T>) {
       if (isObject(messageOrOptions)) {
         handleEnumValues.forEach((mes) => {
           const cur = messageOrOptions[mes]
-          if (isObject(cur))
-            Object.assign(mesHash[mes], cur)
-          else if (isString(cur))
-            mesHash[mes].message = mes
+          if (isObject(cur)) Object.assign(mesHash[mes], cur)
+          else if (isString(cur)) mesHash[mes].message = mes
         })
-      }
-      else if (isString(messageOrOptions)) {
+      } else if (isString(messageOrOptions)) {
         mesHash[HandleEnum.SUCCESS].message = messageOrOptions
-      }
-      else if (isArray(messageOrOptions)) {
+      } else if (isArray(messageOrOptions)) {
         mesSort.forEach((k, index) => {
           if (messageOrOptions[index] !== undefined)
             mesHash[k].message = messageOrOptions[index]
@@ -102,15 +109,14 @@ export function genHandleResponse<T>(http: Restful<T>) {
         http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR), {
           response: res.error.response,
         })
-      }
-      else {
+      } else {
         result
           ? http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS), {
-            response: res,
-          })
+              response: res,
+            })
           : http.showErrorMessageTip(getMessage(HandleEnum.FAIL), {
-            response: res,
-          })
+              response: res,
+            })
       }
     }
 

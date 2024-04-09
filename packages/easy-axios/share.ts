@@ -9,6 +9,7 @@ import type {
 import type { AnyFn, Equal } from '@monan/types'
 import { isObject } from '@monan/shared'
 import type { SetupAxios } from './setupAxios'
+import type { Restful } from './restful'
 
 export const monanSymbol = Symbol('__monan_axios__')
 export const ContentTypeKey = 'Content-Type'
@@ -89,6 +90,7 @@ export interface IHttpConfig<T> {
   instance: AxiosInstance
   autoSetting: boolean
   errorFlag: string
+  interval: number
   codeHandler: ICodeHandler<T>[]
   request: (
     config: AxiosRequestConfig,
@@ -139,6 +141,7 @@ export interface SysError<T = any> {
 
 export type Config<D = any> = AxiosRequestConfig<D> & {
   __R_reverse?: boolean
+  __R_spy?: AnyFn
   __R_interParam?: <T>(
     url: string,
     dataIn: T,
@@ -268,8 +271,16 @@ export interface HandleResponseConfig<D = ServerDefinedResponse> {
   // 2. sometime server always return a success message, for common use, we don't need to show it
   showServerSuccessMessage?: boolean
   isSuccess?: (res: AxiosResponse<D>) => boolean
-  getBackData?: (type: HandleEnum, res: UnionBack<D>) => unknown
-  getMessage?: (type: HandleEnum, res: UnionBack<D>) => string | undefined
+  getBackData?: (options: {
+    type: HandleEnum
+    res: UnionBack<D>
+    http: Restful<any>
+  }) => unknown
+  getMessage?: (options: {
+    type: HandleEnum
+    res: UnionBack<D>
+    http: Restful<any>
+  }) => string | undefined
 }
 
 export const PlainKey = Symbol('Plain')
@@ -320,6 +331,7 @@ export interface CombinedApi<T extends AnyFn> {
   (...args: Parameters<T>): ReturnType<T>
 }
 
+// if tuple's length more than 50, ts will give warning
 // export type ComputedResponse<T, Response> = Response extends
 export type ExtractAPI<T, R extends object = object> = T extends [
   infer F,
