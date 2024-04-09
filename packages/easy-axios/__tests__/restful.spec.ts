@@ -36,7 +36,6 @@ const { http } = defineEasyAxios<'tokenOutDate'>({
     baseURL: 'v1',
     timeout: 10,
   }),
-  interval: 40,
 })
 
 http.createDefaultStrategies((ins) => {
@@ -513,23 +512,28 @@ describe('resutful', async () => {
   })
 
   it('interval is ok', async () => {
-    const api = http.create<[defineAPI<'post', void, { name: string }>]>('./interval', [
-      'post()::/->post',
-    ])
+    const api = http.create<[defineAPI<'post', void, { name: string }>]>(
+      './interval',
+      ['post()::/->post'],
+    )
 
     const spy = vi.fn()
 
     api.post({
       __R_spy: spy,
+      ea_single: true,
     })()
     api.post({
       __R_spy: spy,
+      ea_single: true,
     })()
     api.post({
       __R_spy: spy,
+      ea_single: true,
     })()
     api.post({
       __R_spy: spy,
+      ea_single: true,
     })()
 
     return new Promise((resolve) => {
@@ -541,23 +545,37 @@ describe('resutful', async () => {
         ]
       `)
 
-      setTimeout(() => {
-        api.post({
-          __R_spy: spy,
-        })()
-
-        expect(spy.mock.calls).toMatchInlineSnapshot(`
-          [
-            [
-              "post+./interval/+{}+undefined",
-            ],
-            [
-              "post+./interval/+{}+undefined",
-            ],
-          ]
-        `)
-        resolve(true)
-      }, 50)
+      moxios.wait(() => {
+        const request = moxios.requests.mostRecent()
+        const serveResponse = {
+          success: true,
+          data: {
+            name: 'Rose',
+          },
+        }
+        request
+          .respondWith({
+            status: 200,
+            response: serveResponse,
+          })
+          .then(() => {
+            api.post({
+              __R_spy: spy,
+              ea_single: true,
+            })()
+            expect(spy.mock.calls).toMatchInlineSnapshot(`
+              [
+                [
+                  "post+./interval/+{}+undefined",
+                ],
+                [
+                  "post+./interval/+{}+undefined",
+                ],
+              ]
+            `)
+            resolve(true)
+          })
+      })
     })
   })
 })

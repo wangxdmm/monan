@@ -90,7 +90,6 @@ export interface IHttpConfig<T> {
   instance: AxiosInstance
   autoSetting: boolean
   errorFlag: string
-  interval: number
   codeHandler: ICodeHandler<T>[]
   request: (
     config: AxiosRequestConfig,
@@ -142,6 +141,7 @@ export interface SysError<T = any> {
 export type Config<D = any> = AxiosRequestConfig<D> & {
   __R_reverse?: boolean
   __R_spy?: AnyFn
+  ea_single?: boolean
   __R_interParam?: <T>(
     url: string,
     dataIn: T,
@@ -370,4 +370,5 @@ export type ExtractAPI<T, R extends object = object> = T extends [
 
 export type GenHandleFunc = <T>(
   response: () => BatchBackType<T>,
+  after?: AnyFn
 ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<T>>>

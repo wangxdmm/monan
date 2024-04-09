@@ -196,26 +196,31 @@ export class Restful<T> extends SetupAxios<T> {
             }, config)
           }
 
-          const requestToken: string = `${config.method}+${config.url}+${JSON.stringify(config.data)}+${JSON.stringify(
-            config.params,
-          )}`
+          let requestToken: string
 
-          if (this.config.interval) {
+          if (config.ea_single) {
+            requestToken = `${config.method}+${config.url}+${JSON.stringify(config.data)}+${JSON.stringify(
+              config.params,
+            )}`
+
             if (requestSet.has(requestToken)) {
-              return () =>(Promise.resolve({})) 
+              return () => Promise.resolve({})
             }
 
             requestSet.add(requestToken)
 
-            setTimeout(() => {
-              requestToken && requestSet.delete(requestToken)
-            }, this.config.interval)
+            // mark to test
+            config.__R_spy?.(requestToken)
           }
 
-          // mark to test
-          config.__R_spy?.(requestToken)
-
-          return this.genHandleFunc(() => this.instance(config))
+          return this.genHandleFunc(
+            () => this.instance(config),
+            () => {
+              config.ea_single &&
+                requestToken &&
+                requestSet.delete(requestToken)
+            },
+          )
         }
 
         callFn.is = monanSymbol

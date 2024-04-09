@@ -10,6 +10,7 @@ import type {
   UnionBack,
 } from './share'
 import { HandleEnum, handleEnumValues } from './share'
+import type { AnyFn } from '@monan/types'
 
 export const mesSort = [
   HandleEnum.SUCCESS,
@@ -132,11 +133,12 @@ export function genHandleResponse<T>(http: Restful<T>) {
     return resResult
   }
 
-  function genHandleFunc<T>(response: () => BatchBackType<T>) {
+  function genHandleFunc<T>(response: () => BatchBackType<T>, after?: AnyFn) {
     return (config?: HandleResponseConfig) =>
       new Promise<ResponseResult<UnionBack<T>>>((resolve) => {
         response().then((res) => {
           resolve(handleResponse(res, config))
+          after?.()
         })
       })
   }
