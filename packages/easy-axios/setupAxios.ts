@@ -52,14 +52,12 @@ export class SetupAxios<T> {
 
   init() {
     this.handleInstance(this.instance)
-    if (this.config.autoSetting === true)
-      this.setConfig()
+    if (this.config.autoSetting === true) this.setConfig()
   }
 
   // register common code handler
   registerDynamicHandler(name: T, fn: DynamicHandler<T>) {
-    if (isDef(name))
-      this.dynamicHanlder.set(name, fn)
+    if (isDef(name)) this.dynamicHanlder.set(name, fn)
   }
 
   registerHooks(name: string, fn: (config: Config) => Config) {
@@ -116,8 +114,7 @@ export class SetupAxios<T> {
   }
 
   setConfig() {
-    if (this.config.transIns)
-      this.config.transIns(this.instance, this)
+    if (this.config.transIns) this.config.transIns(this.instance, this)
   }
 
   handleInstance(instance: AxiosInstance) {
@@ -144,8 +141,8 @@ export class SetupAxios<T> {
       // TODO support async config
       this.dynamicRequestConfig.forEach((val) => {
         if (
-          val.when === true
-          || (isFunction(val.when) && val.when(processedConfig, this))
+          val.when === true ||
+          (isFunction(val.when) && val.when(processedConfig, this))
         )
           processedConfig = val.invoke(processedConfig)
       })
@@ -163,8 +160,7 @@ export class SetupAxios<T> {
 
   get handleResponse() {
     return (result: AxiosResponse) => {
-      if (this.config.response)
-        result = this.config.response(result, this)
+      if (this.config.response) result = this.config.response(result, this)
 
       return result
     }
@@ -190,12 +186,11 @@ export class SetupAxios<T> {
     for (let i = 0; i < codeHandler.length; i++) {
       const { on, async, handler, id } = codeHandler[i]
       if (
-        !on
-        || (isArray<number>(on) && on.includes(code))
-        || (isRegExp(on) && on.test(String(code)))
+        !on ||
+        (isArray<number>(on) && on.includes(code)) ||
+        (isRegExp(on) && on.test(String(code)))
       ) {
-        if (isRegExp(on))
-          on.lastIndex = 0
+        if (isRegExp(on)) on.lastIndex = 0
 
         const params: ICodeHandlerParam<T> = {
           code,
@@ -205,11 +200,9 @@ export class SetupAxios<T> {
           rowBack: { ...back },
           httpIns: this,
         }
-        if (id)
-          params.dynamicHandler = this.getDynamicHandler(id)
+        if (id) params.dynamicHandler = this.getDynamicHandler(id)
 
-        if (async)
-          return await handler(params)
+        if (async) return await handler(params)
 
         return handler(params)
       }
@@ -221,8 +214,8 @@ export class SetupAxios<T> {
 
   patchUrl<RequestParam = any>(urlIn, paramsIn: RequestParam, config?: Config) {
     if (paramsIn && !isEmptyObject(paramsIn)) {
-      const { __R_interParam = SetupAxios.interParam } = config || {}
-      const result = __R_interParam(urlIn, paramsIn, config?.__R_reverse)
+      const { __M_interParam = SetupAxios.interParam } = config || {}
+      const result = __M_interParam(urlIn, paramsIn, config?.__M_reverse)
       return result
     }
     return false
@@ -233,10 +226,10 @@ export class SetupAxios<T> {
     paramsIn?: R,
     config?: Config,
   ): {
-      url: string
-      dataOrParams: Partial<R>
-      originUrl: string
-    } {
+    url: string
+    dataOrParams: Partial<R>
+    originUrl: string
+  } {
     let url = urlIn
     let dataOrParams: Partial<R> = paramsIn || {}
     const result = this.patchUrl(urlIn, paramsIn, config)

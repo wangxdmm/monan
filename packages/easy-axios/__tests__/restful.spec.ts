@@ -520,20 +520,28 @@ describe('resutful', async () => {
     const spy = vi.fn()
 
     api.post({
-      __R_spy: spy,
-      ea_single: true,
+      __M_spy: spy,
+      monanOptions: {
+        single: true,
+      },
     })()
     api.post({
-      __R_spy: spy,
-      ea_single: true,
+      __M_spy: spy,
+      monanOptions: {
+        single: true,
+      },
     })()
     api.post({
-      __R_spy: spy,
-      ea_single: true,
+      __M_spy: spy,
+      monanOptions: {
+        single: true,
+      },
     })()
     api.post({
-      __R_spy: spy,
-      ea_single: true,
+      __M_spy: spy,
+      monanOptions: {
+        single: true,
+      },
     })()
 
     return new Promise((resolve) => {
@@ -560,8 +568,10 @@ describe('resutful', async () => {
           })
           .then(() => {
             api.post({
-              __R_spy: spy,
-              ea_single: true,
+              __M_spy: spy,
+              monanOptions: {
+                single: true,
+              },
             })()
             expect(spy.mock.calls).toMatchInlineSnapshot(`
               [

@@ -195,10 +195,11 @@ export class Restful<T> extends SetupAxios<T> {
               return acc
             }, config)
           }
+          const useSingle = this.config.single || config.monanOptions?.single
 
           let requestToken: string
 
-          if (config.ea_single) {
+          if (useSingle) {
             requestToken = `${config.method}+${config.url}+${JSON.stringify(config.data)}+${JSON.stringify(
               config.params,
             )}`
@@ -210,13 +211,13 @@ export class Restful<T> extends SetupAxios<T> {
             requestSet.add(requestToken)
 
             // mark to test
-            config.__R_spy?.(requestToken)
+            config.__M_spy?.(requestToken)
           }
 
           return this.genHandleFunc(
             () => this.instance(config),
             () => {
-              config.ea_single &&
+              useSingle &&
                 requestToken &&
                 requestSet.delete(requestToken)
             },
