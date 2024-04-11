@@ -23,6 +23,10 @@ export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
   defaultStrategies: Partial<DefaultStrategies> = {}
 
+  clearCache() {
+    requestSet.clear()
+  }
+
   createDefaultStrategies<D = ServerDefinedResponse>(
     strategiesCreator: (ins: this) => Partial<DefaultStrategies<D>>,
   ) {
