@@ -29,6 +29,10 @@
   },
   "dependencies": {
     "@monan/shared": "workspace:*",
-    "@monan/types": "workspace:*"
+    "@monan/types": "workspace:*",
+    "md5": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/md5": "^2.3.5"
   }
 }

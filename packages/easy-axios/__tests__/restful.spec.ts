@@ -548,7 +548,7 @@ describe('resutful', async () => {
       expect(spy.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "post+./interval/+{}+undefined",
+            "7d3ee720c97cc2bd30d912b39145b3f7",
           ],
         ]
       `)
@@ -576,10 +576,10 @@ describe('resutful', async () => {
             expect(spy.mock.calls).toMatchInlineSnapshot(`
               [
                 [
-                  "post+./interval/+{}+undefined",
+                  "7d3ee720c97cc2bd30d912b39145b3f7",
                 ],
                 [
-                  "post+./interval/+{}+undefined",
+                  "7d3ee720c97cc2bd30d912b39145b3f7",
                 ],
               ]
             `)

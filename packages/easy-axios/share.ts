@@ -91,6 +91,7 @@ export interface IHttpConfig<T> {
   autoSetting: boolean
   errorFlag: string
   single: boolean
+  salt: (config: Config) => string
   codeHandler: ICodeHandler<T>[]
   request: (
     config: AxiosRequestConfig,

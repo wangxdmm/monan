@@ -12,6 +12,7 @@ import type {
   defineAPI,
 } from './share'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
+import md5 from 'md5'
 
 const requestSet = new Set<string>()
 
@@ -204,6 +205,12 @@ export class Restful<T> extends SetupAxios<T> {
               config.params,
             )}`
 
+            if (this.config.salt) {
+              requestToken = `${this.config.salt(config)}+${requestToken}`
+            }
+
+            requestToken = md5(requestToken)
+
             if (requestSet.has(requestToken)) {
               return () => Promise.resolve({})
             }
@@ -217,9 +224,7 @@ export class Restful<T> extends SetupAxios<T> {
           return this.genHandleFunc(
             () => this.instance(config),
             () => {
-              useSingle &&
-                requestToken &&
-                requestSet.delete(requestToken)
+              useSingle && requestToken && requestSet.delete(requestToken)
             },
           )
         }
