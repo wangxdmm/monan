@@ -19,7 +19,7 @@ export function __CREATOR__<T extends Restful<any>>(
     defineAPI<'getDataByTypeName', { typeName: string }, { data: any[] }>,
     defineAPI<
       'getanyListForCharge',
-      { customerType: number; uniqueId: number },
+      { customerType: number, uniqueId: number },
       any[]
     >,
     defineAPI<'del', { id: number }>,
@@ -34,7 +34,7 @@ export function __CREATOR__<T extends Restful<any>>(
     defineAPI<'getBuildByInhousingId', { id: number }, any[]>,
     defineAPI<'getUnitByBuildId', { id: number }, any[]>,
     defineAPI<'getFloorByUnitId', { id: number }, any[]>,
-    defineAPI<'getHouseByUnitIdAndFloor', { id: number; floor: number }, any[]>,
+    defineAPI<'getHouseByUnitIdAndFloor', { id: number, floor: number }, any[]>,
     defineAPI<'getChargePlace', void, any[]>,
     defineAPI<'findArea', void, any[]>,
     defineAPI<'getInHousing', void, any[]>,
@@ -78,7 +78,7 @@ export function __CREATOR__<T extends Restful<any>>(
     defineAPI<'findAttach', { houseHolderId: number }, any[]>,
     defineAPI<
       'relationVirtualHouseCheck',
-      { slaveHouseId: string; meterId: string },
+      { slaveHouseId: string, meterId: string },
       any[]
     >,
   ]

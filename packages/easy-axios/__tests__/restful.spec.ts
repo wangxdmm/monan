@@ -17,7 +17,6 @@ import { defineEasyAxios } from '../defineEasyAxios'
 import type {
   Config,
   DefineResponseResult,
-  HandleEnum,
   defineAPI,
 } from '../share'
 
@@ -44,7 +43,8 @@ http.createDefaultStrategies((ins) => {
       return res.data?.success
     },
     getBackData: ({ res }) => {
-      if (ins.isSysError(res)) return res
+      if (ins.isSysError(res))
+        return res
       return res.data?.data
     },
     getMessage: ({ res }) => {
@@ -101,8 +101,8 @@ describe('resutful', async () => {
         .then(({ backData, result }) => {
           expectTypeOf(backData).toMatchTypeOf<
             | {
-                name: string
-              }
+              name: string
+            }
             | undefined
           >()
           expect(result).toBeTruthy()

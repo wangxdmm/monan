@@ -28,7 +28,8 @@ export function interParam<T, K extends keyof T>(
     matchs.forEach((param) => {
       const key: K = param.replace(/[{}]/gi, '') as K
       url = url.replace(param, String(data[key]))
-      if (!reserve) delete data[key]
+      if (!reserve)
+        delete data[key]
     })
   }
   return { url, data }
@@ -150,7 +151,7 @@ export type Config<D = any> = AxiosRequestConfig<D> & {
     url: string,
     dataIn: T,
     reverse?: boolean,
-  ) => { url: string; data: Partial<T> }
+  ) => { url: string, data: Partial<T> }
 }
 
 export type MessageTip = (
@@ -319,15 +320,15 @@ export interface MarkAsPartial<T> {
 
 export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
   ? [Params] extends [void]
-    ? [D] extends [void]
-      ? [config?: Config]
-      : [data: D, config?: Config<D>]
-    : [params: Params, config?: Config<D>]
+      ? [D] extends [void]
+          ? [config?: Config]
+          : [data: D, config?: Config<D>]
+      : [params: Params, config?: Config<D>]
   : Data extends [infer P]
     ? [params: P, config?: Config]
     : [Data] extends [void]
-      ? [config?: Config]
-      : [data: Data, config?: Config]
+        ? [config?: Config]
+        : [data: Data, config?: Config]
 
 export interface CombinedApi<T extends AnyFn> {
   is: typeof monanSymbol

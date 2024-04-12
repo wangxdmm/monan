@@ -52,7 +52,6 @@ describe('resutful', async () => {
       h: 'test',
     })
 
-
     const result_4 = easyTrans(
       { a: undefined, b: null, c: '', d: 0, g: '==', h: 'test' },
       { a: ['.', () => 20], b: 'b', h: '.' },

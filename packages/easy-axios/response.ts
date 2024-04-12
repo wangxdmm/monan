@@ -1,4 +1,5 @@
 import { isArray, isObject, isString } from '@monan/shared'
+import type { AnyFn } from '@monan/types'
 import type { Restful } from './restful'
 import type {
   BatchBackType,
@@ -10,7 +11,6 @@ import type {
   UnionBack,
 } from './share'
 import { HandleEnum, handleEnumValues } from './share'
-import type { AnyFn } from '@monan/types'
 
 export const mesSort = [
   HandleEnum.SUCCESS,
@@ -54,7 +54,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
         res,
         http,
       })
-    } else {
+    }
+    else {
       // resResult.response = res;
       if (!result) {
         resResult.error = res.data // getBackData!(HandleEnum.FAIL, res);
@@ -63,7 +64,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
           res,
           http,
         })
-      } else {
+      }
+      else {
         resResult.backData = getBackData?.({
           type: HandleEnum.SUCCESS,
           res,
@@ -80,7 +82,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
 
     resResult.notify = (messageOrOptions) => {
       const { sysError, result } = resResult
-      if (sysError && sysError.hasHandled) return
+      if (sysError && sysError.hasHandled)
+        return
 
       const mesHash = handleEnumValues.reduce(
         (cur, next) => {
@@ -92,12 +95,16 @@ export function genHandleResponse<T>(http: Restful<T>) {
       if (isObject(messageOrOptions)) {
         handleEnumValues.forEach((mes) => {
           const cur = messageOrOptions[mes]
-          if (isObject(cur)) Object.assign(mesHash[mes], cur)
-          else if (isString(cur)) mesHash[mes].message = mes
+          if (isObject(cur))
+            Object.assign(mesHash[mes], cur)
+          else if (isString(cur))
+            mesHash[mes].message = mes
         })
-      } else if (isString(messageOrOptions)) {
+      }
+      else if (isString(messageOrOptions)) {
         mesHash[HandleEnum.SUCCESS].message = messageOrOptions
-      } else if (isArray(messageOrOptions)) {
+      }
+      else if (isArray(messageOrOptions)) {
         mesSort.forEach((k, index) => {
           if (messageOrOptions[index] !== undefined)
             mesHash[k].message = messageOrOptions[index]
@@ -110,14 +117,15 @@ export function genHandleResponse<T>(http: Restful<T>) {
         http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR), {
           response: res.error.response,
         })
-      } else {
+      }
+      else {
         result
           ? http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS), {
-              response: res,
-            })
+            response: res,
+          })
           : http.showErrorMessageTip(getMessage(HandleEnum.FAIL), {
-              response: res,
-            })
+            response: res,
+          })
       }
     }
 

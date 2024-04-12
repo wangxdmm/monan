@@ -1,5 +1,6 @@
 import type { Method } from 'axios'
 import { get, isDef, isString, noop, set } from '@monan/shared'
+import md5 from 'md5'
 import { SetupAxios } from './setupAxios'
 import type {
   Config,
@@ -12,19 +13,26 @@ import type {
   defineAPI,
 } from './share'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
-import md5 from 'md5'
 
 const requestSet = new Set<string>()
+const abortControllerMap = new Map<string, AbortController>()
 
-export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES =
-  'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
+export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
+  = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
   defaultStrategies: Partial<DefaultStrategies> = {}
 
   clearCache() {
+    const keys = [...requestSet]
     requestSet.clear()
+
+    keys.forEach((s) => {
+      abortControllerMap.get(s)?.abort()
+    })
+
+    abortControllerMap.clear()
   }
 
   createDefaultStrategies<D = ServerDefinedResponse>(
@@ -88,7 +96,8 @@ export class Restful<T> extends SetupAxios<T> {
         // eslint-disable-next-line no-cond-assign
         if ((mayBeId = mayBeId?.trim())) {
           const injectParamReg = /{([^/.]+)}/g
-          if (!injectParamReg.test(mayBeId)) id = mayBeId
+          if (!injectParamReg.test(mayBeId))
+            id = mayBeId
           else throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
         }
       }
@@ -106,7 +115,8 @@ export class Restful<T> extends SetupAxios<T> {
       metaStr.split(',').forEach((m) => {
         const [k, v = true] = m.split(valueDiv)
         meta[k] = v
-        if (k === 'hooks' && isString(v) && isDef(v)) meta[k] = v.split('=>')
+        if (k === 'hooks' && isString(v) && isDef(v))
+          meta[k] = v.split('=>')
         else meta.hooks = []
       })
     }
@@ -135,28 +145,32 @@ export class Restful<T> extends SetupAxios<T> {
       let contentType
       const { timeout, makeInputAsParams: params, responseType } = meta
 
-      if (meta.contentType) contentType = meta.contentType.toUpperCase()
+      if (meta.contentType)
+        contentType = meta.contentType.toUpperCase()
 
       if (contentType && !get(configed, ['headers', ContentTypeKey])) {
-        ContentTypeEnum[contentType] &&
-          set(
-            configed,
-            ['headers', ContentTypeKey],
-            ContentTypeEnum[contentType],
-          )
+        ContentTypeEnum[contentType]
+        && set(
+          configed,
+          ['headers', ContentTypeKey],
+          ContentTypeEnum[contentType],
+        )
       }
 
-      if (params && !configed.params) set(configed, 'params', userInputData)
+      if (params && !configed.params)
+        set(configed, 'params', userInputData)
 
       // default userInputData is set to config.data
-      if (!params && !configed.data) set(configed, 'data', userInputData)
+      if (!params && !configed.data)
+        set(configed, 'data', userInputData)
 
       if (timeout && !configed.timeout)
         set(configed, 'timeout', Number.parseInt(timeout, 10))
 
       if (responseType && !configed.responseType)
         set(configed, 'responseType', responseType)
-    } else if (!configed.data) {
+    }
+    else if (!configed.data) {
       set(configed, 'data', userInputData)
     }
     return configed
@@ -167,8 +181,10 @@ export class Restful<T> extends SetupAxios<T> {
       | defineAPI<string, any, any>
       | Record<string, (...args) => DefineResponseResult<unknown>>
     )[],
-    P = {},
-  >(prefix: string, defs: string[]) {
+    P = object,
+  >(prefix: string,
+    defs: string[],
+  ) {
     const result = {}
     defs.forEach((def) => {
       const defMes = this.parseDef(def)
@@ -179,7 +195,8 @@ export class Restful<T> extends SetupAxios<T> {
           let userInputData
           if (meta?.noArgs) {
             config = args[0]
-          } else {
+          }
+          else {
             config = args[1]
             userInputData = args[0]
           }
@@ -196,7 +213,8 @@ export class Restful<T> extends SetupAxios<T> {
           if (hooks?.length) {
             config = hooks.reduce((acc, hookName) => {
               const hook = this.hooks.get(hookName)
-              if (hook) return hook(acc, this)
+              if (hook)
+                return hook(acc, this)
               return acc
             }, config)
           }
@@ -205,24 +223,29 @@ export class Restful<T> extends SetupAxios<T> {
           let requestToken: string
 
           if (useSingle) {
+            const controller = new AbortController()
+
             requestToken = `${config.method}+${config.url}+${JSON.stringify(config.data)}+${JSON.stringify(
               config.params,
             )}`
 
-            if (this.config.salt) {
+            if (this.config.salt)
               requestToken = `${this.config.salt(config)}+${requestToken}`
-            }
 
             requestToken = md5(requestToken)
 
-            if (requestSet.has(requestToken)) {
+            abortControllerMap.set(requestToken, controller)
+
+            if (requestSet.has(requestToken))
               return () => Promise.resolve({})
-            }
 
             requestSet.add(requestToken)
 
             // mark to test
             config.__M_spy?.(requestToken)
+
+            if (!config.signal)
+              config.signal = controller.signal
           }
 
           return this.genHandleFunc(
