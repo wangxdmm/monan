@@ -108,7 +108,7 @@ export class SetupAxios<T> {
   }
 
   isSysError(x: any): x is SysError {
-    return x[this.config.errorFlag] === true
+    return x?.[this.config.errorFlag] === true
   }
 
   getInstance() {
