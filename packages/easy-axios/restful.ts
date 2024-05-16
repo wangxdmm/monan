@@ -219,7 +219,9 @@ export class Restful<T> extends SetupAxios<T> {
             }, config)
           }
           const useSingle
-            = config.monanOptions?.single === true ? true : this.config.single
+            = config.monanOptions?.single !== undefined
+              ? config.monanOptions?.single
+              : this.config.single
 
           let requestToken: string
 
