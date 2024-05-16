@@ -69,7 +69,7 @@ export interface ICodeHandlerParam<T> {
   error: AxiosError
   ins: AxiosInstance | AxiosInstance[]
   back: Promise<SysError>
-  rowBack: SysError
+  rawBack: SysError
   httpIns: SetupAxios<T>
   dynamicHandler?: ICodeHandler<T>['handler']
 }
