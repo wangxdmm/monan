@@ -511,7 +511,7 @@ describe('resutful', async () => {
     expect(isMonanRequest(api.post)).toBe(true)
   })
 
-  it('interval is ok', async () => {
+  it('single is ok', async () => {
     const api = http.create<[defineAPI<'post', void, { name: string }>]>(
       './interval',
       ['post()::/->post'],
