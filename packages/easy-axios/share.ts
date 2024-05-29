@@ -252,6 +252,7 @@ export interface ResponseResult<
     : never,
   R = T extends AxiosResponse<infer K> ? K : never,
 > {
+  skip?: boolean
   result: boolean
   backData?: D
   // server response = result && response

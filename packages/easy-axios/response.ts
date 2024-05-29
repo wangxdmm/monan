@@ -37,6 +37,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
     )
     const { getBackData, getMessage, isSuccess } = config
     const resResult: ResponseResult<T> = {
+      // TODO improve type
+      skip: (res as any)?.__M_skip === true,
       result: isSysError(res) ? false : !!isSuccess?.(res),
       notify: () => ({}),
       response: isSysError(res) ? res.error.response! : res,

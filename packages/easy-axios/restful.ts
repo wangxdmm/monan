@@ -239,8 +239,12 @@ export class Restful<T> extends SetupAxios<T> {
 
             abortControllerMap.set(requestToken, controller)
 
-            if (requestSet.has(requestToken))
-              return () => Promise.resolve({})
+            if (requestSet.has(requestToken)) {
+              return () =>
+                Promise.resolve({
+                  __M_skip: true,
+                })
+            }
 
             requestSet.add(requestToken)
 

@@ -415,7 +415,7 @@ describe('resutful', async () => {
     type API = [defineAPI<'post', string, Blob>]
 
     const api = http.create<API>('.', [
-      'post::/->post::contentType->multipart,timeout->0,responseType->blob,contentType->multipart',
+      'post::/->post::contentType->multipart,responseType->blob,contentType->multipart',
     ])
 
     return new Promise((resolve) => {
