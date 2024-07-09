@@ -9,5 +9,5 @@ pnpm install @monan/types
 ## Usage
 
 ```typescript
-import type { Equal, AtLeast } from '@monan/types'
+
 ```

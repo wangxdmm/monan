@@ -19,30 +19,34 @@ async function work(
 ) {
   const { before, doTasks: task } = hooks
   cmdRcFile.build.DEBUG = isDebug
-  if (before)
+  if (before) {
     before()
+  }
   fs.writeFileSync(rcFile, JSON.stringify(cmdRcFile, null, 2))
-  if (task)
+  if (task) {
     await task()
+  }
 }
 
 async function runRollup(isWatch: boolean) {
-  if (isWatch)
+  if (isWatch) {
     await $$`pnpm exec env-cmd -e build rollup -c rollup.config.ts --configPlugin rollup-plugin-esbuild -w`
-
-  else
+  }
+  else {
     await $$`pnpm exec env-cmd -e build rollup -c rollup.config.ts --configPlugin rollup-plugin-esbuild`
+  }
 }
 
-(async () => {
+;(async () => {
   await work({
     before: () => {
       cmdRcFile.build.PRE = false
-      if (!isBuildAll)
+      if (!isBuildAll) {
         cmdRcFile.build.PKGS = builds
-
-      else
+      }
+      else {
         cmdRcFile.build.PKGS = []
+      }
     },
     doTasks: async () => {
       await runRollup(isWatch)

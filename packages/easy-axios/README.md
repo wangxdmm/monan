@@ -5,12 +5,12 @@
 ```typescript
 // main.ts
 import axios from 'axios'
-import { defineEasyAxios, type defineAPI } from '@monan/easy-axios'
+import { type defineAPI, defineEasyAxios } from '@monan/easy-axios'
 
 export type CodeHandlerTypes = 'tokenOutdate'
 const handlers: ICodeHandler<CodeHandlerTypes>[] = [
   {
-    on: /^5/gi,
+    on: /^5/g,
     handler: ({ error, back }) => {
       notice(friendlyGetMes(error))
       return back
@@ -33,7 +33,7 @@ const { http, genHandleFunc } = defineEasyAxios<CodeHandlerTypes>({
 })
 
 // register default strategies for all request
-http.createDefaultStrategies((ins) => DefaultStrategies)
+http.createDefaultStrategies(ins => DefaultStrategies)
 
 // dynamicly inject token
 http.registerDynamicRequestConfig('token', (config) => {

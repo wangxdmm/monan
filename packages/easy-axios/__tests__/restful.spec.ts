@@ -14,11 +14,7 @@ import { ContentTypeEnum, monanSymbol } from '../share'
 import { isMonanRequest } from '../is'
 import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../restful'
 import { defineEasyAxios } from '../defineEasyAxios'
-import type {
-  Config,
-  DefineResponseResult,
-  defineAPI,
-} from '../share'
+import type { Config, DefineResponseResult, defineAPI } from '../share'
 
 declare module '../share' {
   export interface ServerDefinedResponse<T = unknown, S = boolean> {
@@ -43,13 +39,15 @@ http.createDefaultStrategies((ins) => {
       return res.data?.success
     },
     getBackData: ({ res }) => {
-      if (ins.isSysError(res))
+      if (ins.isSysError(res)) {
         return res
+      }
       return res.data?.data
     },
     getMessage: ({ res }) => {
-      if (ins.isSysError(res))
+      if (ins.isSysError(res)) {
         return get(res, 'error.response.data.message', res.error.message)
+      }
 
       return res.data?.message
     },

@@ -2,15 +2,31 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu(
   {
+    formatters: true,
     unocss: true,
-    ignores: [],
-  },
-  {},
-  {
-    // Without `files`, they are general rules for all files
+    vue: true,
     rules: {
-      // curly: ['warn', 'all'],
-      'unused-imports/no-unused-imports-ts': 'error',
+      curly: [2, 'all'],
+      'unused-imports/no-unused-imports': 'error',
+      'eslint-comments/no-unlimited-disable': 'warn',
     },
+    stylistic: {
+      jsx: false,
+    },
+  },
+  {
+    ignores: [
+      '*.css',
+      'packages/*/*.mjs',
+      '**/wujie',
+      '**/dist',
+      '**/temp',
+      '**/volar.d.ts',
+      'packages/*/types',
+      '**/env.d.ts',
+      './types/**/*.ts',
+      'eslint.config.mjs',
+      "**/*.md"
+    ],
   },
 )

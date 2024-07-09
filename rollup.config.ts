@@ -30,11 +30,15 @@ interface Meta {
   rowPkg: Record<string, any>
 }
 
-const Bundler = JSON.parse(fs.readFileSync('./bundler.json').toString()) as unknown as Record<string, Meta>
+const Bundler = JSON.parse(
+  fs.readFileSync('./bundler.json').toString(),
+) as unknown as Record<string, Meta>
 const root = resolve('./')
 const configs: RollupOptions[] = []
 function getBundler(dir: string): Meta {
-  const pkgJson = JSON.parse(fs.readFileSync(join(dir, 'package.json')).toString())
+  const pkgJson = JSON.parse(
+    fs.readFileSync(join(dir, 'package.json')).toString(),
+  )
   const shortName = pkgJson.name.split(namespace)[1]
   const pkg = Bundler[shortName]
   pkg.name = pkgJson.name
@@ -50,7 +54,9 @@ function collectExternals(pkg: Record<string, any>, optimizeDeps: string[]) {
     .map(map => Object.keys(map))
     .flat()
     .forEach((k) => {
-      !optimizeDeps.includes(k) && externals.add(k)
+      if (!optimizeDeps.includes(k)) {
+        externals.add(k)
+      }
     })
 
   return [...externals] as string[]
@@ -74,10 +80,17 @@ const fixTypesPlugin = {
     let dtf = fs.readFileSync(resolve(`${sharedDist}/index.d.ts`), 'utf-8')
     dtf = dtf.replace(/from 'clone'/, 'from \'./clone\'')
     dtf = dtf.replace(/from 'throttle-debounce'/, 'from \'./throttle-debounce\'')
-    const dtsClone = fs.readFileSync(resolve(root, './node_modules/@types/clone/index.d.ts'))
-    const dtsThrottleDebounce = fs.readFileSync(resolve(root, './node_modules/@types/throttle-debounce/index.d.ts'))
+    const dtsClone = fs.readFileSync(
+      resolve(root, './node_modules/@types/clone/index.d.ts'),
+    )
+    const dtsThrottleDebounce = fs.readFileSync(
+      resolve(root, './node_modules/@types/throttle-debounce/index.d.ts'),
+    )
     fs.writeFileSync(`${sharedDist}/clone.d.ts`, dtsClone)
-    fs.writeFileSync(`${sharedDist}/throttle-debounce.d.ts`, dtsThrottleDebounce)
+    fs.writeFileSync(
+      `${sharedDist}/throttle-debounce.d.ts`,
+      dtsThrottleDebounce,
+    )
     fs.writeFileSync(`${sharedDist}/index.d.ts`, dtf)
   },
 }
@@ -93,21 +106,26 @@ const buildedLibs = fg
   })
   .sort((a, b) => {
     return getBundler(dirname(a)).sort - getBundler(dirname(b)).sort
-  }).filter((l) => {
-    return shouldBuildLibs.length === 0
+  })
+  .filter((l) => {
+    return (
+      shouldBuildLibs.length === 0
       || shouldBuildLibs.some(lib => l.includes(lib))
+    )
   })
 
-if (buildedLibs.length === 0)
+if (buildedLibs.length === 0) {
   throw new Error('No libs !!! Please check your PKGS env !!')
+}
 
 const globals: Record<string, string> = {}
 
 buildedLibs.forEach((lib) => {
   const meta = getBundler(dirname(lib))
 
-  if (meta.globalName)
+  if (meta.globalName) {
     globals[meta.rowPkg.name] = meta.globalName
+  }
 })
 
 buildedLibs.forEach((lib) => {
@@ -158,7 +176,9 @@ buildedLibs.forEach((lib) => {
     input: lib,
     external: collectExternals(meta.rowPkg, meta.optimizeDeps || []),
     output: {
-      file: isTypePkg(meta.type) ? `${dir}/dist/index.d.ts` : `${dir}/dist/index.d.ts`,
+      file: isTypePkg(meta.type)
+        ? `${dir}/dist/index.d.ts`
+        : `${dir}/dist/index.d.ts`,
     },
     plugins: [pluginDts, meta.name === '@monan/shared' ? fixTypesPlugin : null],
   })

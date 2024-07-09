@@ -10,79 +10,79 @@ import type {
 export function __CREATOR__<T extends Restful<any>>(
   http: T,
 ): ExtractAPI<
-  [
-    defineAPI<'getUserInfo', void, any>,
-    defineAPI<'getHeatinganyMonths', void, any>,
-    defineAPI<'getAllRunDept', void, any[]>,
-    defineAPI<'getDataByTypeCode', Pick<any, 'typeCode'>, { data: any[] }>,
-    defineAPI<'getDataByTypeCodes', { typeCode: string }, { data: any[] }>,
-    defineAPI<'getDataByTypeName', { typeName: string }, { data: any[] }>,
-    defineAPI<
-      'getanyListForCharge',
-      { customerType: number, uniqueId: number },
-      any[]
-    >,
-    defineAPI<'del', { id: number }>,
-    // TODO any type
-    defineAPI<'getChargeOrgTree', any, any[]>,
-    defineAPI<'getInHousingsForCharge', any, any[]>,
-    defineAPI<'getInHousingsByQueryForCharge', any, any[]>,
-    defineAPI<'loadAllManageArea', void, any[]>,
-    defineAPI<'loadAllSupplyHotStation', { codeId: number }, any[]>,
-    defineAPI<'loadAllStation', { codeId: number }, any[]>,
-    defineAPI<'loadAllSortedStation', void, any[]>,
-    defineAPI<'getBuildByInhousingId', { id: number }, any[]>,
-    defineAPI<'getUnitByBuildId', { id: number }, any[]>,
-    defineAPI<'getFloorByUnitId', { id: number }, any[]>,
-    defineAPI<'getHouseByUnitIdAndFloor', { id: number, floor: number }, any[]>,
-    defineAPI<'getChargePlace', void, any[]>,
-    defineAPI<'findArea', void, any[]>,
-    defineAPI<'getInHousing', void, any[]>,
-    defineAPI<'uploadImg', unknown, any[]>,
-    defineAPI<'getProductArea', void, string>,
-    defineAPI<'findUserAll', { isEnable?: number }, any[]>,
-    defineAPI<'getChargePlace', void, any[]>,
-    defineAPI<'findArea', void, any[]>,
-    defineAPI<'getInHousing', void, any[]>,
-    defineAPI<'uploadImg', unknown, any[]>,
-    defineAPI<'loadInhousingByAcStation', any, any[]>,
-    defineAPI<'getBuildByStationAndInhousingId', any, any[]>,
-    defineAPI<'getInhousingTreeForCharge', any, any>,
-    defineAPI<'findStationBranchByUnitId', any, any>,
-    defineAPI<'findStationBranchByHouseIds', number[], any[]>,
-    defineAPI<'loadChargingParamForModify', any, any[]>,
-    defineAPI<'loadMeterInfo', any, any[]>,
-    defineAPI<'loadChargingParam', any, any[]>,
-    defineAPI<
-      'downLoadAttachAll',
-      <T>(
-        param?: any,
-        config?: Config<T>,
-      ) => DefineResponseResult<ServerDefinedResponse>
-    >,
-    defineAPI<'getNewChargeOrgTree', any, any[]>,
-    defineAPI<'getChargeRulesConfigs', void, any>,
-    defineAPI<'isSendWorkList', void, boolean>,
-    defineAPI<'getHouseByUnitId', { id: number }, any[]>,
-    defineAPI<
-      'getCustomerAndAccountVOByHeatingNum',
-      { heatingNum: string },
-      any
-    >,
-    defineAPI<'getListBySeniorQuery', any, any>,
-    defineAPI<'deleteSeniorQueryCondition', { id: number }, void>,
-    defineAPI<'findSeniorQueryConditionList', { menuId: string }, any[]>,
-    defineAPI<'findAllResponsible', void, any[]>,
-    defineAPI<'getVirtualHouse', { houseId: number }, any[]>,
-    defineAPI<'findStationBranchByInhousingId', { inhousingId: number }, any[]>,
-    defineAPI<'findAttach', { houseHolderId: number }, any[]>,
-    defineAPI<
-      'relationVirtualHouseCheck',
-      { slaveHouseId: string, meterId: string },
-      any[]
-    >,
-  ]
-> {
+    [
+      defineAPI<'getUserInfo', void, any>,
+      defineAPI<'getHeatinganyMonths', void, any>,
+      defineAPI<'getAllRunDept', void, any[]>,
+      defineAPI<'getDataByTypeCode', Pick<any, 'typeCode'>, { data: any[] }>,
+      defineAPI<'getDataByTypeCodes', { typeCode: string }, { data: any[] }>,
+      defineAPI<'getDataByTypeName', { typeName: string }, { data: any[] }>,
+      defineAPI<
+        'getanyListForCharge',
+        { customerType: number, uniqueId: number },
+        any[]
+      >,
+      defineAPI<'del', { id: number }>,
+      // TODO any type
+      defineAPI<'getChargeOrgTree', any, any[]>,
+      defineAPI<'getInHousingsForCharge', any, any[]>,
+      defineAPI<'getInHousingsByQueryForCharge', any, any[]>,
+      defineAPI<'loadAllManageArea', void, any[]>,
+      defineAPI<'loadAllSupplyHotStation', { codeId: number }, any[]>,
+      defineAPI<'loadAllStation', { codeId: number }, any[]>,
+      defineAPI<'loadAllSortedStation', void, any[]>,
+      defineAPI<'getBuildByInhousingId', { id: number }, any[]>,
+      defineAPI<'getUnitByBuildId', { id: number }, any[]>,
+      defineAPI<'getFloorByUnitId', { id: number }, any[]>,
+      defineAPI<'getHouseByUnitIdAndFloor', { id: number, floor: number }, any[]>,
+      defineAPI<'getChargePlace', void, any[]>,
+      defineAPI<'findArea', void, any[]>,
+      defineAPI<'getInHousing', void, any[]>,
+      defineAPI<'uploadImg', unknown, any[]>,
+      defineAPI<'getProductArea', void, string>,
+      defineAPI<'findUserAll', { isEnable?: number }, any[]>,
+      defineAPI<'getChargePlace', void, any[]>,
+      defineAPI<'findArea', void, any[]>,
+      defineAPI<'getInHousing', void, any[]>,
+      defineAPI<'uploadImg', unknown, any[]>,
+      defineAPI<'loadInhousingByAcStation', any, any[]>,
+      defineAPI<'getBuildByStationAndInhousingId', any, any[]>,
+      defineAPI<'getInhousingTreeForCharge', any, any>,
+      defineAPI<'findStationBranchByUnitId', any, any>,
+      defineAPI<'findStationBranchByHouseIds', number[], any[]>,
+      defineAPI<'loadChargingParamForModify', any, any[]>,
+      defineAPI<'loadMeterInfo', any, any[]>,
+      defineAPI<'loadChargingParam', any, any[]>,
+      defineAPI<
+        'downLoadAttachAll',
+        <T>(
+          param?: any,
+          config?: Config<T>,
+        ) => DefineResponseResult<ServerDefinedResponse>
+      >,
+      defineAPI<'getNewChargeOrgTree', any, any[]>,
+      defineAPI<'getChargeRulesConfigs', void, any>,
+      defineAPI<'isSendWorkList', void, boolean>,
+      defineAPI<'getHouseByUnitId', { id: number }, any[]>,
+      defineAPI<
+        'getCustomerAndAccountVOByHeatingNum',
+        { heatingNum: string },
+        any
+      >,
+      defineAPI<'getListBySeniorQuery', any, any>,
+      defineAPI<'deleteSeniorQueryCondition', { id: number }, void>,
+      defineAPI<'findSeniorQueryConditionList', { menuId: string }, any[]>,
+      defineAPI<'findAllResponsible', void, any[]>,
+      defineAPI<'getVirtualHouse', { houseId: number }, any[]>,
+      defineAPI<'findStationBranchByInhousingId', { inhousingId: number }, any[]>,
+      defineAPI<'findAttach', { houseHolderId: number }, any[]>,
+      defineAPI<
+        'relationVirtualHouseCheck',
+        { slaveHouseId: string, meterId: string },
+        any[]
+      >,
+    ]
+  > {
   return http.create('', [
     'get::/getUserInfo',
     'get::/getHeatinganyMonths',

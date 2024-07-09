@@ -84,8 +84,9 @@ export function genHandleResponse<T>(http: Restful<T>) {
 
     resResult.notify = (messageOrOptions) => {
       const { sysError, result } = resResult
-      if (sysError && sysError.hasHandled)
+      if (sysError && sysError.hasHandled) {
         return
+      }
 
       const mesHash = handleEnumValues.reduce(
         (cur, next) => {
@@ -97,10 +98,12 @@ export function genHandleResponse<T>(http: Restful<T>) {
       if (isObject(messageOrOptions)) {
         handleEnumValues.forEach((mes) => {
           const cur = messageOrOptions[mes]
-          if (isObject(cur))
+          if (isObject(cur)) {
             Object.assign(mesHash[mes], cur)
-          else if (isString(cur))
+          }
+          else if (isString(cur)) {
             mesHash[mes].message = mes
+          }
         })
       }
       else if (isString(messageOrOptions)) {
@@ -108,8 +111,9 @@ export function genHandleResponse<T>(http: Restful<T>) {
       }
       else if (isArray(messageOrOptions)) {
         mesSort.forEach((k, index) => {
-          if (messageOrOptions[index] !== undefined)
+          if (messageOrOptions[index] !== undefined) {
             mesHash[k].message = messageOrOptions[index]
+          }
         })
       }
 
@@ -121,13 +125,16 @@ export function genHandleResponse<T>(http: Restful<T>) {
         })
       }
       else {
-        result
-          ? http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS), {
+        if (result) {
+          http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS), {
             response: res,
           })
-          : http.showErrorMessageTip(getMessage(HandleEnum.FAIL), {
+        }
+        else {
+          http.showErrorMessageTip(getMessage(HandleEnum.FAIL), {
             response: res,
           })
+        }
       }
     }
 
@@ -136,8 +143,9 @@ export function genHandleResponse<T>(http: Restful<T>) {
     // 2. showServerSuccessMessage is to determine whether to notify success message, and  default is false
     // 3. if result is false, we should always notify, and the only way to stub it is set notificationDelay to true
     if (!config.notificationDelay) {
-      if (config.showServerSuccessMessage || !resResult.result)
+      if (config.showServerSuccessMessage || !resResult.result) {
         resResult.notify()
+      }
     }
 
     return resResult

@@ -14,13 +14,15 @@ export function transAttr<T extends Record<string, any>, K extends keyof T>(
   obj: T,
   maps: TransMap<T, K>,
 ): T {
-  if (!isObject(obj))
+  if (!isObject(obj)) {
     return obj
+  }
 
   for (const [key, val] of Object.entries(maps)) {
     const { alterVal, when = _ => isUndef(_) } = val as any
-    if (when(obj[key]))
+    if (when(obj[key])) {
       obj[key as keyof T] = isFunction(alterVal) ? alterVal(obj[key]) : alterVal
+    }
   }
 
   return obj
@@ -37,8 +39,9 @@ export function toMap<T>(
   useIndex: true,
 ): Record<PrimitiveKey, number>
 export function toMap<T>(arr: Array<T>, path: HashPath<T>, useIndex?: boolean) {
-  if (!isArray(arr))
+  if (!isArray(arr)) {
     return null
+  }
 
   return arr.reduce(
     (cur, next, index) => {
@@ -47,9 +50,12 @@ export function toMap<T>(arr: Array<T>, path: HashPath<T>, useIndex?: boolean) {
         console.error(`${next} has invalid key ${key}`)
       }
       else {
-        if (useIndex)
+        if (useIndex) {
           cur[key] = index
-        else cur[key] = next
+        }
+        else {
+          cur[key] = next
+        }
       }
       return cur
     },
@@ -58,8 +64,9 @@ export function toMap<T>(arr: Array<T>, path: HashPath<T>, useIndex?: boolean) {
 }
 
 export function divideArray<T>(data: T[], dep = 2) {
-  if (!data || data.length === 0 || dep <= 0)
+  if (!data || data.length === 0 || dep <= 0) {
     return []
+  }
 
   const out: T[][] = []
   let arr: T[] = []
@@ -81,17 +88,21 @@ export function divideArray<T>(data: T[], dep = 2) {
 
 export function squashArr<T>(arr: T[]): T[] {
   // arr = [1, 1, 2, 2, 1, 3, 3] -> [1, 2, 1, 3]
-  if (!arr)
+  if (!arr) {
     return []
+  }
 
-  if (arr.length <= 1)
+  if (arr.length <= 1) {
     return arr
+  }
 
   return arr.reduce((cur, next) => {
-    if (cur.length === 0)
+    if (cur.length === 0) {
       cur.push(next)
-    else if (cur[cur.length - 1] !== next)
+    }
+    else if (cur[cur.length - 1] !== next) {
       cur.push(next)
+    }
 
     return cur
   }, [] as T[])
@@ -145,23 +156,31 @@ export function easyTrans<
     }
     else if (condition === EQUAL_FLAG) {
       const val = dataStore[k]
-      if (filter)
-        filter(val) && (pickedObj[k] = val)
-      else pickedObj[k] = val
+      if (filter?.(val)) {
+        pickedObj[k] = val
+      }
+      else {
+        pickedObj[k] = val
+      }
     }
     else {
       const val = dataStore[condition]
-      if (filter)
-        filter(val) && (pickedObj[k] = val)
-      else pickedObj[k] = val
+      if (filter?.(val)) {
+        pickedObj[k] = val
+      }
+      else {
+        pickedObj[k] = val
+      }
     }
   }
 
-  if (assignRest)
+  if (assignRest) {
     pickedObj = Object.assign({}, dataStore, pickedObj)
+  }
 
-  if (patchData)
+  if (patchData) {
     Object.assign(pickedObj, patchData)
+  }
 
   return pickedObj as Record<FinalKey, any>
 }

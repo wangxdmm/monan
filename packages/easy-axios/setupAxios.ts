@@ -52,14 +52,16 @@ export class SetupAxios<T> {
 
   init() {
     this.handleInstance(this.instance)
-    if (this.config.autoSetting === true)
+    if (this.config.autoSetting === true) {
       this.setConfig()
+    }
   }
 
   // register common code handler
   registerDynamicHandler(name: T, fn: DynamicHandler<T>) {
-    if (isDef(name))
+    if (isDef(name)) {
       this.dynamicHanlder.set(name, fn)
+    }
   }
 
   registerHooks(name: string, fn: (config: Config) => Config) {
@@ -116,8 +118,9 @@ export class SetupAxios<T> {
   }
 
   setConfig() {
-    if (this.config.transIns)
+    if (this.config.transIns) {
       this.config.transIns(this.instance, this)
+    }
   }
 
   handleInstance(instance: AxiosInstance) {
@@ -146,25 +149,29 @@ export class SetupAxios<T> {
         if (
           val.when === true
           || (isFunction(val.when) && val.when(processedConfig, this))
-        )
+        ) {
           processedConfig = val.invoke(processedConfig)
+        }
       })
-      if (this.config.request)
+      if (this.config.request) {
         processedConfig = this.config.request(processedConfig, this)
+      }
 
       return processedConfig
     }
   }
 
   getInterceptorOptions(type: InterceptorOptionsType) {
-    if (this.config.interceptorOptions)
+    if (this.config.interceptorOptions) {
       return this.config.interceptorOptions(type, this)
+    }
   }
 
   get handleResponse() {
     return (result: AxiosResponse) => {
-      if (this.config.response)
+      if (this.config.response) {
         result = this.config.response(result, this)
+      }
 
       return result
     }
@@ -194,8 +201,9 @@ export class SetupAxios<T> {
         || (isArray<number>(on) && on.includes(code))
         || (isRegExp(on) && on.test(String(code)))
       ) {
-        if (isRegExp(on))
+        if (isRegExp(on)) {
           on.lastIndex = 0
+        }
 
         const params: ICodeHandlerParam<T> = {
           code,
@@ -205,11 +213,13 @@ export class SetupAxios<T> {
           rawBack: { ...back },
           httpIns: this,
         }
-        if (id)
+        if (id) {
           params.dynamicHandler = this.getDynamicHandler(id)
+        }
 
-        if (async)
+        if (async) {
           return await handler(params)
+        }
 
         return handler(params)
       }

@@ -1,7 +1,4 @@
-/**
- * inspired by https://github.com/zzzhan/js-shortid
- * just add type support
- */
+/** Inspired by https://github.com/zzzhan/js-shortid just add type support */
 
 function paddingLeft(padding, val): string {
   return (padding + val).slice(-padding.length)
@@ -34,11 +31,13 @@ export class ShortId {
     const opt = this.opt
     const symbols = opt.symbols!
     let conversion = ''
-    if (base > symbols.length || base <= 1)
+    if (base > symbols.length || base <= 1) {
       return false
+    }
 
     while (decimal >= 1) {
-      conversion = symbols[decimal - base * Math.floor(decimal / base)] + conversion
+      conversion
+        = symbols[decimal - base * Math.floor(decimal / base)] + conversion
       decimal = Math.floor(decimal / base)
     }
     return base < 11 ? Number.parseInt(conversion) : conversion
@@ -62,7 +61,8 @@ export class ShortId {
     const interval = opt.interval
     const initime = opt.initTime
     // default millisecond since init time
-    const elapsed = interval > 0 ? Math.floor((new Date().getTime() - initime) / interval) : 0
+    const elapsed
+      = interval > 0 ? Math.floor((new Date().getTime() - initime) / interval) : 0
     const salts = this.salts()
     return elapsed === 0 ? salts : this.toBase(elapsed, BASE) + salts
   }

@@ -23,13 +23,14 @@ export function interParam<T, K extends keyof T>(
 ) {
   let url = urlIn
   const data = isObject(dataIn) ? { ...dataIn } : dataIn
-  const matchs = url.match(/{([^/.]+)}/g)
+  const matchs = url.match(/\{([^/.]+)\}/g)
   if (matchs?.length) {
     matchs.forEach((param) => {
-      const key: K = param.replace(/[{}]/gi, '') as K
+      const key: K = param.replace(/[{}]/g, '') as K
       url = url.replace(param, String(data[key]))
-      if (!reserve)
+      if (!reserve) {
         delete data[key]
+      }
     })
   }
   return { url, data }
@@ -347,29 +348,29 @@ export type ExtractAPI<T, R extends object = object> = T extends [
     ? Id extends string
       ? DataOrDefinition extends (...args: any[]) => any
         ? ExtractAPI<
-            Rest,
-            {
-              [k in Id | keyof R]: k extends Id
-                ? DataOrDefinition
-                : k extends keyof R
-                  ? R[k]
-                  : never
-            }
-          >
+          Rest,
+          {
+            [k in Id | keyof R]: k extends Id
+              ? DataOrDefinition
+              : k extends keyof R
+                ? R[k]
+                : never
+          }
+        >
         : ExtractAPI<
-            Rest,
-            {
-              [k in Id | keyof R]: k extends Id
-                ? CombinedApi<
-                    <const T extends DefineRequestFuncParams<DataOrDefinition>>(
-                      ...p: T
-                    ) => DefineResponseResult<Response>
-                  >
-                : k extends keyof R
-                  ? R[k]
-                  : never
-            }
-          >
+          Rest,
+          {
+            [k in Id | keyof R]: k extends Id
+              ? CombinedApi<
+                <const T extends DefineRequestFuncParams<DataOrDefinition>>(
+                  ...p: T
+                ) => DefineResponseResult<Response>
+              >
+              : k extends keyof R
+                ? R[k]
+                : never
+          }
+        >
       : ExtractAPI<Rest, R> // skip
     : F
   : R // return Result

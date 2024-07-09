@@ -9,7 +9,10 @@ import { $$ } from './execa'
 
 const root = path.resolve(__dirname, '../')
 
-interface Info { pkg: Record<string, string>, dir: string }
+interface Info {
+  pkg: Record<string, string>
+  dir: string
+}
 
 const allPkgs = fg
   .sync(['./**/package.json'], {
@@ -22,11 +25,13 @@ const allPkgs = fg
       {},
       {
         get(_target, key) {
-          if (key === 'pkg')
+          if (key === 'pkg') {
             return JSON.parse(fs.readFileSync(pkg, 'utf-8'))
+          }
 
-          if (key === 'dir')
+          if (key === 'dir') {
             return path.resolve(root, path.dirname(pkg))
+          }
         },
       },
     ) as Info
@@ -51,16 +56,18 @@ const commits: string[] = []
       })),
     ],
     result(names: string[]) {
-      if (names.includes('all'))
+      if (names.includes('all')) {
         return allPkgs
-
-      else
+      }
+      else {
         return allPkgs.filter(({ pkg }) => names.includes(pkg.name))
+      }
     },
   }).run()
 
-  if (releasePKGS.length)
+  if (releasePKGS.length) {
     await $$`pnpm build`
+  }
 
   for (let i = 0; i < releasePKGS.length; i++) {
     const { pkg, dir } = releasePKGS[i]

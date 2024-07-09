@@ -42,11 +42,13 @@ export function get<T = any>(
     },
   }
 
-  if (isFunction(conditionOrConfig))
+  if (isFunction(conditionOrConfig)) {
     config.condition = conditionOrConfig
+  }
 
-  if (isObject<GetConfig>(conditionOrConfig))
+  if (isObject<GetConfig>(conditionOrConfig)) {
     Object.assign(config, conditionOrConfig)
+  }
 
   if (isUndef(source)) {
     if (alterVal === undefined) {
@@ -74,19 +76,24 @@ export function get<T = any>(
         : path
     : pathResolve(path)
 
-  if (resolvedPath.length === 0)
+  if (resolvedPath.length === 0) {
     return emptyPathBack()
+  }
 
   let result = source
   for (let i = 0; i < resolvedPath.length; i++) {
     const curPath = resolvedPath[i]
-    if (isString(curPath) && curPath.trim() === '')
+    if (isString(curPath) && curPath.trim() === '') {
       continue
+    }
 
     if (isUndef(curPath)) {
-      if (!skipNullable)
+      if (!skipNullable) {
         throw new Error(`The key you passed can not be ${curPath}`)
-      else continue
+      }
+      else {
+        continue
+      }
     }
 
     const out = i === 0 ? source[curPath] : result[curPath]

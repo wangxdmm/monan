@@ -85,6 +85,7 @@ export class Restful<T> extends SetupAxios<T> {
 
     if (url) {
       ;[url, id] = url.split(valueDiv)
+      // eslint-disable-next-line ts/no-unused-expressions
       url && (url = url.trim())
       if (url.slice(-1) === '?') {
         meta.makeInputAsParams = true
@@ -95,10 +96,14 @@ export class Restful<T> extends SetupAxios<T> {
         let mayBeId = url.split('/').pop()
         // eslint-disable-next-line no-cond-assign
         if ((mayBeId = mayBeId?.trim())) {
-          const injectParamReg = /{([^/.]+)}/g
-          if (!injectParamReg.test(mayBeId))
+          // eslint-disable-next-line regexp/no-unused-capturing-group, regexp/no-useless-flag
+          const injectParamReg = /\{([^/.]+)\}/g
+          if (!injectParamReg.test(mayBeId)) {
             id = mayBeId
-          else throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
+          }
+          else {
+            throw new Error(WHEN_INJECT_PARAM_NO_ID_ERROR_DES)
+          }
         }
       }
 
@@ -115,17 +120,21 @@ export class Restful<T> extends SetupAxios<T> {
       metaStr.split(',').forEach((m) => {
         const [k, v = true] = m.split(valueDiv)
         meta[k] = v
-        if (k === 'hooks' && isString(v) && isDef(v))
+        if (k === 'hooks' && isString(v) && isDef(v)) {
           meta[k] = v.split('=>')
-        else meta.hooks = []
+        }
+        else {
+          meta.hooks = []
+        }
       })
     }
 
     // `data` is the data to be sent as the request body
     // Only applicable for request methods 'PUT', 'POST', 'DELETE , and 'PATCH'
     // https://github.com/axios/axios
-    if (!['put', 'post', 'delete', 'patch'].includes(method))
+    if (!['put', 'post', 'delete', 'patch'].includes(method)) {
       meta.makeInputAsParams = true
+    }
 
     return {
       id,
@@ -145,30 +154,34 @@ export class Restful<T> extends SetupAxios<T> {
       let contentType
       const { timeout, makeInputAsParams: params, responseType } = meta
 
-      if (meta.contentType)
+      if (meta.contentType) {
         contentType = meta.contentType.toUpperCase()
-
-      if (contentType && !get(configed, ['headers', ContentTypeKey])) {
-        ContentTypeEnum[contentType]
-        && set(
-          configed,
-          ['headers', ContentTypeKey],
-          ContentTypeEnum[contentType],
-        )
       }
 
-      if (params && !configed.params)
+      if (
+        contentType
+        && !get(configed, ['headers', ContentTypeKey])
+        && ContentTypeEnum[contentType]
+      ) {
+        set(configed, ['headers', ContentTypeKey], ContentTypeEnum[contentType])
+      }
+
+      if (params && !configed.params) {
         set(configed, 'params', userInputData)
+      }
 
       // default userInputData is set to config.data
-      if (!params && !configed.data)
+      if (!params && !configed.data) {
         set(configed, 'data', userInputData)
+      }
 
-      if (timeout && !configed.timeout)
+      if (timeout && !configed.timeout) {
         set(configed, 'timeout', Number.parseInt(timeout, 10))
+      }
 
-      if (responseType && !configed.responseType)
+      if (responseType && !configed.responseType) {
         set(configed, 'responseType', responseType)
+      }
     }
     else if (!configed.data) {
       set(configed, 'data', userInputData)
@@ -213,8 +226,9 @@ export class Restful<T> extends SetupAxios<T> {
           if (hooks?.length) {
             config = hooks.reduce((acc, hookName) => {
               const hook = this.hooks.get(hookName)
-              if (hook)
+              if (hook) {
                 return hook(acc, this)
+              }
               return acc
             }, config)
           }
@@ -232,8 +246,9 @@ export class Restful<T> extends SetupAxios<T> {
               config.params,
             )}`
 
-            if (this.config.salt)
+            if (this.config.salt) {
               requestToken = `${this.config.salt(config)}+${requestToken}`
+            }
 
             requestToken = md5(requestToken)
 
@@ -251,14 +266,17 @@ export class Restful<T> extends SetupAxios<T> {
             // mark to test
             config.__M_spy?.(requestToken)
 
-            if (!config.signal)
+            if (!config.signal) {
               config.signal = controller.signal
+            }
           }
 
           return this.genHandleFunc(
             () => this.instance(config),
             () => {
-              useSingle && requestToken && requestSet.delete(requestToken)
+              if (useSingle && requestToken) {
+                requestSet.delete(requestToken)
+              }
             },
           )
         }

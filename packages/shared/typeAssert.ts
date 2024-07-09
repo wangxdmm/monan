@@ -1,8 +1,5 @@
 import type { AnyFn, PrimitiveKey } from '@monan/types'
-
-export function getType(source: any): string {
-  return Object.prototype.toString.call(source).slice('[object '.length, -1)
-}
+import { getType } from './share'
 
 export function isArray<T>(x: any): x is Array<T> {
   return getType(x) === 'Array'
@@ -49,7 +46,9 @@ export function isEmpty<T = null | undefined | ''>(x: any): x is T {
   return [null, undefined, ''].includes(x)
 }
 
-export function notEmpty<T>(x: T): x is T extends (null | undefined | '') ? never : T {
+export function notEmpty<T>(
+  x: T,
+): x is T extends null | undefined | '' ? never : T {
   return !isEmpty(x)
 }
 
@@ -70,14 +69,15 @@ export function isEmptyObject<T = object>(x: any): x is T {
   for (const attr in x) {
     /* istanbul ignore else */
     // eslint-disable-next-line no-prototype-builtins
-    if (x.hasOwnProperty && x.hasOwnProperty(attr))
+    if (x.hasOwnProperty && x.hasOwnProperty(attr)) {
       flag = false
+    }
   }
   return flag
 }
 
 export function isNumberLike(x: any): x is number {
-  return /^\d+$/gi.test(x)
+  return /^\d+$/.test(x)
 }
 
 export function isPromise<T = any>(x: any): x is Promise<T> {
