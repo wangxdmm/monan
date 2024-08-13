@@ -7,13 +7,14 @@ import type { OutputOptions, RollupOptions } from 'rollup'
 import dts from 'rollup-plugin-dts'
 import esbuild, { minify } from 'rollup-plugin-esbuild'
 import { PluginPure as pure } from 'rollup-plugin-pure'
+import pkg from 'typescript'
+import { meta } from './scripts/meta'
 
 // TODO why?
 // [!] SyntaxError: Named export 'ModuleResolutionKind' not found. The requested module 'typescript' is a CommonJS module, which may not support all module.exports as named exports.
 // CommonJS modules can always be imported via the default export, for example using:
 // import pkg from 'typescript';
 // const { ModuleResolutionKind } = pkg;
-import pkg from 'typescript'
 
 const { ModuleResolutionKind } = pkg
 
@@ -105,7 +106,10 @@ const buildedLibs = fg
     cwd: root,
   })
   .sort((a, b) => {
-    return getBundler(dirname(a)).sort - getBundler(dirname(b)).sort
+    return (
+      meta[getBundler(dirname(a)).name]?.sort
+      - meta[getBundler(dirname(b)).name].sort
+    )
   })
   .filter((l) => {
     return (

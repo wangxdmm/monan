@@ -6,6 +6,7 @@ import consola from 'consola'
 import fg from 'fast-glob'
 import eq from 'enquirer'
 import { $$ } from './execa'
+import { meta } from './meta'
 
 const root = path.resolve(__dirname, '../')
 
@@ -50,10 +51,18 @@ const commits: string[] = []
         name: 'all',
         value: allPkgs,
       },
-      ...allPkgs.map(({ pkg }) => ({
-        name: pkg.name,
-        value: pkg.name,
-      })),
+      ...allPkgs
+        .map(({ pkg }) => {
+          console.log(pkg.name)
+          return {
+            name: pkg.name,
+            value: pkg.name,
+            sort: meta[pkg.name].sort,
+          }
+        })
+        .sort((a, b) => {
+          return a.sort - b.sort
+        }),
     ],
     result(names: string[]) {
       if (names.includes('all')) {
