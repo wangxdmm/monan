@@ -6,6 +6,9 @@
     "useDefineForClassFields": true,
     "baseUrl": "./",
     "rootDir": "./",
+    "customConditions": [
+      "development"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {

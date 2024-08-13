@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { easyTrans, get, isDef, transAttr } from '..'
+import { easyTrans, get, isDef, transAttr } from '../index'
 
-describe('resutful', async () => {
+describe('object', async () => {
   it('transAttr', () => {
     const obj: { a?: number } = {}
     const back = transAttr(obj, { a: { alterVal: 22 } })

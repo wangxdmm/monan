@@ -546,7 +546,7 @@ describe('resutful', async () => {
       expect(spy.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "7d3ee720c97cc2bd30d912b39145b3f7",
+            "2mbTpHIaWD",
           ],
         ]
       `)
@@ -574,16 +574,50 @@ describe('resutful', async () => {
             expect(spy.mock.calls).toMatchInlineSnapshot(`
               [
                 [
-                  "7d3ee720c97cc2bd30d912b39145b3f7",
+                  "2mbTpHIaWD",
                 ],
                 [
-                  "7d3ee720c97cc2bd30d912b39145b3f7",
+                  "2mbTpHIaWD",
                 ],
               ]
             `)
             resolve(true)
           })
       })
+    })
+  })
+
+  it('abort is ok', () => {
+    const api = http.create<
+      [defineAPI<'post', { code: number }, { name: string }>]
+    >('.', ['post::/->post'])
+
+    return new Promise((resolve) => {
+      const req = api.post({ code: 1 })
+      req().then((s) => {
+        expect(s.sysError?.error).toMatchInlineSnapshot(
+          `[CanceledError: canceled]`,
+        )
+      })
+
+      moxios.wait(() => {
+        const request = moxios.requests.mostRecent()
+        setTimeout(() => {
+          request
+            .respondWith({
+              status: 200,
+            })
+            .then(() => {
+              expect(request.config.data).toMatchInlineSnapshot(`"{"code":1}"`)
+              resolve(true)
+            })
+        })
+      }, 4000)
+
+      setTimeout(() => {
+        http.abort(req.token)
+        expect(req.token).toMatchInlineSnapshot(`"iqPzNa0aB5"`)
+      }, 2000)
     })
   })
 })

@@ -165,10 +165,8 @@ export function easyTrans<
     }
     else {
       const val = dataStore[condition]
-      if (filter?.(val)) {
-        pickedObj[k] = val
-      }
-      else {
+
+      if (filter?.(val) === true || filter === undefined) {
         pickedObj[k] = val
       }
     }

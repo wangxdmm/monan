@@ -7,14 +7,20 @@ import type {
   Method,
 } from 'axios'
 import type { AnyFn, Equal } from '@monan/types'
-import { isObject } from '@monan/shared'
+import { isDef, isObject } from '@monan/shared'
 import type { SetupAxios } from './setupAxios'
 import type { Restful } from './restful'
 
 export const monanSymbol = Symbol('__monan_axios__')
 export const ContentTypeKey = 'Content-Type'
 
-export type DefHook<T> = (config: Config, ins: SetupAxios<T>) => Config
+export type DefHook<T> = (
+  config: Config,
+  ins: SetupAxios<T>,
+  options?: {
+    requestToken: string
+  },
+) => Config
 
 export function interParam<T, K extends keyof T>(
   urlIn: string,
@@ -27,9 +33,16 @@ export function interParam<T, K extends keyof T>(
   if (matchs?.length) {
     matchs.forEach((param) => {
       const key: K = param.replace(/[{}]/g, '') as K
-      url = url.replace(param, String(data[key]))
-      if (!reserve) {
-        delete data[key]
+      if (isDef(data[key])) {
+        url = url.replace(param, String(data[key]))
+        if (!reserve) {
+          delete data[key]
+        }
+      }
+      else {
+        console.error(
+          `[easyAxios/interParam]: ${key as string} is ${data[key]}, Please check.`,
+        )
       }
     })
   }
@@ -147,6 +160,7 @@ export type Config<D = any> = AxiosRequestConfig<D> & {
   __M_spy?: AnyFn
   monanOptions?: {
     single?: boolean
+    abort?: boolean
   }
   __M_interParam?: <T>(
     url: string,
@@ -312,9 +326,12 @@ export type WrapResponse<T> =
       ? P
       : ServerDefinedResponse<T>
 
-export type DefineResponseResult<T> = (
-  config?: HandleResponseConfig,
-) => Promise<ResponseResult<UnionBack<WrapResponse<T>>>>
+export interface DefineResponseResult<T> {
+  (
+    config?: HandleResponseConfig,
+  ): Promise<ResponseResult<UnionBack<WrapResponse<T>>>>
+  token: string
+}
 
 export interface MarkAsPartial<T> {
   value: T
@@ -376,6 +393,9 @@ export type ExtractAPI<T, R extends object = object> = T extends [
   : R // return Result
 
 export type GenHandleFunc = <T>(
-  response: () => BatchBackType<T>,
+  response: {
+    (): BatchBackType<T>
+    token: string
+  },
   after?: AnyFn,
 ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<T>>>

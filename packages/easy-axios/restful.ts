@@ -1,6 +1,6 @@
 import type { Method } from 'axios'
 import { get, isDef, isString, noop, set } from '@monan/shared'
-import md5 from 'md5'
+import { hash } from 'ohash'
 import { SetupAxios } from './setupAxios'
 import type {
   Config,
@@ -14,25 +14,28 @@ import type {
 } from './share'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
 
-const requestSet = new Set<string>()
-const abortControllerMap = new Map<string, AbortController>()
-
 export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
   = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
   defaultStrategies: Partial<DefaultStrategies> = {}
+  requestSet = new Set<string>()
+  abortControllerMap = new Map<string, AbortController>()
+
+  abort(token: string) {
+    this.abortControllerMap.get(token)?.abort()
+  }
 
   clearCache() {
-    const keys = [...requestSet]
-    requestSet.clear()
+    const keys = [...this.requestSet]
+    this.requestSet.clear()
 
     keys.forEach((s) => {
-      abortControllerMap.get(s)?.abort()
+      this.abortControllerMap.get(s)?.abort()
     })
 
-    abortControllerMap.clear()
+    this.abortControllerMap.clear()
   }
 
   createDefaultStrategies<D = ServerDefinedResponse>(
@@ -218,67 +221,72 @@ export class Restful<T> extends SetupAxios<T> {
             userInputData,
             config,
           )
+
           config = this.patchConfigByMeta(dataOrParams, config, meta)
           config.url = `${prefix}${url}`
           config.method = method
+
           const { hooks } = meta || {}
-          // mark hooks to hanlder def
-          if (hooks?.length) {
-            config = hooks.reduce((acc, hookName) => {
-              const hook = this.hooks.get(hookName)
-              if (hook) {
-                return hook(acc, this)
-              }
-              return acc
-            }, config)
-          }
           const useSingle
             = config.monanOptions?.single !== undefined
               ? config.monanOptions?.single
               : this.config.single
+          const abort = config.monanOptions?.abort !== false
+          const requestToken: string = hash({
+            m: config.method,
+            u: config.url,
+            d: config.data,
+            p: config.params,
+            s: this.config.salt?.(config),
+          })
 
-          let requestToken: string
-
-          if (useSingle) {
+          if (abort) {
             const controller = new AbortController()
-
-            requestToken = `${config.method}+${config.url}+${JSON.stringify(config.data)}+${JSON.stringify(
-              config.params,
-            )}`
-
-            if (this.config.salt) {
-              requestToken = `${this.config.salt(config)}+${requestToken}`
-            }
-
-            requestToken = md5(requestToken)
-
-            abortControllerMap.set(requestToken, controller)
-
-            if (requestSet.has(requestToken)) {
-              return () =>
-                Promise.resolve({
-                  __M_skip: true,
-                })
-            }
-
-            requestSet.add(requestToken)
-
-            // mark to test
-            config.__M_spy?.(requestToken)
+            this.abortControllerMap.set(requestToken, controller)
 
             if (!config.signal) {
               config.signal = controller.signal
             }
           }
 
-          return this.genHandleFunc(
-            () => this.instance(config),
-            () => {
-              if (useSingle && requestToken) {
-                requestSet.delete(requestToken)
+          if (useSingle) {
+            if (this.requestSet.has(requestToken)) {
+              return () =>
+                Promise.resolve({
+                  __M_skip: true,
+                })
+            }
+
+            this.requestSet.add(requestToken)
+            // mark to test
+            config.__M_spy?.(requestToken)
+          }
+
+          // mark hooks to hanlder def
+          if (hooks?.length) {
+            config = hooks.reduce((acc, hookName) => {
+              const hook = this.hooks.get(hookName)
+              if (hook) {
+                return hook(acc, this, {
+                  requestToken,
+                })
               }
-            },
-          )
+              return acc
+            }, config)
+          }
+
+          const fn = () => this.instance(config)
+
+          fn.token = requestToken
+
+          return this.genHandleFunc(fn, () => {
+            if (requestToken) {
+              this.abortControllerMap.delete(requestToken)
+              if (useSingle) {
+                this.requestSet.delete(requestToken)
+              }
+            }
+          })
         }
 
         callFn.is = monanSymbol

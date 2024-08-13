@@ -3,7 +3,10 @@
   "version": "1.0.4",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": {
+        "development": "./index.ts",
+        "default": "./dist/index.d.ts"
+      },
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
       "default": "./dist/index.mjs"

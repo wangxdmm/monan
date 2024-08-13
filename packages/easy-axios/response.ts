@@ -44,6 +44,7 @@ export function genHandleResponse<T>(http: Restful<T>) {
       response: isSysError(res) ? res.error.response! : res,
     }
     const { result } = resResult
+
     if (isSysError(res)) {
       // resResult.response = res.error.response;
       resResult.sysError = getBackData?.({
@@ -151,14 +152,24 @@ export function genHandleResponse<T>(http: Restful<T>) {
     return resResult
   }
 
-  function genHandleFunc<T>(response: () => BatchBackType<T>, after?: AnyFn) {
-    return (config?: HandleResponseConfig) =>
+  function genHandleFunc<T>(
+    response: {
+      (): BatchBackType<T>
+      token: string
+    },
+    after?: AnyFn,
+  ) {
+    const fn = (config?: HandleResponseConfig) =>
       new Promise<ResponseResult<UnionBack<T>>>((resolve) => {
         response().then((res) => {
           resolve(handleResponse(res, config))
           after?.()
         })
       })
+
+    fn.token = response.token
+
+    return fn
   }
 
   http.updateHandleFunc(genHandleFunc)
