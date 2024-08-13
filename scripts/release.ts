@@ -37,6 +37,9 @@ const allPkgs = fg
       },
     ) as Info
   })
+  .sort((a, b) => {
+    return meta[a.pkg.name].sort - meta[b.pkg.name].sort
+  })
 
 // record commits message
 const commits: string[] = []
@@ -51,18 +54,13 @@ const commits: string[] = []
         name: 'all',
         value: allPkgs,
       },
-      ...allPkgs
-        .map(({ pkg }) => {
-          console.log(pkg.name)
-          return {
-            name: pkg.name,
-            value: pkg.name,
-            sort: meta[pkg.name].sort,
-          }
-        })
-        .sort((a, b) => {
-          return a.sort - b.sort
-        }),
+      ...allPkgs.map(({ pkg }) => {
+        console.log(pkg.name)
+        return {
+          name: pkg.name,
+          value: pkg.name,
+        }
+      }),
     ],
     result(names: string[]) {
       if (names.includes('all')) {
