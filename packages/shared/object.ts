@@ -1,4 +1,5 @@
 import type { PrimitiveKey } from '@monan/types'
+import copy from 'fast-copy'
 import { isArray, isDef, isFunction, isObject, isUndef } from './typeAssert'
 import { get } from './get'
 
@@ -181,4 +182,9 @@ export function easyTrans<
   }
 
   return pickedObj as Record<FinalKey, any>
+}
+
+// https://github.com/planttheidea/fast-copy/blob/master/LICENSE
+export function clone<T>(x: T): T {
+  return copy(x)
 }

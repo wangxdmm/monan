@@ -1,5 +1,6 @@
 {
   "name": "@monan/easy-axios",
+  "type": "module",
   "version": "1.1.6",
   "exports": {
     ".": {
@@ -8,16 +9,13 @@
         "default": "./dist/index.d.ts"
       },
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
       "default": "./dist/index.mjs"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*",
     "./*": "./*"
   },
-  "module": "dist/index.esm.js",
-  "unpkg": "dist/index.umd.js",
-  "jsdelivr": "dist/index.umd.js",
+  "module": "dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "README.md",

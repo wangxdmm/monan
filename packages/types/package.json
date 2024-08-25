@@ -1,5 +1,6 @@
 {
   "name": "@monan/types",
+  "type": "module",
   "version": "1.0.3",
   "exports": {
     ".": {
@@ -12,7 +13,6 @@
     "./dist/*": "./dist/*",
     "./*": "./*"
   },
-  "module": true,
   "types": "dist/index.d.ts",
   "files": [
     "README.md",

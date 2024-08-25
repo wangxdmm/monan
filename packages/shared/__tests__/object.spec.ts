@@ -73,6 +73,7 @@ describe('object', async () => {
   it('get', () => {
     const s = Symbol('obj')
     const obj = {
+      'dot.name.property': 12,
       'a': {
         b: {
           c: 1,
@@ -90,6 +91,11 @@ describe('object', async () => {
     expect(get(obj, 'a.b.c')).toBe(1)
     expect(get(obj, 'a.b.e', 10)).toBe(10)
     expect(get(obj, ['a.b', 'c'])).toBe(1)
+    expect(
+      get(obj, 'dot.name.property', undefined, {
+        strict: true,
+      }),
+    ).toBe(12)
     expect(() => get(obj, ['a.b.c', undefined as any])).toThrowError(
       'The key you passed can not be',
     )

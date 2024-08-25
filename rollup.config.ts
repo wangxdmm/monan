@@ -79,15 +79,11 @@ const fixTypesPlugin = {
   name: 'fix-type',
   async closeBundle() {
     let dtf = fs.readFileSync(resolve(`${sharedDist}/index.d.ts`), 'utf-8')
-    dtf = dtf.replace(/from 'clone'/, 'from \'./clone\'')
     dtf = dtf.replace(/from 'throttle-debounce'/, 'from \'./throttle-debounce\'')
-    const dtsClone = fs.readFileSync(
-      resolve(root, './node_modules/@types/clone/index.d.ts'),
-    )
+
     const dtsThrottleDebounce = fs.readFileSync(
       resolve(root, './node_modules/@types/throttle-debounce/index.d.ts'),
     )
-    fs.writeFileSync(`${sharedDist}/clone.d.ts`, dtsClone)
     fs.writeFileSync(
       `${sharedDist}/throttle-debounce.d.ts`,
       dtsThrottleDebounce,
@@ -148,22 +144,7 @@ buildedLibs.forEach((lib) => {
         format: 'es',
         file: `${dir}/dist/index.mjs`,
       },
-      {
-        format: 'cjs',
-        file: `${dir}/dist/index.cjs`,
-      },
     ]
-
-    if (meta.globalName) {
-      const o: OutputOptions = {
-        format: 'umd',
-        file: `${dir}/dist/index.umd.js`,
-        name: meta.globalName,
-        plugins: [minify({})],
-        globals,
-      }
-      output.push(o)
-    }
 
     const c: RollupOptions = {
       input: lib,

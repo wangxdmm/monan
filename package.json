@@ -44,6 +44,7 @@
     "syncpack": "^12.4.0",
     "taze": "^0.16.5",
     "typescript": "^5.5.4",
+    "unbuild": "3.0.0-rc.7",
     "vitest": "^2.0.5"
   }
 }

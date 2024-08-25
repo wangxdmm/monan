@@ -26,8 +26,9 @@ export function isNumber(x: any): x is number {
   return getType(x) === 'Number'
 }
 
+// async function and normal function
 export function isFunction<T = AnyFn>(x: any): x is T {
-  return getType(x) === 'Function'
+  return typeof x === 'function'
 }
 
 export function isRegExp(x: any): x is RegExp {

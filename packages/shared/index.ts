@@ -7,7 +7,6 @@ export * from './uid'
 export * from './map'
 export * from './string'
 export * from './are'
-// https://github.com/pvorb/clone/blob/master/LICENSE
-export { default as clone } from 'clone'
+
 // https://github.com/niksy/throttle-debounce/blob/master/LICENSE.md
 export * from 'throttle-debounce'
