@@ -41,7 +41,7 @@
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-pure": "^0.2.1",
-    "syncpack": "^12.3.0",
+    "syncpack": "^13.0.0",
     "typescript": "^5.4.2",
     "vitest": "^1.3.1"
   }
