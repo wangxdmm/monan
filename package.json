@@ -29,7 +29,7 @@
     "env-cmd": "^10.1.0",
     "esbuild": "^0.20.1",
     "esbuild-register": "^3.5.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.10.0",
     "esno": "^4.7.0",
     "execa": "^8.0.1",
     "fast-glob": "^3.3.2",
