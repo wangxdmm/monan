@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { easyTrans, get, isDef, transAttr } from '../index'
+import { easyTrans, get, isDef, transAttr } from '../src/index'
 
 describe('object', async () => {
   it('transAttr', () => {

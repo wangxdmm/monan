@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from 'vitest'
-import { isTuple } from '..'
+import { isTuple } from '../src'
 
 describe('typeAsserts', () => {
   it('isTuple is ok', () => {

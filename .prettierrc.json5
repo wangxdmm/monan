@@ -3,6 +3,8 @@
   "singleQuote": true,
   "printWidth": 80,
   "trailingComma": "all",
-  "arrowParens": "always",
-  "plugins": ["prettier-plugin-jsdoc"]
+  "arrowParens": "avoid",
+  "experimentalTernaries": true,
+  "plugins": ["prettier-plugin-jsdoc"],
+  "jsdocCommentLineStrategy": "multiline"
 }

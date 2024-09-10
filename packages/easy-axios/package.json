@@ -5,8 +5,8 @@
   "exports": {
     ".": {
       "types": {
-        "development": "./index.ts",
-        "default": "./dist/index.d.ts"
+        "development": "./src/index.ts",
+        "default": "./types/index.d.ts"
       },
       "import": "./dist/index.mjs",
       "default": "./dist/index.mjs"
@@ -15,8 +15,8 @@
     "./dist/*": "./dist/*",
     "./*": "./*"
   },
-  "module": "dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.mjs",
+  "types": "./types/index.d.ts",
   "files": [
     "README.md",
     "dist",

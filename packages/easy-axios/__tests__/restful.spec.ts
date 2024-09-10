@@ -10,13 +10,13 @@ import {
 import axios from 'axios'
 import moxios from 'moxios'
 import { get, set } from '@monan/shared'
-import { ContentTypeEnum, monanSymbol } from '../share'
-import { isMonanRequest } from '../is'
-import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../restful'
-import { defineEasyAxios } from '../defineEasyAxios'
-import type { Config, DefineResponseResult, defineAPI } from '../share'
+import { ContentTypeEnum, monanSymbol } from '../src/share'
+import { isMonanRequest } from '../src/is'
+import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../src/restful'
+import { defineEasyAxios } from '../src/defineEasyAxios'
+import type { Config, DefineResponseResult, defineAPI } from '../src/share'
 
-declare module '../share' {
+declare module '../src/share' {
   export interface ServerDefinedResponse<T = unknown, S = boolean> {
     code: number
     data?: T
