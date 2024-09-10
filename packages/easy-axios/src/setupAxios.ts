@@ -229,7 +229,7 @@ export class SetupAxios<T> {
     return Promise.resolve(back)
   }
 
-  patchUrl<RequestParam = any>(urlIn, paramsIn: RequestParam, config?: Config) {
+  patchUrl<RequestParam = any>(urlIn: string, paramsIn: RequestParam, config?: Config) {
     if (paramsIn && !isEmptyObject(paramsIn)) {
       const { __M_interParam = SetupAxios.interParam } = config || {}
       const result = __M_interParam(urlIn, paramsIn, config?.__M_reverse)

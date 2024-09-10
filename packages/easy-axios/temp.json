@@ -1,34 +1,42 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "jsx": "preserve",
-    "lib": ["ES2018", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
+    "tsBuildInfoFile": null,
+    "lib": [
+      "esnext"
+    ],
     "useDefineForClassFields": true,
     "baseUrl": "./",
     "rootDir": "./",
-    "customConditions": [
-      "development"
-    ],
+    "outDir": "./node_modules/temp",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "types": ["node"],
-    "allowJs": true,
+    "allowJs": false,
     "strict": true,
+    "strictNullChecks": true,
+    "emitDeclarationOnly": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "importHelpers": true,
     "importsNotUsedAsValues": "error",
     "preserveValueImports": true,
-    "ignoreDeprecations": "5.0",
-    "sourceMap": true,
-    // "suppressImplicitAnyIndexErrors": true,
+    "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "ignoreDeprecations": "5.0",
+    "isolatedModules": true,
+    "customConditions": null
   },
-  "exclude": ["dist", "node_modules/"]
+  "exclude": [
+    "node_modules",
+    "**/*.spec.*"
+  ],
+  "include": [
+    "./src"
+  ]
 }

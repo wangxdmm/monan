@@ -5,20 +5,25 @@
   "exports": {
     ".": {
       "types": {
-        "development": "./index.ts",
-        "default": "./dist/index.d.ts"
+        "development": "./src/index.ts",
+        "default": "./types/index.d.ts"
       }
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*",
     "./*": "./*"
   },
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "README.md",
-    "dist",
-    "package.json"
+    "package.json",
+    "types"
   ],
+  "scripts": {
+    "dev": "pnpm exec unbuild --watch",
+    "build": "pnpm dts",
+    "dts": "pnpm exec cdt -p node"
+  },
   "publishConfig": {
     "access": "public"
   }

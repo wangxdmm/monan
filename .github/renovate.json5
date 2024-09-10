@@ -23,7 +23,7 @@
     },
     {
       "groupName": "shared",
-      "matchPackageNames": ["clone", "throttle-debounce"],
+      "matchPackageNames": ["fast-copy", "throttle-debounce"],
       "matchFileNames": ["packages/shared/package.json"]
     }
   ],

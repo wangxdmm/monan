@@ -3,6 +3,11 @@ import copy from 'fast-copy'
 import { isArray, isDef, isFunction, isObject, isUndef } from './typeAssert'
 import { get } from './get'
 
+/* #__PURE__ */
+export function clone<T>(x: T): T {
+  return copy(x)
+}
+
 export type TransMap<T, K extends keyof T> = Record<
   K,
   {
@@ -20,7 +25,7 @@ export function transAttr<T extends Record<string, any>, K extends keyof T>(
   }
 
   for (const [key, val] of Object.entries(maps)) {
-    const { alterVal, when = _ => isUndef(_) } = val as any
+    const { alterVal, when = (_: any) => isUndef(_) } = val as any
     if (when(obj[key])) {
       obj[key as keyof T] = isFunction(alterVal) ? alterVal(obj[key]) : alterVal
     }
@@ -88,7 +93,6 @@ export function divideArray<T>(data: T[], dep = 2) {
 }
 
 export function squashArr<T>(arr: T[]): T[] {
-  // arr = [1, 1, 2, 2, 1, 3, 3] -> [1, 2, 1, 3]
   if (!arr) {
     return []
   }
@@ -149,26 +153,26 @@ export function easyTrans<
   for (const [k, condition] of Object.entries(defs)) {
     if (isArray(condition)) {
       const [key, valueGetter] = condition
-      pickedObj[k] = valueGetter(
+      pickedObj[k as FinalKey] = valueGetter(
         dataStore[(key === EQUAL_FLAG ? k : key) as K1],
         dataStore,
         pickedObj,
       )
     }
     else if (condition === EQUAL_FLAG) {
-      const val = dataStore[k]
+      const val = dataStore[k as keyof D] as D[K1]
       if (filter?.(val)) {
-        pickedObj[k] = val
+        pickedObj[k as FinalKey] = val
       }
       else {
-        pickedObj[k] = val
+        pickedObj[k as FinalKey] = val
       }
     }
     else {
       const val = dataStore[condition]
 
       if (filter?.(val) === true || filter === undefined) {
-        pickedObj[k] = val
+        pickedObj[k as FinalKey] = val
       }
     }
   }
@@ -182,9 +186,4 @@ export function easyTrans<
   }
 
   return pickedObj as Record<FinalKey, any>
-}
-
-// https://github.com/planttheidea/fast-copy/blob/master/LICENSE
-export function clone<T>(x: T): T {
-  return copy(x)
 }

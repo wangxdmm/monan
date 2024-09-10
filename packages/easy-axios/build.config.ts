@@ -13,7 +13,11 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (_, options) => {
-        options.plugins.push(UnpluginUnused())
+        options.plugins.push(UnpluginUnused({
+          ignore: ['axios'],
+        }))
+
+        options.external = []
       },
     },
   },

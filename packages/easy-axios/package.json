@@ -22,6 +22,11 @@
     "dist",
     "package.json"
   ],
+  "scripts": {
+    "dev": "pnpm exec unbuild --watch",
+    "build": "pnpm dts && pnpm exec unbuild",
+    "dts": "pnpm exec cdt -p pure"
+  },
   "peerDependencies": {
     "axios": ">= 1.5.0"
   },

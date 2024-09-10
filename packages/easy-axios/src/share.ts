@@ -97,7 +97,7 @@ export interface ICodeHandler<T> {
 
 export function genContentHeader(type: ContentTypeEnum) {
   return {
-    [ContentTypeKey]: ContentTypeEnum[type],
+    [ContentTypeKey]: (ContentTypeEnum as any)[type],
   }
 }
 

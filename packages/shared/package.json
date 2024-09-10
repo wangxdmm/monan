@@ -22,14 +22,21 @@
     "dist",
     "package.json"
   ],
+  "scripts": {
+    "dev": "pnpm exec unbuild --watch",
+    "build": "pnpm dts && pnpm exec unbuild",
+    "dts": "pnpm exec cdt"
+  },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "fast-copy": "^3.0.2"
   },
   "devDependencies": {
     "@monan/types": "workspace:^",
     "@types/clone": "^2.1.4",
     "@types/throttle-debounce": "^5.0.2",
-    "fast-copy": "^3.0.2",
     "throttle-debounce": "^5.0.2"
   }
 }

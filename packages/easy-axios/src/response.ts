@@ -98,7 +98,7 @@ export function genHandleResponse<T>(http: Restful<T>) {
       )
       if (isObject(messageOrOptions)) {
         handleEnumValues.forEach((mes) => {
-          const cur = messageOrOptions[mes]
+          const cur = (messageOrOptions as any)[mes]
           if (isObject(cur)) {
             Object.assign(mesHash[mes], cur)
           }

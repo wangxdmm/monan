@@ -122,7 +122,7 @@ export class Restful<T> extends SetupAxios<T> {
     if (metaStr) {
       metaStr.split(',').forEach((m) => {
         const [k, v = true] = m.split(valueDiv)
-        meta[k] = v
+        meta[k as (keyof NonNullable<LabelDef['meta']>)] = v as any
         if (k === 'hooks' && isString(v) && isDef(v)) {
           meta[k] = v.split('=>')
         }
@@ -148,7 +148,7 @@ export class Restful<T> extends SetupAxios<T> {
   }
 
   patchConfigByMeta(
-    userInputData,
+    userInputData: unknown,
     config: Config,
     meta: LabelDef['meta'],
   ): Config {
@@ -164,9 +164,9 @@ export class Restful<T> extends SetupAxios<T> {
       if (
         contentType
         && !get(configed, ['headers', ContentTypeKey])
-        && ContentTypeEnum[contentType]
+        && (ContentTypeEnum as any)[contentType]
       ) {
-        set(configed, ['headers', ContentTypeKey], ContentTypeEnum[contentType])
+        set(configed, ['headers', ContentTypeKey], (ContentTypeEnum as any)[contentType])
       }
 
       if (params && !configed.params) {
@@ -195,18 +195,18 @@ export class Restful<T> extends SetupAxios<T> {
   create<
     T extends (
       | defineAPI<string, any, any>
-      | Record<string, (...args) => DefineResponseResult<unknown>>
+      | Record<string, (...args: any[]) => DefineResponseResult<unknown>>
     )[],
     P = object,
   >(prefix: string,
     defs: string[],
   ) {
-    const result = {}
+    const result = {} as any
     defs.forEach((def) => {
       const defMes = this.parseDef(def)
       if (defMes && defMes.id) {
         const { method, id, url: urlDef, meta } = defMes
-        const callFn = (...args) => {
+        const callFn = (...args: any[]) => {
           let config: Config
           let userInputData
           if (meta?.noArgs) {

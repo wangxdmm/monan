@@ -1,6 +1,6 @@
 /** Inspired by https://github.com/zzzhan/js-shortid just add type support */
 
-function paddingLeft(padding, val): string {
+function paddingLeft(padding: string, val: string | number | boolean): string {
   return (padding + val).slice(-padding.length)
 }
 
@@ -27,7 +27,7 @@ export class ShortId {
     this.opt = Object.assign(this.opt, opt || {})
   }
 
-  toBase(decimal, base) {
+  toBase(decimal: number, base: number) {
     const opt = this.opt
     const symbols = opt.symbols!
     let conversion = ''
