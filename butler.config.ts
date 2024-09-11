@@ -14,11 +14,7 @@ export const meta = {
 
 export default defineButlerConfig({
   meta,
-  includes: ['packages'],
-  ignores: [],
-  diffIgnores: [
-    '**/env.d.ts',
-    'play/*',
-    'butler.config.ts',
-  ],
+  ignores: ['packages/tree-shaking-test'],
+  diffIgnores: ['**/env.d.ts', 'butler.config.ts'],
+  registories: ['npm'],
 })

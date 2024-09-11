@@ -1,4 +1,4 @@
-## A collection of types used in TypeScript projects.
+# A collection of types used in Typescript projects. You can just mark it as an devDependencies
 
 ## Installation
 

@@ -1,11 +1,10 @@
 import type { PrimitiveKey } from '@monan/types'
-import copy from 'fast-copy'
 import { isArray, isDef, isFunction, isObject, isUndef } from './typeAssert'
 import { get } from './get'
+import { copy } from './fast-copy'
 
-/* #__PURE__ */
-export function clone<T>(x: T): T {
-  return copy(x)
+export function clone<T>(o: T): T {
+  return copy(o)
 }
 
 export type TransMap<T, K extends keyof T> = Record<
@@ -134,8 +133,7 @@ export function easyTrans<
   A,
   K extends keyof Def,
   K1 extends keyof D,
-  UniKeys extends keyof any = P extends Record<keyof any, any>
-    ? keyof P | K
+  UniKeys extends keyof any = P extends Record<keyof any, any> ? keyof P | K
     : K,
   FinalKey extends keyof any = A extends true ? UniKeys | keyof D : UniKeys,
 >(
@@ -186,4 +184,33 @@ export function easyTrans<
   }
 
   return pickedObj as Record<FinalKey, any>
+}
+
+/**
+ * Avoid assert (keyof T)[] xx
+ */
+export function entries<T extends object>(
+  obj: T,
+  walk: (k: keyof T, v: T[keyof T]) => void,
+) {
+  ;(Object.entries(obj) as [keyof T, T[keyof T]][]).forEach(([k, v]) => {
+    walk(k, v)
+  })
+}
+
+/**
+ * Avoid assert (keyof T)[] xx
+ */
+export function keys<T extends object>(obj: T, walk: (k: keyof T) => void) {
+  ;(Object.keys(obj) as (keyof T)[]).forEach((k) => {
+    walk(k)
+  })
+}
+
+export function getKeys<T>(k: T): (keyof T)[] {
+  return isDef(k) ? (Object.keys(k) as (keyof T)[]) : []
+}
+
+export function getValues<const T>(k: T): T[keyof T][] {
+  return isDef(k) ? (Object.values(k) as T[keyof T][]) : []
 }

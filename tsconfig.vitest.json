@@ -1,4 +1,14 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["**/__tests__", "env.test.d.ts", "src", "packages/**/*.{ts,tsx}"]
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "**/__tests__",
+    "env.test.d.ts",
+    "src",
+    "packages/**/*.{ts,tsx}"
+  ]
 }

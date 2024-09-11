@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "private": true,
   "description": "A package that includes daily development tools",
   "author": "wangxdmm <lovingskymm@gmail.com>",
@@ -16,6 +17,7 @@
     "lint": "eslint . --fix",
     "test:dev": "vitest dev",
     "test": "vitest run",
+    "test:shake": "pnpm -C packages/tree-shaking-test build",
     "release": "pnpm release"
   },
   "devDependencies": {

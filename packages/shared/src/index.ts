@@ -10,3 +10,6 @@ export * from './are'
 
 // https://github.com/niksy/throttle-debounce/blob/master/LICENSE.md
 export * from 'throttle-debounce'
+export * as fc from './fast-copy'
+export * as fe from './fast-equals'
+export { deepEqual } from './fast-equals'

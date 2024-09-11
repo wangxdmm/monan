@@ -1,7 +1,7 @@
 {
   "name": "@monan/shared",
   "type": "module",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "exports": {
     ".": {
       "types": {
@@ -31,12 +31,11 @@
     "access": "public"
   },
   "dependencies": {
-    "fast-copy": "^3.0.2"
+    "@types/throttle-debounce": "^5.0.2"
   },
   "devDependencies": {
     "@monan/types": "workspace:^",
     "@types/clone": "^2.1.4",
-    "@types/throttle-debounce": "^5.0.2",
     "throttle-debounce": "^5.0.2"
   }
 }

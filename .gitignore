@@ -3,3 +3,4 @@ node_modules
 .vscode
 packages/*/types
 packages/types/index.d.ts
+temp.json

@@ -1,34 +1,40 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "composite": true,
+    "target": "ESNext",
     "jsx": "preserve",
-    "lib": ["ES2018", "DOM", "DOM.Iterable"],
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "jsxImportSource": "vue",
+    "lib": [
+      "esnext",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "useDefineForClassFields": true,
     "baseUrl": "./",
-    "rootDir": "./",
     "customConditions": [
       "development"
     ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "types": ["node"],
-    "allowJs": true,
+    "allowJs": false,
     "strict": true,
+    "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "importHelpers": true,
     "importsNotUsedAsValues": "error",
     "preserveValueImports": true,
-    "ignoreDeprecations": "5.0",
-    "sourceMap": true,
-    // "suppressImplicitAnyIndexErrors": true,
+    "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "ignoreDeprecations": "5.0"
   },
-  "exclude": ["dist", "node_modules/"]
+  "reflection": true
 }

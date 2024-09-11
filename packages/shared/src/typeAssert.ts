@@ -2,24 +2,30 @@ import type { AnyFn, PrimitiveKey } from '@monan/types'
 import { getType } from './share'
 
 export function isArray<T>(x: any): x is Array<T> {
-  return getType(x) === 'Array'
+  return Array.isArray(x)
 }
 
-// TODO same to isArray
 export function isTuple<T>(x: any): x is readonly T[] {
-  return getType(x) === 'Array'
+  return isArray(x)
 }
 
 export function isString<T = string>(x: any): x is T {
-  return getType(x) === 'String'
+  return typeof x === 'string'
 }
 
+export function isPrimitive(x: any): x is PrimitiveKey {
+  return isString(x) || isSymbol(x) || isNumber(x)
+}
+
+/**
+ * @deprecated Please use isPrimitive
+ */
 export function isPrimitiveKey(x: any): x is PrimitiveKey {
   return isString(x) || isSymbol(x) || isNumber(x)
 }
 
 export function isBoolean(x: any): x is boolean {
-  return getType(x) === 'Boolean'
+  return typeof x === 'boolean'
 }
 
 export function isNumber(x: any): x is number {
