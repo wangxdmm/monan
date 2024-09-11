@@ -20,7 +20,8 @@
   "files": [
     "README.md",
     "dist",
-    "package.json"
+    "package.json",
+    "types"
   ],
   "scripts": {
     "dev": "pnpm exec unbuild --watch",

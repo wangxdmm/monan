@@ -23,12 +23,12 @@ jobs:
       - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20.15.0
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install
 
-      - run: pnpm build
+      - run: pnpm bu build --ns
       - run: pnpm test
