@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "version": "0.0.2",
   "private": true,
   "description": "A package that includes daily development tools",
   "author": "wangxdmm <lovingskymm@gmail.com>",
@@ -18,7 +19,7 @@
     "test:dev": "vitest dev",
     "test": "vitest run",
     "test:shake": "pnpm -C packages/tree-shaking-test build",
-    "release": "pnpm release"
+    "release": "pnpm bu pub --remote --log"
   },
   "devDependencies": {
     "@antfu/eslint-config": "2.22.0-beta.3",
@@ -39,5 +40,10 @@
     "unbuild": "3.0.0-rc.7",
     "unplugin-unused": "^0.2.3",
     "vitest": "^2.0.5"
+  },
+  "butler": {
+    "publish": {
+      "pre": "252626716c1666e21c0f1a7ee47b20207f498416"
+    }
   }
 }
