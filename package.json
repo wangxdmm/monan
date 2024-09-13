@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "A package that includes daily development tools",
   "author": "wangxdmm <lovingskymm@gmail.com>",
@@ -44,7 +44,7 @@
   },
   "butler": {
     "publish": {
-      "pre": "252626716c1666e21c0f1a7ee47b20207f498416"
+      "pre": "5184b7aaa8043518af52c99399361592b170af3e"
     }
   }
 }
