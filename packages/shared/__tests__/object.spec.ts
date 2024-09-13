@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { easyTrans, get, isDef, transAttr } from '../src/index'
+import { easyTrans, get, isDef, set, transAttr } from '../src/index'
 
 describe('object', async () => {
   it('transAttr', () => {
@@ -129,5 +129,164 @@ describe('object', async () => {
     expect(get(arr, '')).toBe(arr)
     expect(get(arr, ['   '], 1)).toBe(arr)
     expect(get(arr, [], 11)).toBe(11)
+  })
+})
+
+describe('set is ok', () => {
+  it('normal', () => {
+    expect(set({}, 'a.b.c', 1)).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          "a": {
+            "b": {
+              "c": 1,
+            },
+          },
+        },
+      ]
+    `)
+  })
+
+  it('array', () => {
+    expect(set({}, 'a.0.c', 1)).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          "a": [
+            {
+              "c": 1,
+            },
+          ],
+        },
+      ]
+    `)
+
+    expect(set([], '0.a.b.0.c', 1)).toMatchInlineSnapshot(`
+      [
+        true,
+        [
+          {
+            "a": {
+              "b": [
+                {
+                  "c": 1,
+                },
+              ],
+            },
+          },
+        ],
+      ]
+    `)
+  })
+
+  it('symbol', () => {
+    expect(set({}, [Symbol('a'), '0.c.e'], 1)).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          Symbol(a): [
+            {
+              "c": {
+                "e": 1,
+              },
+            },
+          ],
+        },
+      ]
+    `)
+  })
+
+  it('strict is ok', () => {
+    expect(set({}, 'a.b.c', 1, { strict: true })).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          "a.b.c": 1,
+        },
+      ]
+    `)
+  })
+
+  it('type maps is ok', () => {
+    expect(
+      set({}, 'a.2.b.0', 1, {
+        typeMap: {
+          0: 'object',
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          "a": {
+            "2": {
+              "b": [
+                1,
+              ],
+            },
+          },
+        },
+      ]
+    `)
+  })
+
+  it('type maps as function is ok', () => {
+    expect(
+      set({}, 'a.2.b.0', 1, {
+        typeMap: ({ cur }) => {
+          if (cur === 'a' || cur === 'b') {
+            return 'object'
+          }
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          "a": {
+            "2": {
+              "b": {
+                "0": 1,
+              },
+            },
+          },
+        },
+      ]
+    `)
+  })
+
+  it('empty is ok', () => {
+    expect(set(undefined, 'a.b.c', 1)).toMatchInlineSnapshot(`
+      [
+        false,
+        undefined,
+      ]
+    `)
+  })
+
+  it('array path is ok', () => {
+    expect(
+      set({}, ['a', 1, 'b', 0], 1, {
+        typeMap: ({ index }) => {
+          if (index === 0) {
+            return 'object'
+          }
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        true,
+        {
+          "a": {
+            "1": {
+              "b": [
+                1,
+              ],
+            },
+          },
+        },
+      ]
+    `)
   })
 })

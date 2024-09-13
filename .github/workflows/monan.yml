@@ -30,5 +30,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - run: pnpm bu build --ns
+      - run: pnpm bu build --all --ns
       - run: pnpm test
