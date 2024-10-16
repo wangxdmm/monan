@@ -23,7 +23,7 @@
     "release": "pnpm bu pub --remote --log"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "2.22.0-beta.3",
+    "@antfu/eslint-config": "3.8.0",
     "@monan/create-dts": "^0.0.3",
     "@runafe/butler": "^0.0.20",
     "@types/moxios": "^0.4.17",
