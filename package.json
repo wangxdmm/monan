@@ -27,7 +27,7 @@
     "@monan/create-dts": "^0.0.3",
     "@runafe/butler": "^0.0.20",
     "@types/moxios": "^0.4.17",
-    "@types/node": "^22.5.4",
+    "@types/node": "^22.7.6",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
     "eslint": "^9.10.0",
