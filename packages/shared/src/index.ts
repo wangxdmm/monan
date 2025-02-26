@@ -1,15 +1,16 @@
-export * from './share'
-export * from './get'
-export * from './set'
-export * from './typeAssert'
-export * from './object'
-export * from './uid'
-export * from './map'
-export * from './string'
 export * from './are'
-
-// https://github.com/niksy/throttle-debounce/blob/master/LICENSE.md
-export * from 'throttle-debounce'
 export * as fc from './fast-copy'
 export * as fe from './fast-equals'
 export { deepEqual } from './fast-equals'
+export * from './get'
+export * from './hash'
+export * from './map'
+export * from './object'
+export * from './set'
+
+export * from './share'
+export * from './string'
+export * from './typeAssert'
+export * from './uid'
+// https://github.com/niksy/throttle-debounce/blob/master/LICENSE.md
+export * from 'throttle-debounce'

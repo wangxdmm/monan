@@ -1,0 +1,21 @@
+ignore = [ "**/packages/{tree-shaking-test}" ]
+catalog_remote_url = "http://192.168.1.70:5002/asv4/v4/catalog.yaml"
+diff_ignore = [
+  "**/env.d.ts",
+  "**/__tests__/*",
+  "**/play/*",
+  "**/butler.config.ts",
+  "**/package.json",
+  "**/*.toml",
+  "**/packages/tree-shaking-test/*",
+]
+registries = [ "https://registry.npmjs.org/" ]
+
+[meta."@monan/types"]
+order = 5
+
+[meta."@monan/shared"]
+order = 10
+
+[meta."@monan/easy-axios"]
+order = 15

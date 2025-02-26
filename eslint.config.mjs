@@ -4,27 +4,20 @@ export default antfu(
   {
     formatters: true,
     unocss: false,
-    vue: false,
+    vue: true,
     rules: {
-      curly: [2, 'all'],
+      'curly': [2, 'all'],
+      'eslint-comments/no-unlimited-disable': 'warn',
+      'ts/no-unused-expressions': 'off',
+      'unocss/order': 'off',
+      'antfu/no-top-level-await': 'off',
     },
     stylistic: {
       jsx: false,
     },
+    scss: false,
   },
   {
-    ignores: [
-      '*.css',
-      'packages/*/*.mjs',
-      '**/wujie',
-      '**/dist',
-      '**/temp',
-      '**/volar.d.ts',
-      'packages/*/types',
-      '**/env.d.ts',
-      './types/**/*.ts',
-      'eslint.config.mjs',
-      '**/*.md',
-    ],
+    ignores: [],
   },
 )

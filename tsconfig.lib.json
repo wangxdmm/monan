@@ -1,14 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "exclude": [
-    "**/__tests__",
-    "**/dist",
-    "**/node_modules",
-    "*.mjs"
-  ]
+  "exclude": ["**/__tests__", "**/dist", "**/node_modules", "*.mjs"]
 }
