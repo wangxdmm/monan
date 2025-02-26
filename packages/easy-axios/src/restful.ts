@@ -15,7 +15,7 @@ import { SetupAxios } from './setupAxios'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
 
 export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
-  = 'When your def match /a/b/{something},you should specificly give a alterName by use /a/b/{something}->alterName'
+  = 'When your def match /a/b/{something},you should specifically give a alterName by use /a/b/{something}->alterName'
 
 export class Restful<T> extends SetupAxios<T> {
   genHandleFunc!: GenHandleFunc
@@ -52,7 +52,7 @@ export class Restful<T> extends SetupAxios<T> {
     return this.defaultStrategies.getBackData || noop
   }
 
-  get defaualtGetMessage() {
+  get defaultGetMessage() {
     return this.defaultStrategies.getMessage || noop
   }
 
@@ -152,7 +152,7 @@ export class Restful<T> extends SetupAxios<T> {
     config: Config,
     meta: LabelDef['meta'],
   ): Config {
-    const configed: Config = config || {}
+    const mergedConfig: Config = config || {}
     if (meta) {
       let contentType
       const { timeout, makeInputAsParams: params, responseType } = meta
@@ -163,33 +163,33 @@ export class Restful<T> extends SetupAxios<T> {
 
       if (
         contentType
-        && !get(configed, ['headers', ContentTypeKey])
+        && !get(mergedConfig, ['headers', ContentTypeKey])
         && (ContentTypeEnum as any)[contentType]
       ) {
-        set(configed, ['headers', ContentTypeKey], (ContentTypeEnum as any)[contentType])
+        set(mergedConfig, ['headers', ContentTypeKey], (ContentTypeEnum as any)[contentType])
       }
 
-      if (params && !configed.params) {
-        set(configed, 'params', userInputData)
+      if (params && !mergedConfig.params) {
+        set(mergedConfig, 'params', userInputData)
       }
 
       // default userInputData is set to config.data
-      if (!params && !configed.data) {
-        set(configed, 'data', userInputData)
+      if (!params && !mergedConfig.data) {
+        set(mergedConfig, 'data', userInputData)
       }
 
-      if (timeout && !configed.timeout) {
-        set(configed, 'timeout', Number.parseInt(timeout, 10))
+      if (timeout && !mergedConfig.timeout) {
+        set(mergedConfig, 'timeout', Number.parseInt(timeout, 10))
       }
 
-      if (responseType && !configed.responseType) {
-        set(configed, 'responseType', responseType)
+      if (responseType && !mergedConfig.responseType) {
+        set(mergedConfig, 'responseType', responseType)
       }
     }
-    else if (!configed.data) {
-      set(configed, 'data', userInputData)
+    else if (!mergedConfig.data) {
+      set(mergedConfig, 'data', userInputData)
     }
-    return configed
+    return mergedConfig
   }
 
   create<
@@ -262,7 +262,7 @@ export class Restful<T> extends SetupAxios<T> {
             config.__M_spy?.(requestToken)
           }
 
-          // mark hooks to hanlder def
+          // mark hooks to handler def
           if (hooks?.length) {
             config = hooks.reduce((acc, hookName) => {
               const hook = this.hooks.get(hookName)

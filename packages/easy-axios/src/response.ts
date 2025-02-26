@@ -31,7 +31,7 @@ export function genHandleResponse<T>(http: Restful<T>) {
       {
         isSuccess: http.defaultIsSuccess,
         getBackData: http.defaultGetBackData,
-        getMessage: http.defaualtGetMessage,
+        getMessage: http.defaultGetMessage,
       } as Partial<HandleResponseConfig>,
       configIn || {},
     )

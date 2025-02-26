@@ -32,7 +32,7 @@ export class SetupAxios<T> {
   config: AtLeast<IHttpConfig<T>, 'autoSetting' | 'errorFlag' | 'instance'>
   instance: AxiosInstance
   dynamicRequestConfig: Map<string, DynamicRequestConfig<T>> = new Map()
-  dynamicHanlder: Map<T, DynamicHandler<T>> = new Map()
+  dynamicHandler: Map<T, DynamicHandler<T>> = new Map()
   defaultConfig = {
     autoSetting: true,
     errorFlag: 'isSysError',
@@ -60,7 +60,7 @@ export class SetupAxios<T> {
   // register common code handler
   registerDynamicHandler(name: T, fn: DynamicHandler<T>) {
     if (isDef(name)) {
-      this.dynamicHanlder.set(name, fn)
+      this.dynamicHandler.set(name, fn)
     }
   }
 
@@ -73,7 +73,7 @@ export class SetupAxios<T> {
       console.error(`Can not find getDynamicHandler by empty name [${name}]`)
       return
     }
-    return this.dynamicHanlder.get(name)
+    return this.dynamicHandler.get(name)
   }
 
   registerDynamicRequestConfig<R = any>(
@@ -136,7 +136,7 @@ export class SetupAxios<T> {
     instance.interceptors.response.use(
       this.handleResponse,
       this.catchError.bind(this),
-      this.getInterceptorOptions('response'),
+      // this.getInterceptorOptions('response'),
     )
   }
 

@@ -140,7 +140,7 @@ export function copyDataView<Value extends DataView>(
   dataView: Value,
   state: State,
 ): Value {
-  return new state.Constructor(copyArrayBuffer(dataView.buffer, state))
+  return new state.Constructor(copyArrayBuffer(dataView.buffer as ArrayBuffer, state))
 }
 
 /**

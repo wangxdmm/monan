@@ -21,8 +21,7 @@
   ],
   "scripts": {
     "dev": "pnpm exec unbuild --watch",
-    "build": "pnpm dts",
-    "dts": "pnpm exec cdt -p node"
+    "build": "echo 'No build needed'"
   },
   "publishConfig": {
     "access": "public"
