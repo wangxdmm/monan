@@ -3,9 +3,10 @@
 ### Usage
 
 ```typescript
+import type { defineAPI } from '@monan/easy-axios'
+import { defineEasyAxios } from '@monan/easy-axios'
 // main.ts
 import axios from 'axios'
-import { type defineAPI, defineEasyAxios } from '@monan/easy-axios'
 
 export type CodeHandlerTypes = 'tokenOutdate'
 const handlers: ICodeHandler<CodeHandlerTypes>[] = [

@@ -5,9 +5,3 @@
 ```bash
 pnpm install @monan/types
 ```
-
-## Usage
-
-```typescript
-
-```

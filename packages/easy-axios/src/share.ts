@@ -1,3 +1,4 @@
+import type { AnyFn, Equal } from '@monan/types'
 import type {
   AxiosError,
   AxiosInstance,
@@ -6,10 +7,9 @@ import type {
   AxiosResponse,
   Method,
 } from 'axios'
-import type { AnyFn, Equal } from '@monan/types'
-import { isDef, isObject } from '@monan/shared'
-import type { SetupAxios } from './setupAxios'
 import type { Restful } from './restful'
+import type { SetupAxios } from './setupAxios'
+import { isDef, isObject } from '@monan/shared'
 
 export const monanSymbol = Symbol('__monan_axios__')
 export const ContentTypeKey = 'Content-Type'

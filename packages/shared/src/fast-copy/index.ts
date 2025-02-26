@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-properties */
 /* eslint-disable no-proto */
+import type { InternalCopier, State } from './copier'
 import {
   copyArrayBuffer,
   copyArrayLoose,
@@ -17,9 +18,8 @@ import {
   copySetLoose,
   copySetStrict,
 } from './copier'
-import { createCache, getTag } from './utils'
 
-import type { InternalCopier, State } from './copier'
+import { createCache, getTag } from './utils'
 
 export type { State } from './copier'
 

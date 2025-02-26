@@ -1,17 +1,17 @@
 import type { Method } from 'axios'
-import { get, isDef, isString, noop, set } from '@monan/shared'
-import { hash } from 'ohash'
-import { SetupAxios } from './setupAxios'
 import type {
   Config,
   DefaultStrategies,
+  defineAPI,
   DefineResponseResult,
   ExtractAPI,
   GenHandleFunc,
   LabelDef,
   ServerDefinedResponse,
-  defineAPI,
 } from './share'
+import { get, isDef, isString, noop, set } from '@monan/shared'
+import { hash } from 'ohash'
+import { SetupAxios } from './setupAxios'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
 
 export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
@@ -88,7 +88,7 @@ export class Restful<T> extends SetupAxios<T> {
 
     if (url) {
       ;[url, id] = url.split(valueDiv)
-      // eslint-disable-next-line ts/no-unused-expressions
+
       url && (url = url.trim())
       if (url.slice(-1) === '?') {
         meta.makeInputAsParams = true

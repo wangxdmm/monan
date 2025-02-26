@@ -1,10 +1,10 @@
+import type { CustomEqualCreatorOptions } from './internalTypes'
 import {
   createEqualityComparator,
   createEqualityComparatorConfig,
   createInternalEqualityComparator,
   createIsEqual,
 } from './comparator'
-import type { CustomEqualCreatorOptions } from './internalTypes'
 import { sameValueZeroEqual } from './utils'
 
 export { sameValueZeroEqual }

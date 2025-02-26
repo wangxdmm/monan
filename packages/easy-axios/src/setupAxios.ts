@@ -1,11 +1,3 @@
-import {
-  get,
-  isArray,
-  isDef,
-  isEmptyObject,
-  isFunction,
-  isRegExp,
-} from '@monan/shared'
 import type { AtLeast } from '@monan/types'
 import type {
   AxiosError,
@@ -24,6 +16,14 @@ import type {
   InterceptorOptionsType,
   SysError,
 } from './share'
+import {
+  get,
+  isArray,
+  isDef,
+  isEmptyObject,
+  isFunction,
+  isRegExp,
+} from '@monan/shared'
 import { interParam } from './share'
 
 export class SetupAxios<T> {
@@ -143,7 +143,7 @@ export class SetupAxios<T> {
   get preRequest() {
     return (config: AxiosRequestConfig) => {
       let processedConfig = config
-      // dynamicly inject request configs like: token
+      // dynamically inject request configs like: token
       // TODO support async config
       this.dynamicRequestConfig.forEach((val) => {
         if (

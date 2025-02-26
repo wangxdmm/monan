@@ -1,6 +1,6 @@
+import { PluginPure } from 'rollup-plugin-pure'
 import { defineBuildConfig } from 'unbuild'
 import UnpluginUnused from 'unplugin-unused/rollup'
-import { PluginPure } from 'rollup-plugin-pure'
 
 export default defineBuildConfig([
   {

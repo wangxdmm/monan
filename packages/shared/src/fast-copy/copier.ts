@@ -1,6 +1,6 @@
-import { getCleanClone, getRegExpFlags } from './utils'
-
 import type { Cache } from './utils'
+
+import { getCleanClone, getRegExpFlags } from './utils'
 
 export type InternalCopier<Value> = (value: Value, state: State) => Value
 

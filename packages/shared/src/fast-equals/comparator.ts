@@ -1,3 +1,11 @@
+import type {
+  ComparatorConfig,
+  CreateState,
+  CustomEqualCreatorOptions,
+  EqualityComparator,
+  InternalEqualityComparator,
+  State,
+} from './internalTypes'
 import {
   areArraysEqual as areArraysEqualDefault,
   areDatesEqual as areDatesEqualDefault,
@@ -10,14 +18,6 @@ import {
   areTypedArraysEqual,
 } from './equals'
 import { combineComparators, createIsCircular } from './utils'
-import type {
-  ComparatorConfig,
-  CreateState,
-  CustomEqualCreatorOptions,
-  EqualityComparator,
-  InternalEqualityComparator,
-  State,
-} from './internalTypes'
 
 const ARGUMENTS_TAG = '[object Arguments]'
 const BOOLEAN_TAG = '[object Boolean]'

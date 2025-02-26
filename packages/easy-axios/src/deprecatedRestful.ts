@@ -1,5 +1,5 @@
-import { Restful } from './restful'
 import type { BatchBackType, Config, WrapResponse } from './share'
+import { Restful } from './restful'
 
 /** @deprecated please use Restful this api will be removed in next major version */
 export class DeprecatedRestful<T> extends Restful<T> {

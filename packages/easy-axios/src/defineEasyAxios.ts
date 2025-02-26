@@ -1,8 +1,8 @@
 import type { AtLeast } from '@monan/types'
-import { DeprecatedRestful } from './deprecatedRestful'
-import { Restful } from './restful'
-import { genHandleResponse } from './response'
 import type { IHttpConfig } from './share'
+import { DeprecatedRestful } from './deprecatedRestful'
+import { genHandleResponse } from './response'
+import { Restful } from './restful'
 
 export interface EasyAxiosOptions<T> extends AtLeast<IHttpConfig<T>, 'instance'> {}
 

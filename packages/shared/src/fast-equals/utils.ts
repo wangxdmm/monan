@@ -78,8 +78,8 @@ export function getStrictProperties(
  */
 export const hasOwn
   = (Object as any).hasOwn
-  || ((object: Dictionary, property: number | string | symbol) =>
-    hasOwnProperty.call(object, property))
+    || ((object: Dictionary, property: number | string | symbol) =>
+      hasOwnProperty.call(object, property))
 
 /**
  * Whether the values passed are strictly equal or both NaN.

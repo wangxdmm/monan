@@ -58,11 +58,11 @@ export function set<T = unknown>(
       const useType
         = isFunction(typeMap)
           ? typeMap({
-            cur: next,
-            index,
-            parent: cur,
-            next: pathOut[index + 1],
-          })
+              cur: next,
+              index,
+              parent: cur,
+              next: pathOut[index + 1],
+            })
           : typeMap[index]
       return (cur[next]
         = useType

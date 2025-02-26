@@ -1,7 +1,7 @@
 import type { PrimitiveKey } from '@monan/types'
-import { isArray, isDef, isFunction, isObject, isUndef } from './typeAssert'
-import { get } from './get'
 import { copy } from './fast-copy'
+import { get } from './get'
+import { isArray, isDef, isFunction, isObject, isUndef } from './typeAssert'
 
 export function clone<T>(o: T): T {
   return copy(o)

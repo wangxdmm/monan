@@ -1,11 +1,11 @@
 /* eslint-disable no-cond-assign */
-import { getStrictProperties, hasOwn, sameValueZeroEqual } from './utils'
 import type {
   Dictionary,
   PrimitiveWrapper,
   State,
   TypedArray,
 } from './internalTypes'
+import { getStrictProperties, hasOwn, sameValueZeroEqual } from './utils'
 
 const OWNER = '_owner'
 
@@ -79,7 +79,7 @@ export function areMapsEqual(
         && !matchedIndices[matchIndex]
         && (hasMatch
           = state.equals(aKey, bKey, index, matchIndex, a, b, state)
-          && state.equals(aValue, bValue, aKey, bKey, a, b, state))
+            && state.equals(aValue, bValue, aKey, bKey, a, b, state))
       ) {
         matchedIndices[matchIndex] = true
       }
@@ -192,10 +192,10 @@ export function areObjectsEqualStrict(
     if (
       (descriptorA || descriptorB)
       && (!descriptorA
-      || !descriptorB
-      || descriptorA.configurable !== descriptorB.configurable
-      || descriptorA.enumerable !== descriptorB.enumerable
-      || descriptorA.writable !== descriptorB.writable)
+        || !descriptorB
+        || descriptorA.configurable !== descriptorB.configurable
+        || descriptorA.enumerable !== descriptorB.enumerable
+        || descriptorA.writable !== descriptorB.writable)
     ) {
       return false
     }

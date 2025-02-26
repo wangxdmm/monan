@@ -1,3 +1,7 @@
+import type { Config, defineAPI, DefineResponseResult } from '../src/share'
+import { get, set } from '@monan/shared'
+import axios from 'axios'
+import moxios from 'moxios'
 import {
   afterEach,
   beforeEach,
@@ -7,14 +11,10 @@ import {
   it,
   vi,
 } from 'vitest'
-import axios from 'axios'
-import moxios from 'moxios'
-import { get, set } from '@monan/shared'
-import { ContentTypeEnum, monanSymbol } from '../src/share'
+import { defineEasyAxios } from '../src/defineEasyAxios'
 import { isMonanRequest } from '../src/is'
 import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../src/restful'
-import { defineEasyAxios } from '../src/defineEasyAxios'
-import type { Config, DefineResponseResult, defineAPI } from '../src/share'
+import { ContentTypeEnum, monanSymbol } from '../src/share'
 
 declare module '../src/share' {
   export interface ServerDefinedResponse<T = unknown, S = boolean> {

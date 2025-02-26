@@ -1,9 +1,9 @@
 import type {
   Config,
+  defineAPI,
   DefineResponseResult,
   ExtractAPI,
   Restful,
-  defineAPI,
 } from '../src'
 
 export function test<T extends Restful<any>>(

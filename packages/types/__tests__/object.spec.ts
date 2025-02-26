@@ -1,5 +1,5 @@
-import { describe, expectTypeOf, it } from 'vitest'
 import type { AtLeast, PickValue, ValueIs } from '../src/object'
+import { describe, expectTypeOf, it } from 'vitest'
 
 describe('type Object is ok', () => {
   it('pickValue, ValueIs is ok', () => {
