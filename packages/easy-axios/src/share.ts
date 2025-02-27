@@ -29,9 +29,9 @@ export function interParam<T, K extends keyof T>(
 ) {
   let url = urlIn
   const data = isObject(dataIn) ? { ...dataIn } : dataIn
-  const matchs = url.match(/\{([^/.]+)\}/g)
-  if (matchs?.length) {
-    matchs.forEach((param) => {
+  const matches = url.match(/\{([^/.]+)\}/g)
+  if (matches?.length) {
+    matches.forEach((param) => {
       const key: K = param.replace(/[{}]/g, '') as K
       if (isDef(data[key])) {
         url = url.replace(param, String(data[key]))
@@ -55,26 +55,27 @@ export enum ContentTypeEnum {
   MULTIPART = 'multipart/form-data',
 }
 
-export enum HandleEnum {
-  SUCCESS = 'SUCCESS',
-  FAIL = 'FAIL',
-  SYSTEM_ERROR = 'SYSTEM_ERROR',
+export const handleTypes = ['success', 'fail', 'systemError'] as const
+
+// export enum HandleEnum {
+//   SUCCESS = 'SUCCESS',
+//   FAIL = 'FAIL',
+//   SYSTEM_ERROR = 'SYSTEM_ERROR',
+// }
+
+export type HandleType = (typeof handleTypes)[number]
+
+export function isSuccess(x: HandleType): x is 'success' {
+  return x === 'success'
 }
 
-export function isSuccess(x: HandleEnum): x is HandleEnum.SUCCESS {
-  return x === HandleEnum.SUCCESS
+export function isFail(x: HandleType): x is 'fail' {
+  return x === 'fail'
 }
 
-export function isFail(x: HandleEnum): x is HandleEnum.FAIL {
-  return x === HandleEnum.FAIL
+export function isSystemError(x: HandleType): x is 'systemError' {
+  return x === 'systemError'
 }
-
-export function isSystemError(x: HandleEnum): x is HandleEnum.SYSTEM_ERROR {
-  return x === HandleEnum.SYSTEM_ERROR
-}
-
-export type HandleEnumKeys = keyof typeof HandleEnum
-export const handleEnumValues = Object.values(HandleEnum)
 
 export type DynamicHandlerIds = 'tokenOutdate'
 
@@ -127,12 +128,9 @@ export interface DynamicRequestConfig<T, R = any> {
 
 export type InterceptorOptionsType = 'request' | 'response'
 
-export type GetHandlerIds<T> = T extends readonly [
-  { id: infer K },
-  ...infer Rest,
-]
-  ? K | GetHandlerIds<Rest>
-  : never
+export type GetHandlerIds<T> =
+  T extends readonly [{ id: infer K }, ...infer Rest] ? K | GetHandlerIds<Rest>
+    : never
 
 export type DynamicHandler<T> = (
   params: Parameters<ICodeHandler<T>['handler']>[0],
@@ -258,10 +256,10 @@ export interface ServerDefinedResponse<
 
 export interface ResponseResult<
   T,
-  D = T extends AxiosResponse<infer K>
-    ? K extends ServerDefinedResponse<infer R>
-      ? Equal<R, unknown> extends true
-        ? K
+  D = T extends AxiosResponse<infer K> ?
+    K extends ServerDefinedResponse<infer R> ?
+      Equal<R, unknown> extends true ?
+        K
         : R
       : K
     : never,
@@ -277,9 +275,12 @@ export interface ResponseResult<
   // axios Response
   response: AxiosResponse<R>
   message?: string
+  // TODO: refactor:
+  // I want to refactor notify to a chain-function, like: notify().success().fail().sys() or notify().success().error()
+  // error includes fail and sysError
   notify: (
     mes?:
-      | Partial<Record<HandleEnumKeys, Partial<MessageOptions>>>
+      | Partial<Record<HandleType, Partial<MessageOptions>>>
       | string
       | [success?: string, fail?: string, sysError?: string],
   ) => void
@@ -288,17 +289,17 @@ export interface ResponseResult<
 export interface HandleResponseConfig<D = ServerDefinedResponse> {
   notificationDelay?: boolean
   // default strategies are:
-  // 1. if result is sysError or is not success , showErrorMessageTip show automatically
+  // 1. if result is not successful, showErrorMessageTip show automatically
   // 2. sometime server always return a success message, for common use, we don't need to show it
   showServerSuccessMessage?: boolean
   isSuccess?: (res: AxiosResponse<D>) => boolean
   getBackData?: (options: {
-    type: HandleEnum
+    type: HandleType
     res: UnionBack<D>
     http: Restful<any>
   }) => unknown
   getMessage?: (options: {
-    type: HandleEnum
+    type: HandleType
     res: UnionBack<D>
     http: Restful<any>
   }) => string | undefined
@@ -320,10 +321,8 @@ export interface DefaultStrategies<D = any>
 }
 
 export type WrapResponse<T> =
-  T extends ServerDefinedResponse<unknown>
-    ? T
-    : T extends UsePrimitiveType<infer P>
-      ? P
+  T extends ServerDefinedResponse<unknown> ? T
+    : T extends UsePrimitiveType<infer P> ? P
       : ServerDefinedResponse<T>
 
 export interface DefineResponseResult<T> {
@@ -337,17 +336,16 @@ export interface MarkAsPartial<T> {
   value: T
 }
 
-export type DefineRequestFuncParams<Data> = Data extends [infer Params, infer D]
-  ? [Params] extends [void]
-      ? [D] extends [void]
-          ? [config?: Config]
-          : [data: D, config?: Config<D>]
-      : [params: Params, config?: Config<D>]
-  : Data extends [infer P]
-    ? [params: P, config?: Config]
-    : [Data] extends [void]
-        ? [config?: Config]
-        : [data: Data, config?: Config]
+export type DefineRequestFuncParams<Data> =
+  Data extends [infer Params, infer D] ?
+      [Params] extends [void] ?
+          [D] extends [void] ?
+              [config?: Config]
+            : [data: D, config?: Config<D>]
+        : [params: Params, config?: Config<D>]
+    : Data extends [infer P] ? [params: P, config?: Config]
+      : [Data] extends [void] ? [config?: Config]
+          : [data: Data, config?: Config]
 
 export interface CombinedApi<T extends AnyFn> {
   is: typeof monanSymbol
@@ -357,40 +355,35 @@ export interface CombinedApi<T extends AnyFn> {
 
 // if tuple's length more than 50, ts will give warning
 // export type ComputedResponse<T, Response> = Response extends
-export type ExtractAPI<T, R extends object = object> = T extends [
-  infer F,
-  ...infer Rest,
-]
-  ? F extends defineAPI<infer Id, infer DataOrDefinition, infer Response>
-    ? Id extends string
-      ? DataOrDefinition extends (...args: any[]) => any
-        ? ExtractAPI<
-          Rest,
-          {
-            [k in Id | keyof R]: k extends Id
-              ? DataOrDefinition
-              : k extends keyof R
-                ? R[k]
-                : never
-          }
-        >
-        : ExtractAPI<
-          Rest,
-          {
-            [k in Id | keyof R]: k extends Id
-              ? CombinedApi<
-                <const T extends DefineRequestFuncParams<DataOrDefinition>>(
-                  ...p: T
-                ) => DefineResponseResult<Response>
-              >
-              : k extends keyof R
-                ? R[k]
-                : never
-          }
-        >
-      : ExtractAPI<Rest, R> // skip
-    : F
-  : R // return Result
+export type ExtractAPI<T, R extends object = object> =
+  T extends [infer F, ...infer Rest] ?
+    F extends defineAPI<infer Id, infer DataOrDefinition, infer Response> ?
+      Id extends string ?
+        DataOrDefinition extends (...args: any[]) => any ?
+          ExtractAPI<
+            Rest,
+            {
+              [k in Id | keyof R]: k extends Id ? DataOrDefinition
+                : k extends keyof R ? R[k]
+                  : never
+            }
+          >
+          : ExtractAPI<
+            Rest,
+            {
+              [k in Id | keyof R]: k extends Id ?
+                CombinedApi<
+                  <const T extends DefineRequestFuncParams<DataOrDefinition>>(
+                    ...p: T
+                  ) => DefineResponseResult<Response>
+                >
+                : k extends keyof R ? R[k]
+                  : never
+            }
+          >
+        : ExtractAPI<Rest, R> // skip
+      : F
+    : R // return Result
 
 export type GenHandleFunc = <T>(
   response: {

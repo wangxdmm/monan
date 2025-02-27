@@ -6,7 +6,7 @@ import { Restful } from './restful'
 
 export interface EasyAxiosOptions<T> extends AtLeast<IHttpConfig<T>, 'instance'> {}
 
-export interface DepreactedFeature {
+export interface DeprecatedFeature {
   useDeprecatedAPI?: boolean
 }
 

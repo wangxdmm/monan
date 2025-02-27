@@ -50,6 +50,10 @@ export class SetupAxios<T> {
     this.init()
   }
 
+  updateSalt(salt: IHttpConfig<T>['salt']) {
+    this.config.salt = salt
+  }
+
   init() {
     this.handleInstance(this.instance)
     if (this.config.autoSetting === true) {

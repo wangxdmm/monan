@@ -2,21 +2,15 @@ import type { AnyFn } from '@monan/types'
 import type { Restful } from './restful'
 import type {
   BatchBackType,
-  HandleEnumKeys,
   HandleResponseConfig,
+  HandleType,
   MessageOptions,
   ResponseResult,
   SysError,
   UnionBack,
 } from './share'
 import { isArray, isObject, isString } from '@monan/shared'
-import { HandleEnum, handleEnumValues } from './share'
-
-export const mesSort = [
-  HandleEnum.SUCCESS,
-  HandleEnum.FAIL,
-  HandleEnum.SYSTEM_ERROR,
-]
+import { handleTypes } from './share'
 
 export function genHandleResponse<T>(http: Restful<T>) {
   function isSysError<T = any>(x: any): x is SysError<T> {
@@ -48,12 +42,12 @@ export function genHandleResponse<T>(http: Restful<T>) {
     if (isSysError(res)) {
       // resResult.response = res.error.response;
       resResult.sysError = getBackData?.({
-        type: HandleEnum.SYSTEM_ERROR,
+        type: 'systemError',
         res,
         http,
       }) as ResponseResult<T>['sysError']
       resResult.message = getMessage?.({
-        type: HandleEnum.SYSTEM_ERROR,
+        type: 'systemError',
         res,
         http,
       })
@@ -63,19 +57,19 @@ export function genHandleResponse<T>(http: Restful<T>) {
       if (!result) {
         resResult.error = res.data // getBackData!(HandleEnum.FAIL, res);
         resResult.message = getMessage?.({
-          type: HandleEnum.FAIL,
+          type: 'fail',
           res,
           http,
         })
       }
       else {
         resResult.backData = getBackData?.({
-          type: HandleEnum.SUCCESS,
+          type: 'success',
           res,
           http,
         }) as ResponseResult<T>['backData']
         resResult.message = getMessage?.({
-          type: HandleEnum.SUCCESS,
+          type: 'success',
           res,
           http,
         })
@@ -89,15 +83,15 @@ export function genHandleResponse<T>(http: Restful<T>) {
         return
       }
 
-      const mesHash = handleEnumValues.reduce(
+      const mesHash = handleTypes.reduce(
         (cur, next) => {
           cur[next] = {}
           return cur
         },
-        {} as Record<HandleEnumKeys, MessageOptions>,
+        {} as Record<HandleType, MessageOptions>,
       )
       if (isObject(messageOrOptions)) {
-        handleEnumValues.forEach((mes) => {
+        handleTypes.forEach((mes) => {
           const cur = (messageOrOptions as any)[mes]
           if (isObject(cur)) {
             Object.assign(mesHash[mes], cur)
@@ -108,31 +102,31 @@ export function genHandleResponse<T>(http: Restful<T>) {
         })
       }
       else if (isString(messageOrOptions)) {
-        mesHash[HandleEnum.SUCCESS].message = messageOrOptions
+        mesHash.success.message = messageOrOptions
       }
       else if (isArray(messageOrOptions)) {
-        mesSort.forEach((k, index) => {
+        ;[...handleTypes].forEach((k, index) => {
           if (messageOrOptions[index] !== undefined) {
-            mesHash[k].message = messageOrOptions[index]
+            mesHash[k as HandleType].message = messageOrOptions[index]
           }
         })
       }
 
-      const getMessage = (index: HandleEnumKeys) =>
+      const getMessage = (index: HandleType) =>
         Object.assign({ message: resResult.message }, mesHash[index])
       if (isSysError(res)) {
-        http.showErrorMessageTip(getMessage(HandleEnum.SYSTEM_ERROR), {
+        http.showErrorMessageTip(getMessage('systemError'), {
           response: res.error.response,
         })
       }
       else {
         if (result) {
-          http.showSuccessMessageTip(getMessage(HandleEnum.SUCCESS), {
+          http.showSuccessMessageTip(getMessage('success'), {
             response: res,
           })
         }
         else {
-          http.showErrorMessageTip(getMessage(HandleEnum.FAIL), {
+          http.showErrorMessageTip(getMessage('fail'), {
             response: res,
           })
         }
