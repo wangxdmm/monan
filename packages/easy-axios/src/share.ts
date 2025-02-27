@@ -280,11 +280,15 @@ export interface ResponseResult<
   // error includes fail and sysError
   notify: (
     mes?:
-      | Partial<Record<HandleType, Partial<MessageOptions>>>
+      | NotificationObjectType
       | string
       | [success?: string, fail?: string, sysError?: string],
   ) => void
 }
+
+export type NotificationObjectType = Partial<
+  Record<HandleType, Partial<MessageOptions> | string>
+>
 
 export interface HandleResponseConfig<D = ServerDefinedResponse> {
   notificationDelay?: boolean

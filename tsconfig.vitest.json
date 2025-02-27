@@ -3,5 +3,5 @@
   "compilerOptions": {
     "types": ["node"]
   },
-  "include": ["**/__tests__", "env.test.d.ts", "src", "packages/**/*.{ts,tsx}"]
+  "include": ["**/__tests__", "env.test.d.ts", "packages"]
 }

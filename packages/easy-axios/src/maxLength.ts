@@ -4,7 +4,7 @@ import type {
   DefineResponseResult,
   ExtractAPI,
   Restful,
-} from '../src'
+} from '.'
 
 export function test<T extends Restful<any>>(
   http: T,

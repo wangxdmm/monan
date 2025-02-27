@@ -56,13 +56,26 @@ http.createDefaultStrategies((ins) => {
 
 const { instance } = http
 
-describe('resutful', async () => {
+describe('restful', async () => {
   beforeEach(() => {
     moxios.install(instance as any)
   })
 
   afterEach(() => {
     moxios.uninstall(instance as any)
+  })
+
+  it('notify is ok', async () => {
+    const api = http.create<
+      [defineAPI<'get', { name: string }, { name: string }>]
+    >('.', ['get::/->get'])
+
+    const { notify } = await api.get({ name: '1' })()
+
+    notify({
+      fail: 'hello',
+      success: 'world',
+    })
   })
 
   it('create config and back is ok', () => {
@@ -616,7 +629,9 @@ describe('resutful', async () => {
 
       setTimeout(() => {
         http.abort(req.token)
-        expect(req.token).toMatchInlineSnapshot(`"FG_qnCx9yoGIPaPXbaWLlApsBQD5bYa3sSam_FwLYWI"`)
+        expect(req.token).toMatchInlineSnapshot(
+          `"FG_qnCx9yoGIPaPXbaWLlApsBQD5bYa3sSam_FwLYWI"`,
+        )
       }, 2000)
     })
   })

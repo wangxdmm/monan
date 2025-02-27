@@ -15,7 +15,8 @@
     "lint": "eslint . --fix",
     "test:dev": "vitest dev",
     "test": "vitest run",
-    "test:shake": "pnpm -C packages/tree-shaking-test build"
+    "test:shake": "pnpm -C packages/tree-shaking-test build",
+    "build": "crax mono build"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.3.0",

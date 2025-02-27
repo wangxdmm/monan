@@ -5,6 +5,7 @@ import type {
   HandleResponseConfig,
   HandleType,
   MessageOptions,
+  NotificationObjectType,
   ResponseResult,
   SysError,
   UnionBack,
@@ -90,14 +91,14 @@ export function genHandleResponse<T>(http: Restful<T>) {
         },
         {} as Record<HandleType, MessageOptions>,
       )
-      if (isObject(messageOrOptions)) {
+      if (isObject<NotificationObjectType>(messageOrOptions)) {
         handleTypes.forEach((mes) => {
-          const cur = (messageOrOptions as any)[mes]
+          const cur = messageOrOptions[mes]
           if (isObject(cur)) {
             Object.assign(mesHash[mes], cur)
           }
           else if (isString(cur)) {
-            mesHash[mes].message = mes
+            mesHash[mes].message = cur
           }
         })
       }
@@ -134,8 +135,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
     }
 
     // Note: the result of getMessage should not be the condition to determine whether to notify, the only things getMessage works is to get a valid message by user config
-    // 1. notificationDelay is to determine when to notify success or fail message, and default is false
-    // 2. showServerSuccessMessage is to determine whether to notify success message, and  default is false
+    // 1. notificationDelay is to determine when to notify success or fail message(default is false)
+    // 2. showServerSuccessMessage is to determine whether to notify success message(default is false)
     // 3. if result is false, we should always notify, and the only way to stub it is set notificationDelay to true
     if (!config.notificationDelay) {
       if (config.showServerSuccessMessage || !resResult.result) {
