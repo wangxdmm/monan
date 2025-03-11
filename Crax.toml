@@ -1,16 +1,16 @@
-ignore = [ "**/packages/{tree-shaking-test}" ]
+ignore = ["**/packages/{tree-shaking-test}"]
 catalog_remote_url = "http://192.168.1.70:5002/asv4/v4/catalog.yaml"
-pre_build_commit = "c7d89e6f7dd1f717fa2733cb73b6af1c601b9f74"
+pre_build_commit = "f0e8d35ba82eb67b3e7a5b2b702e5ecaaf493a33"
 diff_ignore = [
-  "**/env.d.ts",
-  "**/__tests__/*",
-  "**/play/*",
-  "**/butler.config.ts",
-  "**/package.json",
-  "**/*.toml",
-  "**/packages/tree-shaking-test/*",
+    "**/env.d.ts",
+    "**/__tests__/*",
+    "**/play/*",
+    "**/butler.config.ts",
+    "**/package.json",
+    "**/*.toml",
+    "**/packages/tree-shaking-test/*",
 ]
-registries = [ "https://registry.npmjs.org/" ]
+registries = ["https://registry.npmjs.org/"]
 
 [meta."@monan/shared"]
 order = 10
