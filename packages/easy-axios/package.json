@@ -37,6 +37,6 @@
     "@monan/shared": "workspace:*",
     "@monan/types": "workspace:*",
     "axios": "1.7.9",
-    "ohash": "2.0.5"
+    "ohash": "1.1.6"
   }
 }
