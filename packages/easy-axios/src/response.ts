@@ -30,7 +30,7 @@ export function genHandleResponse<T>(http: Restful<T>) {
       } as Partial<HandleResponseConfig>,
       configIn || {},
     )
-    const { getBackData, getMessage, isSuccess } = config
+    const { getBackData, getMessage, isSuccess, defaultSuccessMessage } = config
     const resResult: ResponseResult<T> = {
       // TODO improve type
       skip: (res as any)?.__M_skip === true,
@@ -122,9 +122,12 @@ export function genHandleResponse<T>(http: Restful<T>) {
       }
       else {
         if (result) {
-          http.showSuccessMessageTip(getMessage('success'), {
-            response: res,
-          })
+          http.showSuccessMessageTip(
+            getMessage('success') || defaultSuccessMessage,
+            {
+              response: res,
+            },
+          )
         }
         else {
           http.showErrorMessageTip(getMessage('fail'), {
@@ -138,6 +141,8 @@ export function genHandleResponse<T>(http: Restful<T>) {
     // 1. notificationDelay is to determine when to notify success or fail message(default is false)
     // 2. showServerSuccessMessage is to determine whether to notify success message(default is false)
     // 3. if result is false, we should always notify, and the only way to stub it is set notificationDelay to true
+
+    // TODO maybe add a defaultSuccessMessage which can be translate whe serve don't response any valid successful messages.
     if (!config.notificationDelay) {
       if (config.showServerSuccessMessage || !resResult.result) {
         resResult.notify()

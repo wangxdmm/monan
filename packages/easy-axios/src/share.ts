@@ -292,10 +292,21 @@ export type NotificationObjectType = Partial<
 
 export interface HandleResponseConfig<D = ServerDefinedResponse> {
   notificationDelay?: boolean
-  // default strategies are:
-  // 1. if result is not successful, showErrorMessageTip show automatically
-  // 2. sometime server always return a success message, for common use, we don't need to show it
+  /**
+   * 1. If result is not successful, showErrorMessageTip show automatically
+   * 2. Sometime server always return a success message, for common use, we don't
+   *    need to show it
+   */
   showServerSuccessMessage?: boolean
+  /**
+   * When showServerSuccessMessage is set, if server don't response a valid
+   * successful message, we should use a default successMessage.
+   *
+   * Problem: I think this api overlaps with getMessage, but, sometimes it seems
+   * redundant to define a individual getMessage function, defaultSuccessMessage
+   * seems more clear. so, I add this option experimentally.
+   */
+  defaultSuccessMessage?: string
   isSuccess?: (res: AxiosResponse<D>) => boolean
   getBackData?: (options: {
     type: HandleType

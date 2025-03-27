@@ -122,7 +122,7 @@ export class Restful<T> extends SetupAxios<T> {
     if (metaStr) {
       metaStr.split(',').forEach((m) => {
         const [k, v = true] = m.split(valueDiv)
-        meta[k as (keyof NonNullable<LabelDef['meta']>)] = v as any
+        meta[k as keyof NonNullable<LabelDef['meta']>] = v as any
         if (k === 'hooks' && isString(v) && isDef(v)) {
           meta[k] = v.split('=>')
         }
@@ -166,7 +166,11 @@ export class Restful<T> extends SetupAxios<T> {
         && !get(mergedConfig, ['headers', ContentTypeKey])
         && (ContentTypeEnum as any)[contentType]
       ) {
-        set(mergedConfig, ['headers', ContentTypeKey], (ContentTypeEnum as any)[contentType])
+        set(
+          mergedConfig,
+          ['headers', ContentTypeKey],
+          (ContentTypeEnum as any)[contentType],
+        )
       }
 
       if (params && !mergedConfig.params) {
@@ -232,13 +236,14 @@ export class Restful<T> extends SetupAxios<T> {
               ? config.monanOptions?.single
               : this.config.single
           const abort = config.monanOptions?.abort !== false
-          const requestToken: string = hash({
+          const tokenObj = {
             m: config.method,
             u: config.url,
             d: config.data,
             p: config.params,
             s: this.config.salt?.(config),
-          })
+          }
+          const requestToken: string = hash(tokenObj)
 
           if (abort) {
             const controller = new AbortController()
