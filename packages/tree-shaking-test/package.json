@@ -25,8 +25,7 @@
   ],
   "scripts": {
     "dev": "pnpm exec unbuild --watch",
-    "build": "pnpm dts && pnpm exec unbuild",
-    "dts": "pnpm exec cdt"
+    "build": "pnpm exec unbuild"
   },
   "devDependencies": {
     "@monan/shared": "workspace:^",

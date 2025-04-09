@@ -15,6 +15,7 @@
     "lint": "eslint . --fix",
     "test:dev": "vitest dev",
     "test": "vitest run",
+    "dev": "crax mono dev",
     "test:shake": "pnpm -C packages/tree-shaking-test build",
     "build": "crax mono build"
   },
