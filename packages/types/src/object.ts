@@ -7,3 +7,6 @@ export type AnyObject = Record<PrimitiveKey, any>
 export type PickValue<T, K extends keyof T> = Pick<T, K>[K]
 export type ValueIs<Map, K extends keyof Map, V> = Equal<PickValue<Map, K>, V>
 export type AnyFnObject = Record<PrimitiveKey, AnyFn>
+export type Nullable<T> = {
+  [K in keyof T]: T[K] | null
+}
