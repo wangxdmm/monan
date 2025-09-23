@@ -1,6 +1,6 @@
 ignore = ["**/packages/{tree-shaking-test}"]
 catalog_remote_url = "http://192.168.1.70:5002/asv4/v4/catalog.yaml"
-pre_build_commit = "e5b86a40e8a54723af6b33e3dcc225331f0feca3"
+pre_build_commit = "f171fe6fd1ae84d3a4a98045f0c6e67274038fa8"
 diff_ignore = [
     "**/env.d.ts",
     "**/__tests__/*",
