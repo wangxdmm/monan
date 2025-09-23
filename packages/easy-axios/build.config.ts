@@ -1,5 +1,4 @@
 import { defineBuildConfig } from 'unbuild'
-import UnpluginUnused from 'unplugin-unused/rollup'
 
 export default defineBuildConfig([
   {
@@ -13,10 +12,6 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (_, options) => {
-        options.plugins.push(UnpluginUnused({
-          ignore: ['axios'],
-        }))
-
         options.external = []
       },
     },

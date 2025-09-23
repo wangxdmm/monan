@@ -1,6 +1,5 @@
 import { PluginPure } from 'rollup-plugin-pure'
 import { defineBuildConfig } from 'unbuild'
-import UnpluginUnused from 'unplugin-unused/rollup'
 
 export default defineBuildConfig([
   {
@@ -14,9 +13,11 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (_, options) => {
-        options.plugins.push(UnpluginUnused(), PluginPure({
-          functions: ['createCustomEqual', 'clone'],
-        }))
+        options.plugins.push(
+          PluginPure({
+            functions: ['createCustomEqual', 'clone'],
+          }),
+        )
         options.external = []
       },
     },

@@ -13,69 +13,151 @@ import {
 } from 'vitest'
 import { defineEasyAxios } from '../src/defineEasyAxios'
 import { isMonanRequest } from '../src/is'
-import { WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../src/restful'
+import { Restful, WHEN_INJECT_PARAM_NO_ID_ERROR_DES } from '../src/restful'
 import { ContentTypeEnum, monanSymbol } from '../src/share'
 
+interface UserResponse<T = unknown, S = boolean> {
+  code: number
+  data?: T
+  message?: string
+  success: S
+  total?: number
+}
+
 declare module '../src/share' {
-  export interface ServerDefinedResponse<T = unknown, S = boolean> {
-    code: number
-    data?: T
-    message?: string
-    success: S
-    total?: number
+  export interface ServerDefinedResponse<T = unknown, S = boolean>
+    extends UserResponse<T, S> {}
+}
+
+let http!: Restful<'tokenOutDate'>
+
+const success = (response: Partial<UserResponse> = {}) => {
+  return {
+    status: 200,
+    response: {
+      message: 'success',
+      success: true,
+      data: {},
+      ...response,
+    },
   }
 }
 
-const { http } = defineEasyAxios<'tokenOutDate'>({
-  instance: axios.create({
-    baseURL: 'v1',
-    timeout: 10,
-  }),
-})
-
-http.createDefaultStrategies((ins) => {
+const fail = (message: string = 'failed') => {
   return {
-    isSuccess: (res) => {
-      return res.data?.success
-    },
-    getBackData: ({ res }) => {
-      if (ins.isSysError(res)) {
-        return res
-      }
-      return res.data?.data
-    },
-    getMessage: ({ res }) => {
-      if (ins.isSysError(res)) {
-        return get(res, 'error.response.data.message', res.error.message)
-      }
-
-      return res.data?.message
+    status: 200,
+    response: {
+      success: false,
+      message,
     },
   }
-})
+}
 
-const { instance } = http
+function wait(response: any, fn: () => any) {
+  fn()
+
+  return new Promise(resolve => {
+    moxios.wait(async () => {
+      const request = moxios.requests.mostRecent()
+      await request.respondWith(response)
+      resolve(true)
+    })
+  })
+}
 
 describe('restful', async () => {
   beforeEach(() => {
-    moxios.install(instance as any)
+    const easyAxios = defineEasyAxios<'tokenOutDate'>({
+      instance: axios.create({
+        baseURL: 'v1',
+        timeout: 10,
+      }),
+    })
+
+    easyAxios.http.createDefaultStrategies(ins => {
+      return {
+        isSuccess: res => {
+          return res.data?.success
+        },
+        getBackData: ({ res }) => {
+          if (ins.isSysError(res)) {
+            return res
+          }
+          return res.data?.data
+        },
+        getMessage: ({ res }) => {
+          if (ins.isSysError(res)) {
+            return get(res, 'error.response.data.message', res.error.message)
+          }
+
+          return res.data?.message
+        },
+      }
+    })
+
+    moxios.install(easyAxios.http.instance)
+
+    http = easyAxios.http
   })
 
   afterEach(() => {
-    moxios.uninstall(instance as any)
+    moxios.uninstall(http.instance)
   })
 
   it('notify is ok', async () => {
+    const fn = vi.fn()
+
+    http.createDefaultStrategies(() => {
+      return {
+        showErrorMessageTip() {
+          fn()
+        },
+        showSuccessMessageTip() {
+          fn()
+        },
+      }
+    })
+
     const api = http.create<
       [defineAPI<'get', { name: string }, { name: string }>]
     >('.', ['get::/->get'])
 
-    const { notify } = await api.get({ name: '1' })()
+    await wait(
+      success({
+        message: 'one',
+      }),
+      async () => {
+        const { message } = await api.get({ name: '1' })()
+        expect(message).toBe('one')
+      },
+    )
 
-    notify({
-      fail: 'hello',
-      success: 'world',
+    await wait(fail('two'), async () => {
+      const { message, notify } = await api.get({ name: '1' })({
+        notificationDelay: true,
+      })
+      expect(message).toBe('two')
+
+      notify({
+        fail: '',
+      })
+
+      expect(fn).toHaveBeenCalledTimes(1)
     })
+
+    await wait(
+      success({
+        message: 'three',
+      }),
+      async () => {
+        const { message, notify } = await api.get({ name: '1' })({
+          showServerSuccessMessage: true,
+        })
+        expect(message).toBe('three')
+
+        expect(fn).toHaveBeenCalledTimes(2)
+      },
+    )
   })
 
   it('create config and back is ok', () => {
@@ -104,7 +186,7 @@ describe('restful', async () => {
       },
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       api
         .get({
           name: 'Jack',
@@ -112,8 +194,8 @@ describe('restful', async () => {
         .then(({ backData, result }) => {
           expectTypeOf(backData).toMatchTypeOf<
             | {
-              name: string
-            }
+                name: string
+              }
             | undefined
           >()
           expect(result).toBeTruthy()
@@ -155,7 +237,7 @@ describe('restful', async () => {
     expectTypeOf(api.get).toBeFunction()
     expectTypeOf(api.get).parameter(0).toMatchTypeOf<Config | undefined>()
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       api
         .get({
           timeout: 1000,
@@ -194,7 +276,7 @@ describe('restful', async () => {
       },
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       api
         .del(
           { code: 22 },
@@ -242,7 +324,7 @@ describe('restful', async () => {
       },
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const requestData = {
         name: 'deleteName',
       }
@@ -291,7 +373,7 @@ describe('restful', async () => {
       },
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       api
         .getByCode(
           { code: 22 },
@@ -340,7 +422,7 @@ describe('restful', async () => {
       },
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const requestData = {
         name: 'deleteName',
       }
@@ -388,7 +470,7 @@ describe('restful', async () => {
       'post::/->post::contentType->multipart,timeout->0,responseType->blob,contentType->multipart',
     ])
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       api
         .post(
           { name: 'all' },
@@ -429,7 +511,7 @@ describe('restful', async () => {
       'post::/->post::contentType->multipart,responseType->blob,contentType->multipart',
     ])
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       api
         .post('/download', {
           data: {},
@@ -453,14 +535,14 @@ describe('restful', async () => {
   })
 
   it('hooks is ok', () => {
-    http.registerHooks('setName', (c) => {
+    http.registerHooks('setName', c => {
       set(c, 'params.name', {
         age: 22,
       })
       return c
     })
 
-    http.registerHooks('setCode', (c) => {
+    http.registerHooks('setCode', c => {
       set(c, 'data.wrap', { code: 33 })
       return c
     })
@@ -476,7 +558,7 @@ describe('restful', async () => {
       },
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const requestData = {
         name: 'deleteName',
       }
@@ -555,11 +637,11 @@ describe('restful', async () => {
       },
     })()
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       expect(spy.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "mcfYbZ1qYYLnBFfkfO2bwIRxtAOh97c6JurjcTMZgZM",
+            "2mbTpHIaWD",
           ],
         ]
       `)
@@ -587,10 +669,10 @@ describe('restful', async () => {
             expect(spy.mock.calls).toMatchInlineSnapshot(`
               [
                 [
-                  "mcfYbZ1qYYLnBFfkfO2bwIRxtAOh97c6JurjcTMZgZM",
+                  "2mbTpHIaWD",
                 ],
                 [
-                  "mcfYbZ1qYYLnBFfkfO2bwIRxtAOh97c6JurjcTMZgZM",
+                  "2mbTpHIaWD",
                 ],
               ]
             `)
@@ -605,9 +687,9 @@ describe('restful', async () => {
       [defineAPI<'post', { code: number }, { name: string }>]
     >('.', ['post::/->post'])
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const req = api.post({ code: 1 })
-      req().then((s) => {
+      req().then(s => {
         expect(s.sysError?.error).toMatchInlineSnapshot(
           `[CanceledError: canceled]`,
         )
@@ -629,9 +711,7 @@ describe('restful', async () => {
 
       setTimeout(() => {
         http.abort(req.token)
-        expect(req.token).toMatchInlineSnapshot(
-          `"FG_qnCx9yoGIPaPXbaWLlApsBQD5bYa3sSam_FwLYWI"`,
-        )
+        expect(req.token).toMatchInlineSnapshot(`"iqPzNa0aB5"`)
       }, 2000)
     })
   })
