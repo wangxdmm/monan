@@ -25,6 +25,7 @@ export class Restful<T> extends SetupAxios<T> {
 
   abort(token: string) {
     this.abortControllerMap.get(token)?.abort()
+    this.requestSet.delete(token)
   }
 
   clearCache() {
@@ -248,10 +249,7 @@ export class Restful<T> extends SetupAxios<T> {
           if (abort) {
             const controller = new AbortController()
             this.abortControllerMap.set(requestToken, controller)
-
-            if (!config.signal) {
-              config.signal = controller.signal
-            }
+            config.signal = controller.signal
           }
 
           if (useSingle) {

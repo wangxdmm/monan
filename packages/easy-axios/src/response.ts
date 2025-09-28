@@ -168,6 +168,7 @@ export function genHandleResponse<T>(http: Restful<T>) {
       })
 
     fn.token = response.token
+    fn.abort = () => http.abort(response.token)
 
     return fn
   }

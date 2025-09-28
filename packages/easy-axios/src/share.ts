@@ -128,8 +128,8 @@ export interface DynamicRequestConfig<T, R = any> {
 
 export type InterceptorOptionsType = 'request' | 'response'
 
-export type GetHandlerIds<T> =
-  T extends readonly [{ id: infer K }, ...infer Rest] ? K | GetHandlerIds<Rest>
+export type GetHandlerIds<T>
+  = T extends readonly [{ id: infer K }, ...infer Rest] ? K | GetHandlerIds<Rest>
     : never
 
 export type DynamicHandler<T> = (
@@ -256,10 +256,10 @@ export interface ServerDefinedResponse<
 
 export interface ResponseResult<
   T,
-  D = T extends AxiosResponse<infer K> ?
-    K extends ServerDefinedResponse<infer R> ?
-      Equal<R, unknown> extends true ?
-        K
+  D = T extends AxiosResponse<infer K>
+    ? K extends ServerDefinedResponse<infer R>
+      ? Equal<R, unknown> extends true
+        ? K
         : R
       : K
     : never,
@@ -335,8 +335,8 @@ export interface DefaultStrategies<D = any>
   showSuccessMessageTip: MessageTip
 }
 
-export type WrapResponse<T> =
-  T extends ServerDefinedResponse<unknown> ? T
+export type WrapResponse<T>
+  = T extends ServerDefinedResponse<unknown> ? T
     : T extends UsePrimitiveType<infer P> ? P
       : ServerDefinedResponse<T>
 
@@ -345,17 +345,18 @@ export interface DefineResponseResult<T> {
     config?: HandleResponseConfig,
   ): Promise<ResponseResult<UnionBack<WrapResponse<T>>>>
   token: string
+  abort: () => any
 }
 
 export interface MarkAsPartial<T> {
   value: T
 }
 
-export type DefineRequestFuncParams<Data> =
-  Data extends [infer Params, infer D] ?
-      [Params] extends [void] ?
-          [D] extends [void] ?
-              [config?: Config]
+export type DefineRequestFuncParams<Data>
+  = Data extends [infer Params, infer D]
+    ? [Params] extends [void]
+        ? [D] extends [void]
+            ? [config?: Config]
             : [data: D, config?: Config<D>]
         : [params: Params, config?: Config<D>]
     : Data extends [infer P] ? [params: P, config?: Config]
@@ -370,12 +371,12 @@ export interface CombinedApi<T extends AnyFn> {
 
 // if tuple's length more than 50, ts will give warning
 // export type ComputedResponse<T, Response> = Response extends
-export type ExtractAPI<T, R extends object = object> =
-  T extends [infer F, ...infer Rest] ?
-    F extends defineAPI<infer Id, infer DataOrDefinition, infer Response> ?
-      Id extends string ?
-        DataOrDefinition extends (...args: any[]) => any ?
-          ExtractAPI<
+export type ExtractAPI<T, R extends object = object>
+  = T extends [infer F, ...infer Rest]
+    ? F extends defineAPI<infer Id, infer DataOrDefinition, infer Response>
+      ? Id extends string
+        ? DataOrDefinition extends (...args: any[]) => any
+          ? ExtractAPI<
             Rest,
             {
               [k in Id | keyof R]: k extends Id ? DataOrDefinition
@@ -386,8 +387,8 @@ export type ExtractAPI<T, R extends object = object> =
           : ExtractAPI<
             Rest,
             {
-              [k in Id | keyof R]: k extends Id ?
-                CombinedApi<
+              [k in Id | keyof R]: k extends Id
+                ? CombinedApi<
                   <const T extends DefineRequestFuncParams<DataOrDefinition>>(
                     ...p: T
                   ) => DefineResponseResult<Response>
