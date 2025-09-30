@@ -129,6 +129,7 @@ describe('object', async () => {
     expect(get(arr, '')).toBe(arr)
     expect(get(arr, ['   '], 1)).toBe(arr)
     expect(get(arr, [], 11)).toBe(11)
+    expect(get(arr, 0)).toBe(1)
   })
 })
 

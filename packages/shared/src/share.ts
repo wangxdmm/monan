@@ -1,5 +1,5 @@
 import type { PrimitiveKey } from '@monan/types'
-import { isArray, isString } from './typeAssert'
+import { isArray, isNumber, isString } from './typeAssert'
 
 export function noop(..._args: any[]): void {}
 
@@ -14,6 +14,9 @@ export function pathResolve(
 
   if (isString(path)) {
     pathResolve = String(path).split('.')
+  }
+  else if (isNumber(path)) {
+    pathResolve = [path]
   }
   else if (isArray<PrimitiveKey[]>(path)) {
     if (path.length === 0) {
