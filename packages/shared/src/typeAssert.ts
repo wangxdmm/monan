@@ -53,6 +53,10 @@ export function isEmpty<T = null | undefined | ''>(x: any): x is T {
   return [null, undefined, ''].includes(x)
 }
 
+export function isFormData(x: any): x is FormData {
+  return isDef(x) && getType(x) === 'FormData'
+}
+
 export function notEmpty<T>(
   x: T,
 ): x is T extends null | undefined | '' ? never : T {

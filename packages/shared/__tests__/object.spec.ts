@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { easyTrans, get, isDef, set, transAttr } from '../src/index'
+import { easyTrans, get, isDef, isObject, set, transAttr } from '../src/index'
 
 describe('object', async () => {
   it('transAttr', () => {
@@ -289,5 +289,20 @@ describe('set is ok', () => {
         },
       ]
     `)
+  })
+})
+
+describe('isObject', () => {
+  it('isObject is ok', () => {
+    expect(isObject({})).toBeTruthy()
+    expect(isObject(null)).toBeFalsy()
+    expect(isObject(/a/gi)).toBeFalsy()
+    expect(isObject(new Date())).toBeFalsy()
+    expect(isObject(undefined)).toBeFalsy()
+    expect(isObject([])).toBeDefined()
+    expect(isObject(new Map())).toBeFalsy()
+    expect(isObject(new Set())).toBeFalsy()
+    expect(isObject(Object.create({}))).toBeTruthy()
+    expect(isObject(() => {})).toBeFalsy()
   })
 })

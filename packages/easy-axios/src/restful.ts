@@ -9,7 +9,7 @@ import type {
   LabelDef,
   ServerDefinedResponse,
 } from './share'
-import { get, isDef, isString, noop, set } from '@monan/shared'
+import { get, isDef, isFormData, isString, noop, set } from '@monan/shared'
 import { hash } from 'ohash'
 import { SetupAxios } from './setupAxios'
 import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
@@ -197,6 +197,21 @@ export class Restful<T> extends SetupAxios<T> {
     return mergedConfig
   }
 
+  formDataToObject(data: FormData): Record<string, any> {
+    const obj: Record<string, any> = {}
+
+    for (const [key, value] of data.entries()) {
+      if (value instanceof File) {
+        obj[key] = [value.name, value.type, value.size, value.lastModified]
+      }
+      else {
+        obj[key] = value
+      }
+    }
+
+    return obj
+  }
+
   create<
     T extends (
       | defineAPI<string, any, any>
@@ -240,10 +255,14 @@ export class Restful<T> extends SetupAxios<T> {
           const tokenObj = {
             m: config.method,
             u: config.url,
-            d: config.data,
+            d:
+              isFormData(config.data)
+                ? this.formDataToObject(config.data)
+                : config.data,
             p: config.params,
             s: this.config.salt?.(config),
           }
+          // TODO performance ?
           const requestToken: string = hash(tokenObj)
 
           if (abort) {
