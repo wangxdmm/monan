@@ -36,7 +36,7 @@
   "devDependencies": {
     "@monan/shared": "workspace:*",
     "@monan/types": "workspace:*",
-    "axios": "1.7.9",
+    "axios": "1.13.2",
     "ohash": "2.0.11"
   }
 }
