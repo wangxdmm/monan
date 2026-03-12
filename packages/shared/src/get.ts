@@ -51,14 +51,6 @@ export function get<T = any>(
   }
 
   if (isUndef(source)) {
-    if (alterVal === undefined) {
-      if (config.warn) {
-        console.error(
-          `input(${source}) and alter(${alterVal}) can not be undefined together`,
-        )
-      }
-    }
-
     return alterVal as T // source alterValue
   }
 
