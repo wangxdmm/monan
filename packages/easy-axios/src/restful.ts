@@ -7,7 +7,9 @@ import type {
   ExtractAPI,
   GenHandleFunc,
   LabelDef,
+  ResponseResult,
   ServerDefinedResponse,
+  UnionBack,
 } from './share'
 import { get, isDef, isFormData, isString, noop, set } from '@monan/shared'
 import { hash } from 'ohash'
@@ -22,6 +24,8 @@ export class Restful<T> extends SetupAxios<T> {
   defaultStrategies: Partial<DefaultStrategies> = {}
   requestSet = new Set<string>()
   abortControllerMap = new Map<string, AbortController>()
+  requestResult = new Map<string, Promise<ResponseResult<UnionBack<T>>>>()
+  requestCount = new Map<string, number>()
 
   abort(token: string) {
     this.abortControllerMap.get(token)?.abort()
@@ -76,9 +80,7 @@ export class Restful<T> extends SetupAxios<T> {
     let [method, url, metaStr] = def.split('::')
     let id = ''
     if (!method) {
-      throw new Error(
-        `${def} must have method: please check https://github.com/axios/axios`,
-      )
+      throw new Error(`${def} must have method: please check https://github.com/axios/axios`)
     }
     method = method.toLowerCase().trim()
     // get() -> use empty args func
@@ -88,7 +90,7 @@ export class Restful<T> extends SetupAxios<T> {
     }
 
     if (url) {
-      ;[url, id] = url.split(valueDiv)
+      [url, id] = url.split(valueDiv)
 
       url && (url = url.trim())
       if (url.slice(-1) === '?') {
@@ -148,11 +150,7 @@ export class Restful<T> extends SetupAxios<T> {
     }
   }
 
-  patchConfigByMeta(
-    userInputData: unknown,
-    config: Config,
-    meta: LabelDef['meta'],
-  ): Config {
+  patchConfigByMeta(userInputData: unknown, config: Config, meta: LabelDef['meta']): Config {
     const mergedConfig: Config = config || {}
     if (meta) {
       let contentType
@@ -167,11 +165,7 @@ export class Restful<T> extends SetupAxios<T> {
         && !get(mergedConfig, ['headers', ContentTypeKey])
         && (ContentTypeEnum as any)[contentType]
       ) {
-        set(
-          mergedConfig,
-          ['headers', ContentTypeKey],
-          (ContentTypeEnum as any)[contentType],
-        )
+        set(mergedConfig, ['headers', ContentTypeKey], (ContentTypeEnum as any)[contentType])
       }
 
       if (params && !mergedConfig.params) {
@@ -212,6 +206,18 @@ export class Restful<T> extends SetupAxios<T> {
     return obj
   }
 
+  addDuplicatedCount(requestToken: string) {
+    let num = this.requestCount.get(requestToken) || 0
+    num++
+    this.requestCount.set(requestToken, num)
+  }
+
+  reduceDuplicatedCount(requestToken: string) {
+    let num = this.requestCount.get(requestToken)!
+    num--
+    this.requestCount.set(requestToken, num)
+  }
+
   create<
     T extends (
       | defineAPI<string, any, any>
@@ -236,11 +242,7 @@ export class Restful<T> extends SetupAxios<T> {
             config = args[1]
             userInputData = args[0]
           }
-          const { url, dataOrParams } = this.normalizeRequest(
-            urlDef,
-            userInputData,
-            config,
-          )
+          const { url, dataOrParams } = this.normalizeRequest(urlDef, userInputData, config)
 
           config = this.patchConfigByMeta(dataOrParams, config, meta)
           config.url = `${prefix}${url}`
@@ -255,10 +257,7 @@ export class Restful<T> extends SetupAxios<T> {
           const tokenObj = {
             m: config.method,
             u: config.url,
-            d:
-              isFormData(config.data)
-                ? this.formDataToObject(config.data)
-                : config.data,
+            d: isFormData(config.data) ? this.formDataToObject(config.data) : config.data,
             p: config.params,
             s: this.config.salt?.(config),
           }
@@ -273,10 +272,25 @@ export class Restful<T> extends SetupAxios<T> {
 
           if (useSingle) {
             if (this.requestSet.has(requestToken)) {
-              return () =>
-                Promise.resolve({
-                  __M_skip: true,
+              return () => {
+                this.addDuplicatedCount(requestToken)
+                const req
+                  = this.requestResult.get(requestToken)
+                    || Promise.resolve({
+                      __M_skip: true,
+                    })
+                return new Promise((resolve) => {
+                  req.then((result) => {
+                    resolve(result)
+                  }).finally(() => {
+                    this.reduceDuplicatedCount(requestToken)
+                    const num = this.requestCount.get(requestToken) || -1
+                    if (num === 0) {
+                      this.requestResult.delete(requestToken)
+                    }
+                  })
                 })
+              }
             }
 
             this.requestSet.add(requestToken)
@@ -301,14 +315,22 @@ export class Restful<T> extends SetupAxios<T> {
 
           fn.token = requestToken
 
-          return this.genHandleFunc(fn, () => {
-            if (requestToken) {
-              this.abortControllerMap.delete(requestToken)
-              if (useSingle) {
-                this.requestSet.delete(requestToken)
+          return this.genHandleFunc(
+            fn,
+            () => {
+              if (requestToken) {
+                this.abortControllerMap.delete(requestToken)
+                if (useSingle) {
+                  this.requestSet.delete(requestToken)
+                }
               }
-            }
-          })
+            },
+            ({ req }) => {
+              if (requestToken) {
+                this.requestResult.set(requestToken, req)
+              }
+            },
+          )
         }
 
         callFn.is = monanSymbol

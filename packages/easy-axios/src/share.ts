@@ -407,4 +407,7 @@ export type GenHandleFunc = <T>(
     token: string
   },
   after?: AnyFn,
+  onRequest?: (context: {
+    req: Promise<ResponseResult<UnionBack<T>>>
+  }) => void
 ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<T>>>

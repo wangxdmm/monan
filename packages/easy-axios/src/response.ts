@@ -158,14 +158,22 @@ export function genHandleResponse<T>(http: Restful<T>) {
       token: string
     },
     after?: AnyFn,
+    onRequest?: (context: {
+      req: Promise<ResponseResult<UnionBack<T>>>
+    }) => void,
   ) {
-    const fn = (config?: HandleResponseConfig) =>
-      new Promise<ResponseResult<UnionBack<T>>>((resolve) => {
+    const fn = (config?: HandleResponseConfig) => {
+      const req = new Promise<ResponseResult<UnionBack<T>>>((resolve) => {
         response().then((res) => {
           resolve(handleResponse(res, config))
           after?.()
         })
       })
+      onRequest?.({
+        req,
+      })
+      return req
+    }
 
     fn.token = response.token
     fn.abort = () => http.abort(response.token)
