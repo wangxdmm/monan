@@ -1,6 +1,6 @@
 ignore = ["**/packages/{tree-shaking-test}"]
 catalog_remote_url = "http://192.168.1.70:5002/asv4/v4/catalog.yaml"
-pre_build_commit = "1375a625b890977e262a014a53c79732b8e29bc8"
+pre_build_commit = "ddf553d313c235a3af82bd910c5496e6632380d9"
 diff_ignore = [
     "**/env.d.ts",
     "**/__tests__/*",
@@ -12,11 +12,11 @@ diff_ignore = [
 ]
 registries = ["https://registry.npmjs.org/"]
 
-[meta."@monan/easy-axios"]
-order = 15
-
 [meta."@monan/shared"]
 order = 10
 
 [meta."@monan/types"]
 order = 5
+
+[meta."@monan/easy-axios"]
+order = 15
