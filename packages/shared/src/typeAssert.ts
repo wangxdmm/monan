@@ -106,3 +106,11 @@ export function isServer(): boolean {
 export function isSymbol<T = symbol>(x: unknown): x is T {
   return typeof x === 'symbol'
 }
+
+export function isSet<T = unknown>(x: unknown): x is Set<T> {
+  return !!(x && x instanceof Set)
+}
+
+export function isMap<K, V>(x: unknown): x is Map<K, V> {
+  return !!(x && x instanceof Map)
+}
