@@ -2,6 +2,7 @@ import type { AnyFn } from '@monan/types'
 import type { Restful } from './restful'
 import type {
   BatchBackType,
+  Config,
   HandleResponseConfig,
   HandleType,
   MessageOptions,
@@ -16,6 +17,31 @@ import { handleTypes } from './share'
 export function genHandleResponse<T>(http: Restful<T>) {
   function isSysError<T = any>(x: any): x is SysError<T> {
     return http.isSysError(x)
+  }
+
+  function isSame(res: UnionBack<any>) {
+    let config: Config<any> | undefined
+    if (isSysError(res)) {
+      config = res.error.response?.config
+    }
+    else {
+      config = res.config
+    }
+    if (!config) {
+      return true
+    }
+    const versionGetter = config.monanOptions?.staleKey
+    const preVersion = config.__M_pre_stale_key
+    if (versionGetter == null || preVersion == null) {
+      return true
+    }
+    const nv = versionGetter()
+    if (preVersion !== nv) {
+      console.warn(
+        `version has changed: [${preVersion.toString()}]->[${nv.toString()}]`,
+      )
+    }
+    return preVersion === nv
   }
 
   function handleResponse<T extends UnionBack<any>>(
@@ -37,6 +63,12 @@ export function genHandleResponse<T>(http: Restful<T>) {
       result: isSysError(res) ? false : !!isSuccess?.(res),
       notify: () => ({}),
       response: isSysError(res) ? res.error.response! : res,
+      stale: !isSame(res),
+      consThen: (fn) => {
+        if (!resResult.stale) {
+          fn()
+        }
+      },
     }
     const { result } = resResult
 

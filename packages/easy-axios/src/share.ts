@@ -153,12 +153,21 @@ export interface SysError<T = any> {
   [index: string]: boolean | AxiosError | undefined
 }
 
+export type RequestStaleKey = string | number | symbol
+
+export const DEFAULT_VERSION = `__M_VERSION_1`
+
 export type Config<D = any> = AxiosRequestConfig<D> & {
+  __M_pre_stale_key?: RequestStaleKey
   __M_reverse?: boolean
   __M_spy?: AnyFn
   monanOptions?: {
     single?: boolean
+    /**
+     * Create global AbortController
+     */
     abort?: boolean
+    staleKey?: () => RequestStaleKey
   }
   __M_interParam?: <T>(
     url: string,
@@ -265,6 +274,7 @@ export interface ResponseResult<
     : never,
   R = T extends AxiosResponse<infer K> ? K : never,
 > {
+  stale: boolean
   skip?: boolean
   result: boolean
   backData?: D
@@ -284,6 +294,7 @@ export interface ResponseResult<
       | string
       | [success?: string, fail?: string, sysError?: string],
   ) => void
+  consThen: (fn: () => void) => void
 }
 
 export type NotificationObjectType = Partial<
@@ -407,7 +418,5 @@ export type GenHandleFunc = <T>(
     token: string
   },
   after?: AnyFn,
-  onRequest?: (context: {
-    req: Promise<ResponseResult<UnionBack<T>>>
-  }) => void
+  onRequest?: (context: { req: Promise<ResponseResult<UnionBack<T>>> }) => void,
 ) => (config?: HandleResponseConfig) => Promise<ResponseResult<UnionBack<T>>>

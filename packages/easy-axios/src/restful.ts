@@ -14,7 +14,7 @@ import type {
 import { get, isDef, isFormData, isString, noop, set } from '@monan/shared'
 import { hash } from 'ohash'
 import { SetupAxios } from './setupAxios'
-import { ContentTypeEnum, ContentTypeKey, monanSymbol } from './share'
+import { ContentTypeEnum, ContentTypeKey, DEFAULT_VERSION, monanSymbol } from './share'
 
 export const WHEN_INJECT_PARAM_NO_ID_ERROR_DES
   = 'When your def match /a/b/{something},you should specifically give a alterName by use /a/b/{something}->alterName'
@@ -263,6 +263,8 @@ export class Restful<T> extends SetupAxios<T> {
           }
           // TODO performance ?
           const requestToken: string = hash(tokenObj)
+          const version = config.monanOptions?.staleKey || (() => DEFAULT_VERSION)
+          config.__M_pre_stale_key = version()
 
           if (abort) {
             const controller = new AbortController()
