@@ -32,7 +32,7 @@
     "taze": "19.7.0",
     "typescript": "^5.7.3",
     "unbuild": "^3.3.1",
-    "vitest": "^3.0.7"
+    "vitest": "^3.2.7"
   },
   "volta": {
     "node": "24.13.0"
