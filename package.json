@@ -20,7 +20,7 @@
     "build": "crax mono build"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "5.4.1",
+    "@antfu/eslint-config": "9.5.1",
     "@types/moxios": "0.4.17",
     "@types/node": "24.5.2",
     "eslint": "^9.21.0",
